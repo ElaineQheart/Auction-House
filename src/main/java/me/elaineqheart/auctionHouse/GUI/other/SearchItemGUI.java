@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +21,7 @@ public class SearchItemGUI implements Listener {
 
     public static void openAnvilForPlayer(Player player) {
         AnvilView view = MenuType.ANVIL.create(player,"Search Item");
-        view.setMaximumRepairCost(0);
+        //view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);
         player.openInventory(view);
     }
@@ -29,8 +31,6 @@ public class SearchItemGUI implements Listener {
         if (event.getInventory().getType() != InventoryType.ANVIL) return;
         ItemStack paperItem = event.getInventory().getItem(0);
         if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
-        AnvilView view = (AnvilView) event.getWhoClicked().getOpenInventory();
-        view.setRepairCost(0);
         event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();
@@ -40,13 +40,19 @@ public class SearchItemGUI implements Listener {
         ItemMeta meta = resultItem.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
             //remove the paper, else it will end up in the players inventory
-            player.giveExpLevels(1);
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);
             AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player),player);
 
         }
+    }
+
+    @EventHandler
+    public void onType(PrepareAnvilEvent event) {
+        ItemStack paperItem = event.getInventory().getItem(0);
+        if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
+        event.getView().setRepairCost(0);
     }
 
     @EventHandler
