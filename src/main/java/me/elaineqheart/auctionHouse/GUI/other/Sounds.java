@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
-import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

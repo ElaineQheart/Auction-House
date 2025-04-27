@@ -62,7 +62,6 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void decorate(Player player) {
-        int inventorySize = this.getInventory().getSize();
         fillOutPlaces(new String[]{
                 "# # # # # # # # #",
                 "# . . . . . . . #",

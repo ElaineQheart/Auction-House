@@ -10,14 +10,12 @@ import java.util.UUID;
 
 public class ItemNote {
 
-    private String id;
-
-    private String playerName;
+    private final String playerName;
     private String buyerName;
-    private UUID playerUUID;
-    private int price;
-    private Date dateCreated;
-    private String itemData;
+    private final UUID playerUUID;
+    private final int price;
+    private final Date dateCreated;
+    private final String itemData;
     private boolean isSold;
 
     public ItemNote(Player player, String itemData, int price) {
@@ -27,7 +25,6 @@ public class ItemNote {
         this.dateCreated = new Date();
         this.itemData = itemData;
         this.price = price;
-        this.id = UUID.randomUUID().toString();
         this.isSold = false;
     }
 
@@ -78,20 +75,13 @@ public class ItemNote {
     }
 
     //Getters and Setters
-    public String getId() {return id;}
     public String getPlayerName() {return playerName;}
     public String getBuyerName() {return buyerName;}
     public UUID getPlayerUUID() {return playerUUID;}
     public Date getDateCreated() {return dateCreated;}
-    public String getItemData() {return itemData;}
     public int getPrice() {return price;}
     public boolean isSold() {return isSold;}
 
-    public void setPlayerName(String playerName) {this.playerName = playerName;}
     public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
-    public void setPlayerUUID(UUID playerUUID) {this.playerUUID = playerUUID;}
-    public void setDateCreated(Date dateCreated) {this.dateCreated = dateCreated;}
-    public void setItemData(String item) {this.itemData= item;}
-    public void setPrice(int price) {this.price = price;}
     public void setSold(boolean isSold) {this.isSold = isSold;}
 }

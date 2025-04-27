@@ -21,16 +21,4 @@ public class TaskInventoryManager {
         taskID.put(uniqueId.toString(),taskId);
     }
 
-//    public static boolean containsKey(UUID invID){
-//        return taskID.containsKey(invID.toString());
-//    }
-//
-//    public static void removeAllTasks(){
-//        taskID.clear();
-//    }
-//
-//    public static void removeTask(UUID invID){
-//        taskID.remove(invID.toString());
-//    }
-
 }

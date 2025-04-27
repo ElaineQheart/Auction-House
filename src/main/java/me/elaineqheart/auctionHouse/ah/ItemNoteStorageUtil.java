@@ -5,7 +5,6 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.*;
 import java.util.*;
@@ -45,16 +44,6 @@ public class ItemNoteStorageUtil {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static ItemNote readNote(String id){
-
-        for (ItemNote itemNote : itemNotes){
-            if(itemNote.getId().equalsIgnoreCase(id)){
-                return itemNote;
-            }
-        }
-        return null;
     }
 
     public static void saveNotes() throws IOException {
