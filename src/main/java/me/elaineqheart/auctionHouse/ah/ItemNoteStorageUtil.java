@@ -162,7 +162,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Integer> hiPrSearch(String search){
         LinkedHashMap<ItemNote, Integer> newSortedMap = new LinkedHashMap<>();
         for(ItemNote note : sortedHighestPrice.keySet()){
-            if(note.getItem().toString().toLowerCase().contains(search.toLowerCase())){
+            if(note.getSearchIndex().contains(search.toLowerCase())){
                 newSortedMap.put(note,note.getPrice());
             }
         }
@@ -178,7 +178,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Long> dateSearch(String search){
         LinkedHashMap<ItemNote, Long> newSortedMap = new LinkedHashMap<>();
         for(ItemNote note : sortedDateCreated.keySet()){
-            if(note.getItem().toString().toLowerCase().contains(search.toLowerCase())){
+            if(note.getSearchIndex().contains(search.toLowerCase())){
                 newSortedMap.put(note,note.getDateCreated().getTime());
             }
         }
@@ -194,7 +194,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, String> alphaSearch(String search){
         LinkedHashMap<ItemNote, String> newSortedMap = new LinkedHashMap<>();
         for(ItemNote note : sortedAlphabetical.keySet()){
-            if(note.getItem().toString().toLowerCase().contains(search.toLowerCase())){
+            if(note.getSearchIndex().contains(search.toLowerCase())){
                 newSortedMap.put(note,note.getItem().getType().toString());
             }
         }

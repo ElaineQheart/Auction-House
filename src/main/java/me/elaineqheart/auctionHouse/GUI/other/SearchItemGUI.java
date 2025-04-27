@@ -18,7 +18,7 @@ import org.bukkit.inventory.view.AnvilView;
 public class SearchItemGUI implements Listener {
 
     public static void openAnvilForPlayer(Player player) {
-        AnvilView view = MenuType.Typed.ANVIL.builder().title("Search Item").build(player);
+        AnvilView view = MenuType.ANVIL.create(player,"Search Item");
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);
         player.openInventory(view);
@@ -29,9 +29,9 @@ public class SearchItemGUI implements Listener {
         if (event.getInventory().getType() != InventoryType.ANVIL) return;
         ItemStack paperItem = event.getInventory().getItem(0);
         if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
-        event.setCancelled(true);
         AnvilView view = (AnvilView) event.getWhoClicked().getOpenInventory();
         view.setRepairCost(0);
+        event.setCancelled(true);
 
         Player player = (Player) event.getWhoClicked();
         if (event.getSlot() != 2) return;
@@ -40,6 +40,7 @@ public class SearchItemGUI implements Listener {
         ItemMeta meta = resultItem.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
             //remove the paper, else it will end up in the players inventory
+            player.giveExpLevels(1);
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);

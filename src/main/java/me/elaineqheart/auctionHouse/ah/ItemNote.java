@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.ah;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Date;
 import java.util.UUID;
@@ -64,6 +65,23 @@ public class ItemNote {
 
     public boolean canAfford(double coins){
         return coins >= price;
+    }
+
+    public String getSearchIndex() {
+        StringBuilder index = new StringBuilder();
+        index.append(getItem().toString().toLowerCase());
+        ItemStack item = getItem();
+        ItemMeta meta = item.getItemMeta();
+        if(meta!=null) {
+            index.append(meta.getEnchants())
+                    .append(meta.getDisplayName().toLowerCase());
+            if(meta.getLore()!=null){
+                for(String lore : meta.getLore()){
+                    index.append(lore.toLowerCase());
+                }
+            }
+        }
+        return index.toString();
     }
 
     //Getters and Setters
