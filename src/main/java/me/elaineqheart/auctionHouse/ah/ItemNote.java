@@ -3,7 +3,6 @@ package me.elaineqheart.auctionHouse.ah;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Date;
 import java.util.UUID;
@@ -31,15 +30,8 @@ public class ItemNote {
     public ItemStack getItem(){
         return ItemStackConverter.decode(itemData);
     }
-    public String[] getSearchIndexes(){
-        ItemStack item = getItem();
-        ItemMeta meta = item.getItemMeta();
-        System.out.println(meta);
-        assert meta != null;
-        return null;
-    }
     private long timeLeft(){
-        return 60*60*48/3600 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
+        return 60*60*48 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
     }
     public String getTimeLeft(){
         String s;
