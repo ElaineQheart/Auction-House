@@ -31,6 +31,8 @@ public class SearchItemGUI implements Listener {
         ItemStack paperItem = event.getInventory().getItem(0);
         if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
         event.setCancelled(true);
+        AnvilView view = (AnvilView) event.getView();
+        view.setRepairCost(0);
 
         Player player = (Player) event.getWhoClicked();
         if (event.getSlot() != 2) return;
