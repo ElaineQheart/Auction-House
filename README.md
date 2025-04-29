@@ -1,4 +1,4 @@
 # Auction-House
 use /ah to open the Acution House
 
-plugin made for SpireMC
+Plugin made for SpireMC; This is a spigot plugin and I'm using gradle
