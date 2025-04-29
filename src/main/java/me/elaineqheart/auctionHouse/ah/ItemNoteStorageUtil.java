@@ -120,7 +120,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Integer> sortedHighestPrice(){
         LinkedHashMap<ItemNote, Integer> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedHighestPrice.keySet()) {
-            if(!note.isSold() && !note.isExpired()) {
+            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getPrice());
             }
         }
@@ -129,16 +129,16 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Long> sortedDateCreated(){
         LinkedHashMap<ItemNote, Long> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedDateCreated.keySet()) {
-            if(!note.isSold() && !note.isExpired()) {
+            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getDateCreated().getTime());
             }
         }
         return returnList;
     }
     public static LinkedHashMap<ItemNote, String> sortedAlphabetical(){
-        LinkedHashMap<ItemNote, String> returnList = new LinkedHashMap<>(sortedAlphabetical);
-        for(ItemNote note : returnList.keySet()) {
-            if(!note.isSold() && !note.isExpired()) {
+        LinkedHashMap<ItemNote, String> returnList = new LinkedHashMap<>();
+        for(ItemNote note : sortedAlphabetical.keySet()) {
+            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getItem().getType().toString());
             }
         }
@@ -161,9 +161,12 @@ public class ItemNoteStorageUtil {
 
     public static LinkedHashMap<ItemNote, Integer> hiPrSearch(String search){
         LinkedHashMap<ItemNote, Integer> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedHighestPrice.keySet()){
-            if(note.getSearchIndex().contains(search.toLowerCase())){
-                newSortedMap.put(note,note.getPrice());
+        for(ItemNote note : sortedHighestPrice().keySet()){
+            for(String s : note.getSearchIndex()){
+                if(s.contains(search.toLowerCase())){
+                    newSortedMap.put(note,note.getPrice());
+                    break;
+                }
             }
         }
         newSortedMap = newSortedMap.entrySet()
@@ -177,9 +180,12 @@ public class ItemNoteStorageUtil {
     }
     public static LinkedHashMap<ItemNote, Long> dateSearch(String search){
         LinkedHashMap<ItemNote, Long> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedDateCreated.keySet()){
-            if(note.getSearchIndex().contains(search.toLowerCase())){
-                newSortedMap.put(note,note.getDateCreated().getTime());
+        for(ItemNote note : sortedDateCreated().keySet()){
+            for(String s : note.getSearchIndex()){
+                if(s.contains(search.toLowerCase())){
+                    newSortedMap.put(note,note.getDateCreated().getTime());
+                    break;
+                }
             }
         }
         newSortedMap = newSortedMap.entrySet()
@@ -193,9 +199,12 @@ public class ItemNoteStorageUtil {
     }
     public static LinkedHashMap<ItemNote, String> alphaSearch(String search){
         LinkedHashMap<ItemNote, String> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedAlphabetical.keySet()){
-            if(note.getSearchIndex().contains(search.toLowerCase())){
-                newSortedMap.put(note,note.getItem().getType().toString());
+        for(ItemNote note : sortedAlphabetical().keySet()){
+            for(String s : note.getSearchIndex()){
+                if(s.contains(search.toLowerCase())){
+                    newSortedMap.put(note,note.getItem().getType().toString());
+                    break;
+                }
             }
         }
         newSortedMap = newSortedMap.entrySet()

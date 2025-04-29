@@ -150,6 +150,8 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                         AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note,currentSort), currentPlayer);
                     } else if (note.isExpired()) {
                         AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note,currentSort), currentPlayer);
+                    } else {
+                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note,currentSort), currentPlayer);
                     }
                 });
     }

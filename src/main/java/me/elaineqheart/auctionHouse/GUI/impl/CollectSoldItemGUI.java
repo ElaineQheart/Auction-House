@@ -10,6 +10,7 @@ import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -77,12 +78,12 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
     private InventoryButton collectItem() {
+        double price = (double) (note.getPrice() * 99) /100;
         return new InventoryButton()
-                .creator(player -> ItemManager.collectSoldItem(note.getPrice()))
+                .creator(player -> ItemManager.collectSoldItem(price))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Economy eco = VaultHook.getEconomy();
-                    double price = note.getPrice();
                     eco.depositPlayer(p, price);
                     Sounds.experience(event);
                     ItemNoteStorageUtil.deleteNote(note);
@@ -92,6 +93,9 @@ public class CollectSoldItemGUI extends InventoryGUI {
                         throw new RuntimeException(e);
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(ChatColor.YELLOW + "You collected an auction for " + ChatColor.GOLD + price + " coins" + ChatColor.YELLOW + "!");
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                 });
     }
 

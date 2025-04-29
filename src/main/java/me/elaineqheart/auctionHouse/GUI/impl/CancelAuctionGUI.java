@@ -13,12 +13,12 @@ import org.bukkit.inventory.Inventory;
 
 import java.io.IOException;
 
-public class CollectExpiredItemGUI extends InventoryGUI {
+public class CancelAuctionGUI extends InventoryGUI {
 
     private final ItemNote note;
     private final MyAuctionsGUI.MySort currentSort;
 
-    public CollectExpiredItemGUI(ItemNote note, MyAuctionsGUI.MySort sort) {
+    public CancelAuctionGUI(ItemNote note, MyAuctionsGUI.MySort sort) {
         super();
         this.note = note;
         this.currentSort = sort;
@@ -26,7 +26,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Collect Expired Item");
+        return Bukkit.createInventory(null,6*9,"Cancel Auction");
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
     }
     private InventoryButton collectItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.collectExpiredItem)
+                .creator(player -> ItemManager.cancelAuction)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.experience(event);
@@ -92,4 +92,5 @@ public class CollectExpiredItemGUI extends InventoryGUI {
     }
 
 }
+
 

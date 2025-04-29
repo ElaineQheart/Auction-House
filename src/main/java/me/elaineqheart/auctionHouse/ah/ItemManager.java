@@ -33,6 +33,7 @@ public class ItemManager {
     public static ItemStack emptyPaper;
     public static ItemStack cancel;
     public static ItemStack collectExpiredItem;
+    public static ItemStack cancelAuction;
 
     public static void init(){
         createFillerItem();
@@ -53,6 +54,7 @@ public class ItemManager {
         createEmptyPaper();
         createCancel();
         createCollectExpiredItem();
+        createCancelAuction();
     }
 
     private static void createFillerItem(){
@@ -277,6 +279,15 @@ public class ItemManager {
         item.setItemMeta(meta);
         collectExpiredItem = item;
     }
+    private static void createCancelAuction() {
+        ItemStack item = new ItemStack(Material.RED_CONCRETE);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.RED + "Cancel Auction Item");
+        meta.setLore(List.of("", ChatColor.YELLOW + "Click to collect!"));
+        item.setItemMeta(meta);
+        cancelAuction = item;
+    }
 
     public static ItemStack createItemFromNote(ItemNote note, Player p){
         ItemStack item = note.getItem();
@@ -297,8 +308,10 @@ public class ItemManager {
         }else if(note.isSold()){
             lore.add(ChatColor.GOLD + "Sold!");
             lore.add(ChatColor.GRAY + "Buyer: " + note.getBuyerName());
+        }else if(note.isOnWaitingList()){
+            lore.add("Auction starting in: " + note.getTimeLeft(note.timeLeft()-60*60*48));
         }else{
-            lore.add("Ends in: "+ note.getTimeLeft());
+            lore.add("Ends in: " + note.getTimeLeft(note.timeLeft()));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -350,7 +363,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GREEN + "Collect Sold Item");
-        meta.setLore(List.of("", ChatColor.GRAY + "Value: " + ChatColor.GOLD + price,
+        meta.setLore(List.of("", ChatColor.GRAY + "Value with taxes: " + ChatColor.GOLD + price,
                 "", ChatColor.YELLOW + "Click to collect!"));
         item.setItemMeta(meta);
         return item;
