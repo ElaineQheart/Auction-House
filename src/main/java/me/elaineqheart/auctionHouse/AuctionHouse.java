@@ -23,6 +23,7 @@ public final class AuctionHouse extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        long start = System.currentTimeMillis();
         getPlugin = this;
         ItemManager.init();
         guiManager = new GUIManager();
@@ -42,6 +43,7 @@ public final class AuctionHouse extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
 
     @Override

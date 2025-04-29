@@ -1,10 +1,12 @@
 package me.elaineqheart.auctionHouse.ah;
 
 import org.bukkit.ChatColor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -31,14 +33,14 @@ public class ItemNote {
     public ItemStack getItem(){
         return ItemStackConverter.decode(itemData);
     }
-    private long timeLeft(){
-        return 60*60*48 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
+    public long timeLeft(){
+        // +30 seconds wait time until the item is up on auction
+        return 60*60*48 + 30 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
     }
-    public String getTimeLeft(){
+    public String getTimeLeft(Long timeLeft){
         String s;
         String m;
         String h;
-        long timeLeft = timeLeft();
         int sec = (int) ((timeLeft)%60);
         if(String.valueOf(sec).length()==1) {
             s = '0' + String.valueOf(sec);
@@ -63,25 +65,31 @@ public class ItemNote {
         return timeLeft()<0;
     }
 
+    public boolean isOnWaitingList() {
+        return timeLeft() > 60*60*48;
+    }
+
     public boolean canAfford(double coins){
         return coins >= price;
     }
 
-    public String getSearchIndex() {
-        StringBuilder index = new StringBuilder();
-        index.append(getItem().toString().toLowerCase());
+    public String[] getSearchIndex() {
+        ArrayList<String> index = new ArrayList<>();
+        index.add(getItem().toString().toLowerCase());
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         if(meta!=null) {
-            index.append(meta.getEnchants())
-                    .append(meta.getDisplayName().toLowerCase());
+            for(Enchantment enchant : meta.getEnchants().keySet()){
+                index.add(enchant.toString().toLowerCase());
+            }
+            index.add(meta.getDisplayName().toLowerCase());
             if(meta.getLore()!=null){
                 for(String lore : meta.getLore()){
-                    index.append(lore.toLowerCase());
+                    index.add(lore.toLowerCase());
                 }
             }
         }
-        return index.toString();
+        return index.toArray(index.toArray(new String[0]));
     }
 
     //Getters and Setters
