@@ -1,3 +1,3 @@
-Auction-House
-
-use /ah to open the auction house
+# Auction-House
+use /ah to open the Acution House
+plugin made for SpireMC
