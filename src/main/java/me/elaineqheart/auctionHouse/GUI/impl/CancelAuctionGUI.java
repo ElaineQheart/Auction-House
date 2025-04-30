@@ -80,6 +80,7 @@ public class CancelAuctionGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.experience(event);
+                    Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
                     ItemNoteStorageUtil.deleteNote(note);
                     try {

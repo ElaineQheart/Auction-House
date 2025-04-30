@@ -36,19 +36,37 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(ChatColor.YELLOW + "You need to hold an item in your hand to sell it");
                     return true;
                 }
+                int price;
                 try{
-                    Integer.parseInt(strings[1]);
-                }catch (Exception e){
-                    p.sendMessage("That is not a valid number");
-                    return true;
+                    price = Integer.parseInt(strings[1]);
+                } catch (Exception e) {
+                    try{
+                        price = Integer.parseInt(strings[1].substring(0, strings[1].length()-1));
+                        String suffix = strings[1].substring(strings[1].length()-1).toLowerCase();
+                        switch (suffix) {
+                            case "k":
+                                price *= 1000;
+                                break;
+                            case "m":
+                                price *= 1000000;
+                                break;
+                            default:
+                                p.sendMessage("That is not a valid number");
+                                return true;
+                        }
+                    } catch (Exception f) {
+                        p.sendMessage("That is not a valid number");
+                        return true;
+                    }
+
                 }
-                int price = Integer.parseInt(strings[1]);
                 if(price<=0){
                     p.sendMessage("That is not a valid price");
                     return true;
                 }
                 ItemNoteStorageUtil.createNote(p,item,price);
                 item.setAmount(0);
+                p.sendMessage(ChatColor.YELLOW + "You have put up an auction for " + ChatColor.GOLD + price + ChatColor.YELLOW + " coins");
 
             }
 
