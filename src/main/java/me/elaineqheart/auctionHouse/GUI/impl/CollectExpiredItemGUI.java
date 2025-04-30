@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -79,6 +80,12 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectExpiredItem)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
+                    //check if inventory is full
+                    if(p.getInventory().firstEmpty() == -1){
+                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Sounds.experience(event);
                     p.getInventory().addItem(note.getItem());
                     ItemNoteStorageUtil.deleteNote(note);

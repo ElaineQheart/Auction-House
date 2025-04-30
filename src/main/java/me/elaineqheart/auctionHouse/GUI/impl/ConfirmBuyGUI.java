@@ -67,6 +67,12 @@ public class ConfirmBuyGUI extends InventoryGUI{
                 .creator(player -> ItemManager.createConfirm(note.getPrice()))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
+                    //check if inventory is full
+                    if(p.getInventory().firstEmpty() == -1){
+                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Economy eco = VaultHook.getEconomy();
                     double price = note.getPrice();
                     p.closeInventory();

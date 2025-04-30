@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -79,6 +80,12 @@ public class CancelAuctionGUI extends InventoryGUI {
                 .creator(player -> ItemManager.cancelAuction)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
+                    //check if inventory is full
+                    if(p.getInventory().firstEmpty() == -1){
+                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Sounds.experience(event);
                     Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
@@ -89,6 +96,9 @@ public class CancelAuctionGUI extends InventoryGUI {
                         throw new RuntimeException(e);
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(ChatColor.YELLOW + "Your auction was canceled!");
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                 });
     }
 
