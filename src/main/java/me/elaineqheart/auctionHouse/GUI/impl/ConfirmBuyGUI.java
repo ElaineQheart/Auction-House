@@ -79,7 +79,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!ItemNoteStorageUtil.noteExists(note)) {
+                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
                         p.sendMessage(ChatColor.RED + "This item has been removed!");
                         Sounds.villagerDeny(event);
                         return;

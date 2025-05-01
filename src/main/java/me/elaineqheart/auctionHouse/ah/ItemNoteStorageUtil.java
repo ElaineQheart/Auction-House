@@ -46,13 +46,13 @@ public class ItemNoteStorageUtil {
         }
     }
 
-    public static boolean noteExists(ItemNote note) {
+    public static boolean noteDoesNotExist(ItemNote note) {
         for (ItemNote n : itemNotes) {
             if(n.getNoteID().equals(note.getNoteID())) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public static void saveNotes() throws IOException {

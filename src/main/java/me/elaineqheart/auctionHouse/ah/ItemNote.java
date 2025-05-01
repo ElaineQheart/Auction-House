@@ -32,8 +32,6 @@ public class ItemNote {
         this.isSold = false;
     }
 
-    public UUID getNoteID() {return noteID;}
-
     public ItemStack getItem(){
         return ItemStackConverter.decode(itemData);
     }
@@ -104,6 +102,7 @@ public class ItemNote {
     public int getPrice() {return price;}
     public boolean isSold() {return isSold;}
     public String getAdminMessage() {return adminMessage;}
+    public UUID getNoteID() {return noteID;}
 
     public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
     public void setSold(boolean isSold) {this.isSold = isSold;}

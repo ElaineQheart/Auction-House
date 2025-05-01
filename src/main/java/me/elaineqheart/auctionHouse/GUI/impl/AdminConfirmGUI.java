@@ -90,7 +90,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!ItemNoteStorageUtil.noteExists(note)) {
+                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
                         p.sendMessage(ChatColor.RED + "ERROR! This item has been removed!");
                         Sounds.villagerDeny(event);
                         return;
@@ -130,7 +130,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!ItemNoteStorageUtil.noteExists(note)) {
+                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
                         p.sendMessage(ChatColor.RED + "ERROR! This item has been removed!");
                         Sounds.villagerDeny(event);
                         return;
