@@ -68,8 +68,19 @@ public class ConfirmBuyGUI extends InventoryGUI{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
-                    if(p.getInventory().firstEmpty() == -1){
+                    if(p.getInventory().firstEmpty() == -1) {
                         p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    //check if the item hasn't been sold yet
+                    if (note.isSold()) {
+                        p.sendMessage(ChatColor.RED + "This item has already been sold!");
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    if (!ItemNoteStorageUtil.noteExists(note)) {
+                        p.sendMessage(ChatColor.RED + "This item has been removed!");
                         Sounds.villagerDeny(event);
                         return;
                     }

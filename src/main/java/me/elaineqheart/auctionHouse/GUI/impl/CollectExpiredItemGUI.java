@@ -87,14 +87,33 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                         return;
                     }
                     Sounds.experience(event);
-                    p.getInventory().addItem(note.getItem());
+                    //expired by a moderator:
+                    if(note.getAdminMessage() != null) {
+                        if(note.getItem().equals(ItemManager.createDirt())) {
+                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.sendMessage(ChatColor.RED + "Yor auction was deleted by a moderator");
+                            p.sendMessage(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
+                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.closeInventory();
+                        }else {
+                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.sendMessage(ChatColor.RED + "Your auction was expired by a moderator");
+                            p.sendMessage(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
+                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.getInventory().addItem(note.getItem());
+                            p.closeInventory();
+                        }
+                    } else {
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                        p.getInventory().addItem(note.getItem());
+                    }
+
                     ItemNoteStorageUtil.deleteNote(note);
                     try {
                         ItemNoteStorageUtil.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
                 });
     }
 

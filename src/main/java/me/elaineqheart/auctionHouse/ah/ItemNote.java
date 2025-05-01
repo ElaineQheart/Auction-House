@@ -16,9 +16,11 @@ public class ItemNote {
     private String buyerName;
     private final UUID playerUUID;
     private final int price;
-    private final Date dateCreated;
-    private final String itemData;
+    private Date dateCreated;
+    private String itemData;
     private boolean isSold;
+    private final UUID noteID = UUID.randomUUID();
+    private String adminMessage;
 
     public ItemNote(Player player, String itemData, int price) {
         this.playerName = player.getDisplayName();
@@ -29,6 +31,8 @@ public class ItemNote {
         this.price = price;
         this.isSold = false;
     }
+
+    public UUID getNoteID() {return noteID;}
 
     public ItemStack getItem(){
         return ItemStackConverter.decode(itemData);
@@ -99,7 +103,11 @@ public class ItemNote {
     public Date getDateCreated() {return dateCreated;}
     public int getPrice() {return price;}
     public boolean isSold() {return isSold;}
+    public String getAdminMessage() {return adminMessage;}
 
     public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
     public void setSold(boolean isSold) {this.isSold = isSold;}
+    public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
+    public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}
+    public void setDateCreated(Date dateCreated) {this.dateCreated = dateCreated;}
 }

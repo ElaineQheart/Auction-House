@@ -46,6 +46,15 @@ public class ItemNoteStorageUtil {
         }
     }
 
+    public static boolean noteExists(ItemNote note) {
+        for (ItemNote n : itemNotes) {
+            if(n.getNoteID().equals(note.getNoteID())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void saveNotes() throws IOException {
 
         Gson gson = new Gson();

@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import org.bukkit.Bukkit;
@@ -12,18 +13,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.view.AnvilView;
 
-public class SearchItemGUI implements Listener {
-
-    public static void openAnvilForPlayer(Player player) {
-        AnvilView view = MenuType.ANVIL.create(player,"Search Item");
-        view.setMaximumRepairCost(0);
-        view.setItem(0, ItemManager.emptyPaper);
-        player.openInventory(view);
-    }
+public class AnvilGUIListener implements Listener {
 
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
@@ -44,7 +37,17 @@ public class SearchItemGUI implements Listener {
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);
-            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player),player);
+            System.out.println(view.getTitle());
+            switch (view.getTitle()) {
+                case "Search Item" -> AuctionHouse.getGuiManager().openGUI
+                        (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);
+                case "Admin Search Item" -> AuctionHouse.getGuiManager().openGUI
+                        (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
+                case "Expire Item Reason" -> AuctionHouse.getGuiManager().openGUI
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNote, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
+                case "Delete Item Reason" -> AuctionHouse.getGuiManager().openGUI
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNote, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
+            }
 
         }
     }
@@ -67,9 +70,16 @@ public class SearchItemGUI implements Listener {
         //remove the paper, else it will end up in the players inventory
         p.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
         if(event.getInventory().getItem(2) != null) return;
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
-            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p), p);
-        },1);
+        AnvilView view = (AnvilView) event.getView();
+        switch (view.getTitle()) {
+            case "Search Item" -> Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,false), p);
+            },1);
+            case "Admin Search Item","Expire Item Reason", "Delete Item Reason" -> Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,true), p);
+            },1);
+        }
+
     }
 
 }

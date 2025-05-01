@@ -3,11 +3,11 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskInventoryManager;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
-import me.elaineqheart.auctionHouse.vault.VaultHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -15,7 +15,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-public class AuctionViewGUI extends InventoryGUI implements Runnable{
+public class AdminManageItemGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
     private final Player currentPlayer;
@@ -26,16 +26,16 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         decorate(currentPlayer);
     }
 
-    public AuctionViewGUI(ItemNote note, Player player) {
+    public AdminManageItemGUI(ItemNote note, Player p) {
         super();
         this.note = note;
-        this.currentPlayer = player;
+        this.currentPlayer = p;
         TaskInventoryManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Auction House");
+        return Bukkit.createInventory(null,6*9,"Admin Menu");
     }
 
     @Override
@@ -44,16 +44,13 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 "# # # # # # # # #",
                 "# # # # . # # # #",
                 "# # # # # # # # #",
-                "# # # # . # # # #",
+                "# # # . # . # # #",
                 "# # # # # # # # #",
                 "# # # # . # # # #"
         },fillerItem());
-        this.addButton(13, buyingItem());
-        if(note.canAfford(VaultHook.getEconomy().getBalance(player))) {
-            this.addButton(31,turtleScute());
-        }else{
-            this.addButton(31,armadilloScute());
-        }
+        this.addButton(13, item());
+        this.addButton(30, expireAuction());
+        this.addButton(32, deleteAuction());
         this.addButton(49, back());
         super.decorate(player);
     }
@@ -78,7 +75,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.fillerItem)
                 .consumer(event -> {});
     }
-    private InventoryButton buyingItem() {
+    private InventoryButton item() {
         return new InventoryButton()
                 .creator(player -> ItemManager.createItemFromNote(note, player))
                 .consumer(event -> {});
@@ -89,20 +86,23 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE,"",currentPlayer,true), p);
                 });
     }
-    private InventoryButton armadilloScute() {
+    private InventoryButton deleteAuction() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createArmadilloScute(note.getPrice()))
-                .consumer(Sounds::villagerDeny);
-    }
-    private InventoryButton turtleScute() {
-        return new InventoryButton()
-                .creator(player -> ItemManager.createTurtleScute(note.getPrice()))
+                .creator(player -> ItemManager.adminCancelAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note), (Player) event.getWhoClicked());
+                    new AnvilSearchGUI(currentPlayer, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE, note);
+                });
+    }
+    private InventoryButton expireAuction() {
+        return new InventoryButton()
+                .creator(player -> ItemManager.adminExpireAuction)
+                .consumer(event -> {
+                    Sounds.click(event);
+                    new AnvilSearchGUI(currentPlayer, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE, note);
                 });
     }
 

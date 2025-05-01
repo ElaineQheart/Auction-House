@@ -1,13 +1,16 @@
 package me.elaineqheart.auctionHouse.ah;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,10 @@ public class ItemManager {
     public static ItemStack cancel;
     public static ItemStack collectExpiredItem;
     public static ItemStack cancelAuction;
+    public static ItemStack commandBlockInfo;
+    public static ItemStack adminCancelAuction;
+    public static ItemStack adminExpireAuction;
+    public static ItemStack confirm;
 
     public static void init(){
         createFillerItem();
@@ -55,6 +62,10 @@ public class ItemManager {
         createCancel();
         createCollectExpiredItem();
         createCancelAuction();
+        createCommandBlockInfo();
+        createAdminCancelAuction();
+        createAdminExpireAuction();
+        createConfirmItem();
     }
 
     private static void createFillerItem(){
@@ -259,6 +270,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GRAY + "");
+        meta.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(),"AuctionHouseSearch"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
         emptyPaper = item;
     }
@@ -288,7 +300,54 @@ public class ItemManager {
         item.setItemMeta(meta);
         cancelAuction = item;
     }
+    private static void createCommandBlockInfo() {
+        ItemStack item = new ItemStack(Material.STRUCTURE_BLOCK);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.GREEN + "Info");
+        meta.setLore(List.of(ChatColor.GRAY + "Click on an item to expire or delete it",
+                ChatColor.GRAY + "Expired items can be collected again by the player",
+                ChatColor.GRAY + "Deleted items will be removed from the auction house",
+                ChatColor.GRAY + "and you will get them in your inventory"
+        ));
+        item.setItemMeta(meta);
+        commandBlockInfo = item;
+    }
+    private static void createAdminCancelAuction() {
+        ItemStack item = new ItemStack(Material.RED_CONCRETE);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.RED + "Cancel Auction Item");
+        meta.setLore(List.of("", ChatColor.YELLOW + "The player won't get the item back! You will collect it!"));
+        item.setItemMeta(meta);
+        adminCancelAuction = item;
+    }
+    private static void createAdminExpireAuction() {
+        ItemStack item = new ItemStack(Material.RED_DYE);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.RED + "Expire Auction Item");
+        meta.setLore(List.of("", ChatColor.YELLOW + "Click to make it expire!"));
+        item.setItemMeta(meta);
+        adminExpireAuction = item;
+    }
+    private static void createConfirmItem() {
+        ItemStack item = new ItemStack(Material.GREEN_BANNER);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.GREEN + "Confirm");
+        item.setItemMeta(meta);
+        confirm = item;
+    }
 
+    public static ItemStack createDirt() {
+        ItemStack item = new ItemStack(Material.DIRT);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.RED + "Canceled Item");
+        item.setItemMeta(meta);
+        return item;
+    }
     public static ItemStack createItemFromNote(ItemNote note, Player p){
         ItemStack item = note.getItem();
         ItemMeta meta = item.getItemMeta();
@@ -304,7 +363,16 @@ public class ItemManager {
             lore.add("");
         }
         if(note.isExpired()){
-            lore.add(ChatColor.RED + "Expired!");
+            if(note.getAdminMessage()!=null){
+                if(note.getItem().equals(createDirt())){
+                    lore.add(ChatColor.RED + "Deleted by a moderator!");
+                }else {
+                    lore.add(ChatColor.RED + "Expired by a moderator!");
+                }
+                lore.add(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
+            }else {
+                lore.add(ChatColor.RED + "Expired!");
+            }
         }else if(note.isSold()){
             lore.add(ChatColor.GOLD + "Sold!");
             lore.add(ChatColor.GRAY + "Buyer: " + note.getBuyerName());
@@ -325,6 +393,38 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.add(ChatColor.DARK_GRAY + "------------------");
         lore.add(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "BUYING ITEM!");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createAdminExpireItem(ItemNote note, String reason) {
+        ItemStack item = note.getItem();
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        List<String> lore = meta.getLore();
+        if(lore==null) lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "------------------");
+        lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
+        lore.add(ChatColor.GRAY + "Price: " + ChatColor.GOLD + note.getPrice());
+        lore.add("");
+        lore.add(ChatColor.RED + "Expired by a moderator!");
+        lore.add(ChatColor.GRAY + "Reason: " + reason);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createAdminDeleteItem(ItemNote note, String reason) {
+        ItemStack item = createDirt();
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        List<String> lore = meta.getLore();
+        if(lore==null) lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "------------------");
+        lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
+        lore.add(ChatColor.GRAY + "Price: " + ChatColor.GOLD + note.getPrice());
+        lore.add("");
+        lore.add(ChatColor.RED + "Deleted by a moderator!");
+        lore.add(ChatColor.GRAY + "Reason: " + reason);
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;

@@ -4,7 +4,8 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.GUI.other.SearchItemGUI;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
+import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.TaskInventoryManager;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
@@ -25,6 +26,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private final String currentSearch;
     private final Player currentPlayer;
     private final UUID invID = UUID.randomUUID();
+    private final boolean isAdmin;
 
     @Override
     public void run() {
@@ -38,12 +40,13 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ALPHABETICAL
     }
 
-    public AuctionHouseGUI(int page, Sort sort, String search, Player p) {
+    public AuctionHouseGUI(int page, Sort sort, String search, Player p, boolean isAdmin) {
         super();
         this.currentPage = page;
         this.currentSort = sort;
         this.currentSearch = search;
         this.currentPlayer = p;
+        this.isAdmin = isAdmin;
         TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public AuctionHouseGUI(Player p) {
@@ -52,6 +55,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         this.currentSort = Sort.HIGHEST_PRICE;
         this.currentSearch = "";
         this.currentPlayer = p;
+        this.isAdmin = false;
         TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -76,7 +80,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         this.addButton(48,previousPage());
         this.addButton(49,refresh());
         this.addButton(50,nextPage());
-        this.addButton(53,myAuctions());
+        if (!isAdmin) {this.addButton(53, myAuctions());} else {this.addButton(53, commandBlockInfo());}
         super.decorate(player);
     }
 
@@ -161,7 +165,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.click(event);
                     if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),currentPlayer)) {
-                        AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note), currentPlayer);
+                        if(isAdmin) {
+                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, currentPlayer), currentPlayer);
+                        }else {
+                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, currentPlayer), currentPlayer);
+                        }
                     }
                 });
     }
@@ -181,12 +189,17 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .creator(player -> ItemManager.fillerItem)
                 .consumer(event -> {});
     }
+    private InventoryButton commandBlockInfo(){
+        return new InventoryButton()
+                .creator(player -> ItemManager.commandBlockInfo)
+                .consumer(event -> {});
+    }
 
     private InventoryButton refresh(){
         return new InventoryButton()
                 .creator(player -> ItemManager.refresh)
                 .consumer(event -> {
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,currentSearch,currentPlayer), currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
                     Sounds.click(event);
                 });
     }
@@ -207,11 +220,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != notes.size()/21){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(notes.size()/21,currentSort,currentSearch,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(notes.size()/21,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
                         }
                     }else {
                         if(currentPage < notes.size()/21){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage+1,currentSort,currentSearch,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage+1,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
                         }
                     }
                 });
@@ -233,11 +246,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != 0){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,currentSort,currentSearch,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
                         }
                     }else {
                         if(currentPage > 0){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage-1,currentSort,currentSearch,currentPlayer),currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage-1,currentSort,currentSearch,currentPlayer,isAdmin),currentPlayer);
                         }
                     }
                 });
@@ -248,7 +261,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         assert meta != null;
         meta.setItemName(ChatColor.GREEN + "Search");
         meta.setLore(List.of(ChatColor.GRAY + "Find Items by name, type or enchants",
-                "",ChatColor.GRAY + "Filter: "  ,
+                "",ChatColor.GRAY + "Filter: " + currentSearch,
                 "",ChatColor.YELLOW + "Right-Click to clear!",
                 ChatColor.GREEN + "Click to set filter!"
         ));
@@ -259,10 +272,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     if(event.isRightClick()){
                         //clear filter
                         Sounds.breakWood(event);
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,"",currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,"",currentPlayer,isAdmin), currentPlayer);
                     }else {
                         Sounds.click(event);
-                        SearchItemGUI.openAnvilForPlayer((Player) event.getWhoClicked());
+                        if(isAdmin){
+                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.ADMIN_AH, null);
+                        }else {
+                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.AH, null);
+                        }
                     }
                 });
     }
@@ -272,9 +289,9 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.click(event);
                     if(event.isRightClick()){
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,previousSort(currentSort),currentSearch,currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,previousSort(currentSort),currentSearch,currentPlayer,isAdmin), currentPlayer);
                     }else {
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,nextSort(currentSort),currentSearch,currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,nextSort(currentSort),currentSearch,currentPlayer,isAdmin), currentPlayer);
                     }
                 });
     }

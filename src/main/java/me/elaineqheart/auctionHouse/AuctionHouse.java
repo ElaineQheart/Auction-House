@@ -2,8 +2,10 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
-import me.elaineqheart.auctionHouse.GUI.other.SearchItemGUI;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.ah.AuctionHouseCommand;
+import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import net.milkbowl.vault.economy.Economy;
@@ -29,7 +31,7 @@ public final class AuctionHouse extends JavaPlugin {
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
         Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(new SearchItemGUI(), this);
+        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -43,6 +45,17 @@ public final class AuctionHouse extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        //Setup bannedPlayers.yml
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
+        CustomConfigBannedPlayers.setup();
+        CustomConfigBannedPlayers.get().options().copyDefaults(true);
+        CustomConfigBannedPlayers.save();
+
+        //also, you need a regular config.yml to generate the folder where the .yml files are
+
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
 
