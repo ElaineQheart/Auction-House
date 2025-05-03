@@ -7,23 +7,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.view.AnvilView;
 
+import java.util.HashMap;
+
 public class AnvilSearchGUI implements Listener {
 
-    // This is used to pass the note to the next GUI
-    // It will overwrite the previous note if the player opens a new AnvilSearchGUI
-    // If two admins try to delete an item at the same time, it won't work
-    public static ItemNote currentAdminNote;
+    // This is used to pass the note to the next GUI (AnvilGUIListener)
+    // an item Note linked to the player
+    public static HashMap<Player, ItemNote> currentAdminNoteMap;
 
     public enum SearchType {
         AH,
         ADMIN_AH,
         ITEM_EXPIRE_MESSAGE,
-        ITEM_DELETE_MESSAGE,
-        BAN_MESSAGE
+        ITEM_DELETE_MESSAGE
     }
 
     public AnvilSearchGUI(Player player, SearchType type, ItemNote note) {
-        currentAdminNote = note;
+        currentAdminNoteMap.put(player, note);
         AnvilView view = null;
         switch (type) {
             case AH -> view = MenuType.ANVIL.create(player,"Search Item");
