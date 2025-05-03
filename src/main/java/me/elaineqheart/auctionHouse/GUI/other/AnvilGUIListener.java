@@ -44,9 +44,9 @@ public class AnvilGUIListener implements Listener {
                 case "Admin Search Item" -> AuctionHouse.getGuiManager().openGUI
                         (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
                 case "Expire Item Reason" -> AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNote, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
                 case "Delete Item Reason" -> AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNote, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
             }
 
         }
