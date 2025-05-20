@@ -13,7 +13,7 @@ public class AnvilSearchGUI implements Listener {
 
     // This is used to pass the note to the next GUI (AnvilGUIListener)
     // an item Note linked to the player
-    public static HashMap<Player, ItemNote> currentAdminNoteMap;
+    public static HashMap<Player, ItemNote> currentAdminNoteMap = new HashMap<>();
 
     public enum SearchType {
         AH,

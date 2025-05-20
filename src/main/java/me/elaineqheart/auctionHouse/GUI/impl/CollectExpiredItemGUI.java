@@ -101,14 +101,15 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                             p.sendMessage(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
                             p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
                             p.getInventory().addItem(note.getItem());
+                            ItemNoteStorageUtil.deleteNote(note);
                             p.closeInventory();
                         }
                     } else {
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
                         p.getInventory().addItem(note.getItem());
+                        ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
                     }
 
-                    ItemNoteStorageUtil.deleteNote(note);
                     try {
                         ItemNoteStorageUtil.saveNotes();
                     } catch (IOException e) {
