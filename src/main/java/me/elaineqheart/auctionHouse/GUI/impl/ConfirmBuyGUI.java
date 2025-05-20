@@ -102,6 +102,9 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(ChatColor.YELLOW + "You purchased an item from " + ChatColor.GRAY + note.getPlayerName() + ChatColor.YELLOW + "'s auction!");
+                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                 });
     }
     private InventoryButton cancel(){
