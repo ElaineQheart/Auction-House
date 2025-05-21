@@ -107,7 +107,9 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     } else {
                         p.getInventory().addItem(note.getItem());
                         ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p)
+                        ,1);
                     }
 
                     try {
