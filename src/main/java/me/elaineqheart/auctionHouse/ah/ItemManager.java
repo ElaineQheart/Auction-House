@@ -362,7 +362,7 @@ public class ItemManager {
             lore.add(ChatColor.GREEN + "This is your own item!");
             lore.add("");
         }
-        if(note.isExpired()){
+        if(note.isExpired() && !note.isSold()){
             if(note.getAdminMessage()!=null){
                 if(note.getItem().equals(createDirt())){
                     lore.add(ChatColor.RED + "Deleted by a moderator!");

@@ -105,7 +105,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
             sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(currentSearch);
         }
         int size = sortedHighestPrice.size();
-        for(int i = startPage; i < startPage+21; ++i){
+        for(int i = startPage; i < startPage+21; i++){
             if(size-1<i)break;
             Map.Entry<ItemNote,Integer> entry = sortedHighestPrice.entrySet().stream().skip(size-i-1).findFirst().orElse(null);
             if(entry == null) continue;
