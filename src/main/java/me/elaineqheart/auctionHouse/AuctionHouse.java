@@ -3,10 +3,12 @@ package me.elaineqheart.auctionHouse;
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
-import me.elaineqheart.auctionHouse.ah.AuctionHouseCommand;
+import me.elaineqheart.auctionHouse.ah.SettingManager;
+import me.elaineqheart.auctionHouse.commands.AuctionHouseCommand;
 import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.commands.ReloadCommand;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -39,16 +41,19 @@ public final class AuctionHouse extends JavaPlugin {
         }
         getCommand("ah").setExecutor(new AuctionHouseCommand());
         getCommand("ah").setTabCompleter(new AuctionHouseCommand());
+        getCommand("ahreload").setExecutor(new ReloadCommand());
         try {
             ItemNoteStorageUtil.loadNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        SettingManager.loadData();
 
-        //Setup bannedPlayers.yml
+        //Setup config.yml
+        super.reloadConfig(); //reload if there were changes
         getConfig().options().copyDefaults(true);
         saveConfig();
-
+        //Setup bannedPlayers.yml
         CustomConfigBannedPlayers.setup();
         CustomConfigBannedPlayers.get().options().copyDefaults(true);
         CustomConfigBannedPlayers.save();

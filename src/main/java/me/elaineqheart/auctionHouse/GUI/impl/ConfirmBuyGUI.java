@@ -88,7 +88,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     double price = note.getPrice();
                     p.closeInventory();
                     if(!note.canAfford(eco.getBalance(p))) { //extra check to make sure that they have enough coins
-                        p.sendMessage(ChatColor.RED + "You don't have enough coins to buy this item!");
+                        p.sendMessage(ChatColor.RED + "You don't have enough money to buy this item!");
                         Sounds.villagerDeny(event);
                         return;
                     }

@@ -1,8 +1,11 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.commands;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.Permissions;
+import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
+import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.ah.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -75,7 +78,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 }
                 ItemNoteStorageUtil.createNote(p,item,price);
                 item.setAmount(0);
-                p.sendMessage(ChatColor.YELLOW + "You have put up an auction for " + ChatColor.GOLD + price + ChatColor.YELLOW + " coins");
+                p.sendMessage(ChatColor.YELLOW + "You have put up an auction for " + ChatColor.GOLD + price + ChatColor.YELLOW + SettingManager.currencySymbol);
 
             }
             // /ah admin

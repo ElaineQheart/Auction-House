@@ -445,7 +445,7 @@ public class ItemManager {
         assert meta != null;
         meta.setItemName(ChatColor.GOLD + "Buy Item right now!");
         meta.setLore(List.of("", ChatColor.GRAY + "Price: " + ChatColor.GOLD + price,
-                "", ChatColor.RED + "Not enough coins!"));
+                "", ChatColor.RED + "Not enough money!"));
         item.setItemMeta(meta);
         return item;
     }

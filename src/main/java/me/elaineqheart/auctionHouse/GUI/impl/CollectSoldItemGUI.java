@@ -7,6 +7,7 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -94,7 +95,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                    p.sendMessage(ChatColor.YELLOW + "You collected an auction for " + ChatColor.GOLD + price + " coins" + ChatColor.YELLOW + "!");
+                    p.sendMessage(ChatColor.YELLOW + "You collected an auction for " + ChatColor.GOLD + price + SettingManager.currencySymbol + ChatColor.YELLOW + "!");
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                 });
     }
