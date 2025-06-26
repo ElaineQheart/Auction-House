@@ -6,8 +6,11 @@ import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
+import me.elaineqheart.auctionHouse.world.CreateDisplay;
+import me.elaineqheart.auctionHouse.world.CreateNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,10 +22,11 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
+public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(commandSender instanceof Player p){
@@ -141,6 +145,59 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                     }
                     p.sendMessage("That player isn't banned from the auction house");
 
+                } else if (strings[0].equals("reload")) {
+                    try {
+                        ItemNoteStorageUtil.loadNotes();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    CustomConfigBannedPlayers.reload();
+                    AuctionHouse.getPlugin().reloadConfig();
+                    SettingManager.loadData();
+
+                    p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
+                    AuctionHouse.getPlugin().getLogger().info("reloaded");
+                    return true;
+                } else if (strings[0].equals("summon")) {
+                    if(strings.length < 2) {
+                        p.sendMessage("/ah summon <entity>");
+                        return true;
+                    }
+                    //get the player location
+                    Location loc = p.getLocation();
+                    Location blockLoc = new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5);
+
+                    if(strings[1].equals("npc")) {
+                        CreateNPC.createAuctionMaster(blockLoc);
+                    } else if(strings[1].equals("display")) {
+                        if(strings.length < 4) {
+                            p.sendMessage("/ahsummon display <type> <rank number>");
+                            return true;
+                        }
+
+                        int itemNumber;
+                        try {
+                            itemNumber = Integer.parseInt(strings[3]);
+                            if(itemNumber < 1) {
+                                p.sendMessage("Item rank number must be greater than 0");
+                                return true;
+                            }
+                        } catch (NumberFormatException e) {
+                            p.sendMessage("Invalid item rank number. Please enter a valid number");
+                            return true;
+                        }
+                        switch (strings[2]) {
+                            case "highest_price":
+                                CreateDisplay.createDisplayHighestPrice(blockLoc, itemNumber);
+                                break;
+                            case "ending_soon":
+                                CreateDisplay.createDisplayEndingSoon(blockLoc, itemNumber);
+                                break;
+                            case "lowest_price":
+                                CreateDisplay.createDisplayLowestPrice(blockLoc, itemNumber);
+                                break;
+                        }
+                    }
                 }
             }
 
@@ -159,6 +216,8 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 assetParams.add("admin");
                 assetParams.add("ban");
                 assetParams.add("pardon");
+                assetParams.add("reload");
+                assetParams.add("summon");
             }
             for (String p : assetParams) {
                 if (p.indexOf(strings[0]) == 0){
@@ -171,13 +230,26 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 params.add(p.getDisplayName());
             }
-        }
-        if(strings.length == 2 && strings[0].equals("pardon")) {
+        } else if (strings.length == 2 && strings[0].equals("pardon")) {
             ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
             if (section != null) {
                 for(String key : section.getKeys(false)) {
                     String path = "BannedPlayers." + key + ".PlayerName";
                     params.add(CustomConfigBannedPlayers.get().getString(path));
+                }
+            }
+        } else if (strings.length == 2 && strings[0].equals("summon")) {
+            List<String> summonTypes = new ArrayList<>(List.of(new String[]{"npc", "display"}));
+            for (String p : summonTypes) {
+                if (p.indexOf(strings[1]) == 0){
+                    params.add(p);
+                }
+            }
+        }else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("display")) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"highest_price", "ending_soon", "lowest_price"}));
+            for (String p : displayTypes) {
+                if (p.indexOf(strings[2]) == 0){
+                    params.add(p);
                 }
             }
         }

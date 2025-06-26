@@ -7,9 +7,7 @@ import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
-import me.elaineqheart.auctionHouse.commands.AuctionHouseCommand;
-import me.elaineqheart.auctionHouse.commands.SummonCommand;
-import me.elaineqheart.auctionHouse.commands.ReloadCommand;
+import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.AuctionMasterListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -42,12 +40,9 @@ public final class AuctionHouse extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        getCommand("ah").setExecutor(new AuctionHouseCommand());
-        getCommand("ah").setTabCompleter(new AuctionHouseCommand());
-        getCommand("ahsummon").setExecutor(new SummonCommand());
-        getCommand("ahsummon").setTabCompleter(new SummonCommand());
+        getCommand("ah").setExecutor(new AuctionHouseCommands());
+        getCommand("ah").setTabCompleter(new AuctionHouseCommands());
         Bukkit.getPluginManager().registerEvents(new AuctionMasterListener(), this);
-        getCommand("ahreload").setExecutor(new ReloadCommand());
 
         //load the data of the notes file
         try {
