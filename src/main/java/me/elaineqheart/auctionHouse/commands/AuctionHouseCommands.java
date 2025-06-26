@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.world.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.CreateNPC;
+import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -154,10 +155,12 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     CustomConfigBannedPlayers.reload();
                     AuctionHouse.getPlugin().reloadConfig();
                     SettingManager.loadData();
+                    CustomConfigDisplayLocations.reload();
 
                     p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
                     AuctionHouse.getPlugin().getLogger().info("reloaded");
                     return true;
+
                 } else if (strings[0].equals("summon")) {
                     if(strings.length < 2) {
                         p.sendMessage("/ah summon <entity>");
@@ -192,9 +195,6 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                                 break;
                             case "ending_soon":
                                 CreateDisplay.createDisplayEndingSoon(blockLoc, itemNumber);
-                                break;
-                            case "lowest_price":
-                                CreateDisplay.createDisplayLowestPrice(blockLoc, itemNumber);
                                 break;
                         }
                     }
@@ -246,7 +246,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
             }
         }else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("display")) {
-            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"highest_price", "ending_soon", "lowest_price"}));
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"highest_price", "ending_soon"}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0){
                     params.add(p);

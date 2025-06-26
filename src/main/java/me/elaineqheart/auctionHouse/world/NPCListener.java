@@ -12,12 +12,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class AuctionMasterListener implements Listener {
+public class NPCListener implements Listener {
 
     private static final Set<Player> store = new HashSet<>();
 

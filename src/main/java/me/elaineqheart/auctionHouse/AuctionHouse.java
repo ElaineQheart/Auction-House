@@ -8,7 +8,9 @@ import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
-import me.elaineqheart.auctionHouse.world.AuctionMasterListener;
+import me.elaineqheart.auctionHouse.world.NPCListener;
+import me.elaineqheart.auctionHouse.world.DisplayUpdate;
+import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -42,7 +44,7 @@ public final class AuctionHouse extends JavaPlugin {
 
         getCommand("ah").setExecutor(new AuctionHouseCommands());
         getCommand("ah").setTabCompleter(new AuctionHouseCommands());
-        Bukkit.getPluginManager().registerEvents(new AuctionMasterListener(), this);
+        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
 
         //load the data of the notes file
         try {
@@ -51,7 +53,6 @@ public final class AuctionHouse extends JavaPlugin {
             throw new RuntimeException(e);
         }
         SettingManager.loadData();
-
         //Setup config.yml
         super.reloadConfig(); //reload if there were changes
         getConfig().options().copyDefaults(true);
@@ -60,7 +61,13 @@ public final class AuctionHouse extends JavaPlugin {
         CustomConfigBannedPlayers.setup();
         CustomConfigBannedPlayers.get().options().copyDefaults(true);
         CustomConfigBannedPlayers.save();
-        //also, you need a regular config.yml to generate the folder where the .yml files are
+        //also, you need a regular config.yml to generate the folder where the .yml files are, but I now I actually use it for custom settings
+        //Setup customConfigEntities.yml
+        CustomConfigDisplayLocations.setup();
+        CustomConfigDisplayLocations.get().options().copyDefaults(false);
+        CustomConfigDisplayLocations.save();
+
+        DisplayUpdate.init(); //init the display update task to update block displays
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }

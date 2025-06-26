@@ -1,8 +1,8 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
@@ -15,7 +15,15 @@ import org.joml.Vector3f;
 
 public class CreateDisplay {
 
-    public static void createDisplayHighestPrice(Location loc, int itemNumber) {
+    public static void createDisplayHighestPrice(Location loc, int itemRank) {
+        createDisplay(loc, itemRank, "highest_price");
+    }
+
+    public static void createDisplayEndingSoon(Location loc, int itemRank) {
+        createDisplay(loc, itemRank, "ending_soon");
+    }
+
+    private static void createDisplay(Location loc, int itemRank, String type) {
         World world = loc.getWorld();
         if(world == null) { AuctionHouse.getPlugin().getLogger().severe("Creating an npc failed. The world is null."); return; }
         BlockDisplay glass = (BlockDisplay) world.spawnEntity(loc, EntityType.BLOCK_DISPLAY); //creating a block display
@@ -27,7 +35,7 @@ public class CreateDisplay {
         // No rotation
         AxisAngle4f zeroRotation = new AxisAngle4f(0, 0, 0, 0);
         glass.setTransformation(new Transformation(translation, zeroRotation, scale, zeroRotation));
-        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display"), PersistentDataType.STRING, getLoc(loc));
+        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), type), PersistentDataType.STRING, getLoc(loc)); // type
 
         //placing the blocks
         loc.getBlock().setType(Material.CHISELED_TUFF_BRICKS);
@@ -49,15 +57,9 @@ public class CreateDisplay {
         southData.setFacing(BlockFace.SOUTH);
         loc.getBlock().setBlockData(southData);
 
-
-    }
-
-    public static void createDisplayEndingSoon(Location blockLoc, int itemNumber) {
-
-    }
-
-    public static void createDisplayLowestPrice(Location blockLoc, int itemNumber) {
-
+        CustomConfigDisplayLocations.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
+        CustomConfigDisplayLocations.save();
+        DisplayUpdate.reload();
     }
 
     private static String getLoc(Location loc) {
