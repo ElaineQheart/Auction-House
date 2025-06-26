@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.world.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.CreateNPC;
+import me.elaineqheart.auctionHouse.world.DisplayUpdate;
 import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -156,6 +157,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     AuctionHouse.getPlugin().reloadConfig();
                     SettingManager.loadData();
                     CustomConfigDisplayLocations.reload();
+                    DisplayUpdate.reload();
 
                     p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
                     AuctionHouse.getPlugin().getLogger().info("reloaded");
@@ -168,10 +170,12 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     }
                     //get the player location
                     Location loc = p.getLocation();
-                    Location blockLoc = new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5);
+                    Location middleBlockLoc = new Location(loc.getWorld(), loc.getBlockX()+0.5, loc.getBlockY(), loc.getBlockZ()+0.5);
+                    Location blockLoc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
 
                     if(strings[1].equals("npc")) {
-                        CreateNPC.createAuctionMaster(blockLoc);
+                        CreateNPC.createAuctionMaster(middleBlockLoc);
                     } else if(strings[1].equals("display")) {
                         if(strings.length < 4) {
                             p.sendMessage("/ahsummon display <type> <rank number>");
@@ -188,6 +192,12 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         } catch (NumberFormatException e) {
                             p.sendMessage("Invalid item rank number. Please enter a valid number");
                             return true;
+                        }
+                        for(Location displayLoc : DisplayUpdate.locations.keySet()) {
+                            if(blockLoc.distance(displayLoc) < 2.1) {
+                                p.sendMessage(ChatColor.YELLOW + "There is already a display here. Please remove it first.");
+                                return true;
+                            }
                         }
                         switch (strings[2]) {
                             case "highest_price":

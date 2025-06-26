@@ -63,6 +63,15 @@ public class ItemNote {
         }
         return (ChatColor.YELLOW+h+"h "+m+"m "+s+"s");
     }
+    public String getTimeLeftTrimmed(long timeLeft) {
+        if(timeLeft < 60) {
+            return timeLeft + "s";
+        } else if(timeLeft < 60*60) {
+            return (int)(timeLeft/60) + "m";
+        } else {
+            return (int)(timeLeft/60/60) + "h";
+        }
+    }
     public boolean isExpired(){
         return timeLeft()<0;
     }
@@ -100,6 +109,15 @@ public class ItemNote {
     public UUID getPlayerUUID() {return playerUUID;}
     public Date getDateCreated() {return dateCreated;}
     public int getPrice() {return price;}
+    public String getPriceTrimmed() {
+        if(price < 1000) {
+            return String.valueOf(price);
+        } else if(price < 1000000) {
+            return String.format("%.1fK", price / 1000.0);
+        } else {
+            return String.format("%.1fM", price / 1000000.0);
+        }
+    }
     public boolean isSold() {return isSold;}
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}

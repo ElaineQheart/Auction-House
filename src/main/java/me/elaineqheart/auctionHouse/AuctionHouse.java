@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
+import me.elaineqheart.auctionHouse.world.DisplayBreakListener;
 import me.elaineqheart.auctionHouse.world.NPCListener;
 import me.elaineqheart.auctionHouse.world.DisplayUpdate;
 import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
@@ -45,6 +46,7 @@ public final class AuctionHouse extends JavaPlugin {
         getCommand("ah").setExecutor(new AuctionHouseCommands());
         getCommand("ah").setTabCompleter(new AuctionHouseCommands());
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
+        Bukkit.getPluginManager().registerEvents(new DisplayBreakListener(), this);
 
         //load the data of the notes file
         try {
