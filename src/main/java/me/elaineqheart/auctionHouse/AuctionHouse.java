@@ -3,12 +3,14 @@ package me.elaineqheart.auctionHouse;
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
-import me.elaineqheart.auctionHouse.ah.SettingManager;
-import me.elaineqheart.auctionHouse.commands.AuctionHouseCommand;
 import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.ah.SettingManager;
+import me.elaineqheart.auctionHouse.commands.AuctionHouseCommand;
+import me.elaineqheart.auctionHouse.commands.SummonCommand;
 import me.elaineqheart.auctionHouse.commands.ReloadCommand;
+import me.elaineqheart.auctionHouse.world.AuctionMasterListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,16 +34,22 @@ public final class AuctionHouse extends JavaPlugin {
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
         Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this);
+        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this); //GUI
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             Bukkit.getLogger().severe("No registered Vault provider found!");
             getServer().getPluginManager().disablePlugin(this);
         }
+
         getCommand("ah").setExecutor(new AuctionHouseCommand());
         getCommand("ah").setTabCompleter(new AuctionHouseCommand());
+        getCommand("ahsummon").setExecutor(new SummonCommand());
+        getCommand("ahsummon").setTabCompleter(new SummonCommand());
+        Bukkit.getPluginManager().registerEvents(new AuctionMasterListener(), this);
         getCommand("ahreload").setExecutor(new ReloadCommand());
+
+        //load the data of the notes file
         try {
             ItemNoteStorageUtil.loadNotes();
         } catch (IOException e) {
@@ -57,7 +65,6 @@ public final class AuctionHouse extends JavaPlugin {
         CustomConfigBannedPlayers.setup();
         CustomConfigBannedPlayers.get().options().copyDefaults(true);
         CustomConfigBannedPlayers.save();
-
         //also, you need a regular config.yml to generate the folder where the .yml files are
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");

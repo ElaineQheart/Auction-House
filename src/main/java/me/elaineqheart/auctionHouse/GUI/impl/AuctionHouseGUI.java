@@ -5,8 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
-import me.elaineqheart.auctionHouse.Permissions;
-import me.elaineqheart.auctionHouse.TaskInventoryManager;
+import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
@@ -47,7 +46,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         this.currentSearch = search;
         this.currentPlayer = p;
         this.isAdmin = isAdmin;
-        TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public AuctionHouseGUI(Player p) {
         super();
@@ -56,7 +55,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         this.currentSearch = "";
         this.currentPlayer = p;
         this.isAdmin = false;
-        TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
     @Override
@@ -86,7 +85,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        TaskInventoryManager.cancelTask(invID);
+        TaskManager.cancelTask(invID);
     }
 
     private void fillOutItems(int page, Sort sort){

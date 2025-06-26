@@ -12,12 +12,18 @@ commands:
     aliases: auctionhouse
   ahreload:
     description: reloads the yml files
-    permission: AuctionHouse.ahreload
+    permission: AuctionHouse.moderator
     aliases: auctionhousereload
+  ahsummon:
+    description: spawn an auction NPC
+    usage: /<command> <entity>
+    permission: AuctionHouse.moderator
+    aliases: auctionhousesummon
 permissions:
   AuctionHouse.ah:
     description: allows the player to use /ah
     default: true
-  AuctionHouse.ahreload:
-    description: allows the player to use /ahreload and reload the yml files
+  AuctionHouse.moderator:
+    description: allows the player to use /ahreload and add auction related entities to the world
     default: op
+

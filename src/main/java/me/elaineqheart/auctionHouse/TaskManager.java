@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class TaskInventoryManager {
+public class TaskManager {
 
     private static final HashMap<String, Integer> taskID = new HashMap<>();
 

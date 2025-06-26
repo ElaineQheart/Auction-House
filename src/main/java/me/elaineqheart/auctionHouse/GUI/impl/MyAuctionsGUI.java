@@ -4,7 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.TaskInventoryManager;
+import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
@@ -39,13 +39,13 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         super();
         currentSort = sort;
         currentPlayer = p;
-        TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public MyAuctionsGUI(Player p) {
         super();
         currentSort = MySort.ALL_AUCTIONS;
         currentPlayer = p;
-        TaskInventoryManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
     @Override
@@ -79,7 +79,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        TaskInventoryManager.cancelTask(invID);
+        TaskManager.cancelTask(invID);
     }
 
     private void fillOutItems(MySort sort,UUID playerID){
