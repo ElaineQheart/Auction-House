@@ -9,32 +9,32 @@ import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
-import org.bukkit.entity.BlockDisplay;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class DisplayUpdate implements Runnable{
     @Override
     public void run() {
-        for(Integer display : displays) {
-            Location loc = displayLocationsReverse.get(display);
-            BlockDisplay entity = displayEntities.get(display);
-            String type = displayTypes.get(display);
-            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), type), PersistentDataType.INTEGER);
+        for(Integer display : displays.keySet()) {
+            DisplayData data = displays.get(display);
+            Location loc = data.location;
+            int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
-            ItemNote note = null;
-            if(type.equals("highest_price")) {
-                Map.Entry<ItemNote, Integer> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(rank-1).findFirst().orElse(null);
+            ItemNote note;
+            if(data.type.equals("highest_price")) {
+                int size = ItemNoteStorageUtil.sortedHighestPrice().size();
+                if(rank > size) continue;
+                Map.Entry<ItemNote, Integer> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
                 if(entry == null) continue;
                 note = entry.getKey();
-            } else if (type.equals("ending_soon")) {
+            } else if (data.type.equals("ending_soon")) {
                 Map.Entry<ItemNote, Long> entry = ItemNoteStorageUtil.sortedDateCreated().entrySet().stream().skip(rank-1).findFirst().orElse(null);
                 if(entry == null) continue;
                 note = entry.getKey();
@@ -43,10 +43,9 @@ public class DisplayUpdate implements Runnable{
             String time = note.getTimeLeftTrimmed(note.timeLeft());
             String playerName = note.getPlayerName();
             ItemStack item = note.getItem();
-            String itemName = item.getItemMeta() != null && item.getItemMeta().hasDisplayName() ?
-                    item.getItemMeta().getDisplayName() : item.getItemMeta().getItemName();
 
 
+            //update the signs
             Sign east = (Sign) loc.add(1,0,0).getBlock().getState();
             Sign west = (Sign) loc.add(-2,0,0).getBlock().getState();
             Sign north = (Sign) loc.add(1,0,-1).getBlock().getState();
@@ -60,49 +59,118 @@ public class DisplayUpdate implements Runnable{
                 sign.update();
             }
 
+            //update the item
+            World world = loc.getWorld();
+            assert world != null;
+            if(data.itemEntity == null || data.itemStack == null || data.itemStack.getType() != item.getType()) {
+                //if the item entity is null or the item is different, create a new item entity
+                if(data.itemEntity != null) {
+                    data.itemEntity.remove(); //remove the old item entity
+                }
+                data.itemEntity = (Item) world.spawnEntity(loc.clone().add(0.5,1,0.5), EntityType.ITEM);
+                data.itemEntity.setItemStack(item);
+                data.itemEntity.setPickupDelay(32767);
+                data.itemEntity.setUnlimitedLifetime(true);
+                data.itemEntity.setInvulnerable(true);
+                data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
+                data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN,true);
+                data.itemStack = item; //update the item stack in the display data
+            }
+
+            //update the text display
+            String name = data.itemEntity.getName();
+            if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
+            if(!data.reloaded) {
+                if (data.text == null || !data.itemName.equals(name) || !data.playerName.equals(playerName)) {
+                    data.text = (TextDisplay) world.spawnEntity(loc.clone().add(0.5, 1.9, 0.5), EntityType.TEXT_DISPLAY);
+                    data.text.setVisibleByDefault(true);
+                    data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                    data.text.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);
+                    data.text.setAlignment(TextDisplay.TextAlignment.CENTER);
+                    data.text.setBillboard(Display.Billboard.CENTER);
+                }
+            } else {
+                data.reloaded = false; //reset the reloaded flag
+            }
+            data.itemName = name; //update
+            data.playerName = playerName; //update
+
         }
     }
 
-    public static Set<Integer> displays;
-    private static final HashMap<Integer, Location> displayLocationsReverse = new HashMap<>();
+    public static final HashMap<Integer, DisplayData> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
-    private static final HashMap<Integer, BlockDisplay> displayEntities = new HashMap<>();
-    private static final HashMap<Integer, String> displayTypes = new HashMap<>();
 
     public static void init() {
         reload();
         TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new DisplayUpdate(), 0, 20).getTaskId());
     }
     public static void reload() {
-        displays = CustomConfigDisplayLocations.get().getKeys(false).stream()
+        for(Integer display : CustomConfigDisplayLocations.get().getKeys(false).stream()
                 .map(Integer::parseInt)
-                .collect(Collectors.toSet());
-        for(Integer display : displays) { //find the data for each display
+                .collect(Collectors.toSet())) { //find the data for each display
+            DisplayData data = new DisplayData();
             Location loc = CustomConfigDisplayLocations.get().getLocation(String.valueOf(display));
             if (loc != null && loc.getWorld() != null) {
-                displayLocationsReverse.put(display, loc);
+                data.location = loc;
                 locations.put(loc, display);
                 //get the block display
                 BlockDisplay entity = null;
-                for(Entity test : loc.getWorld().getNearbyEntities(loc,2,2,2)) {
-                    if(isDisplay(test)) entity = (BlockDisplay) test;
+                Item itemEntity = null;
+                TextDisplay text = null;
+                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,0.5,0.5),1,1,1)) {
+                    if(isDisplayGlass(test)) entity = (BlockDisplay) test;
+                    if(isDisplayItem(test)) itemEntity = (Item) test;
+                }
+                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,1.9,0.5),1,1,1)) {
+                    if(isTextDisplay(test)) text = (TextDisplay) test;
                 }
                 if (entity != null) {
-                    displayEntities.put(display, entity);
-                    displayTypes.put(display, getType(entity));
-                } else {
-                    AuctionHouse.getPlugin().getLogger().warning("Display entity with ID " + display + " not found in world.");
+                    data.glassBlock = entity;
+                    data.type = getType(entity);
                 }
+//                else {
+//                    AuctionHouse.getPlugin().getLogger().warning("Display entity display glass with ID " + display + " not found in world.");
+//                }
+                if (itemEntity != null) {
+                    data.itemEntity = itemEntity;
+                    data.itemStack = itemEntity.getItemStack();
+                }
+//                else {
+//                    AuctionHouse.getPlugin().getLogger().warning("Display item entity with ID " + display + " not found in world.");
+//                }
+                if(text != null) {
+                    data.text = text;
+                    data.itemName = "";
+                    data.playerName = "";
+                    data.reloaded = true;
+                }
+//                else {
+//                    AuctionHouse.getPlugin().getLogger().warning("Display text entity with ID " + display + " not found in world.");
+//                }
+                displays.put(display, data);
             } else {
                 AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + display + " is null.");
             }
         }
     }
 
-    private static boolean isDisplay(Entity entity) {
+    private static boolean isDisplayGlass(Entity entity) {
         if(entity instanceof BlockDisplay display) {
             return display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER) ||
                    display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER);
+        }
+        return false;
+    }
+    private static boolean isDisplayItem(Entity entity) {
+        if(entity instanceof Item item) {
+            return item.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN);
+        }
+        return false;
+    }
+    private static boolean isTextDisplay(Entity entity) {
+        if(entity instanceof TextDisplay text) {
+            return text.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN);
         }
         return false;
     }
@@ -124,13 +192,12 @@ public class DisplayUpdate implements Runnable{
         loc.add(0,0,2).getBlock().setType(Material.AIR);
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
         if(display != null) {
-            displayLocationsReverse.remove(display);
+            DisplayData data = displays.get(display);
             locations.remove(loc);
-            BlockDisplay entity = displayEntities.remove(display);
-            if(entity != null) {
-                entity.remove();
-            }
-            displayTypes.remove(display);
+            if(data.glassBlock != null) data.glassBlock.remove();
+            if(data.itemEntity != null) data.itemEntity.remove();
+            if(data.text != null) data.text.remove();
+            displays.remove(display);
             CustomConfigDisplayLocations.get().set(String.valueOf(display), null);
             CustomConfigDisplayLocations.save();
             reload();

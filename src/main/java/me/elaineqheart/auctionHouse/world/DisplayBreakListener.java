@@ -1,13 +1,16 @@
 package me.elaineqheart.auctionHouse.world;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.Permissions;
-import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.persistence.PersistentDataType;
 
 public class DisplayBreakListener implements Listener {
 
@@ -36,6 +39,13 @@ public class DisplayBreakListener implements Listener {
             loc.add(1,0,0); // Reset the location to the original
         }
         return null;
+    }
+
+    @EventHandler // this is to prevent the item from being picked up by hoppers and hopper minecarts
+    public void onItemPickup(InventoryPickupItemEvent event) {
+        if(event.getItem().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(),"display_item"), PersistentDataType.BOOLEAN)) {
+            event.setCancelled(true);
+        }
     }
 
 }
