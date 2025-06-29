@@ -27,18 +27,9 @@ public class DisplayUpdate implements Runnable{
             Location loc = data.location;
             int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
-            ItemNote note;
-            if(data.type.equals("highest_price")) {
-                int size = ItemNoteStorageUtil.sortedHighestPrice().size();
-                if(rank > size) continue;
-                Map.Entry<ItemNote, Integer> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
-                if(entry == null) continue;
-                note = entry.getKey();
-            } else if (data.type.equals("ending_soon")) {
-                Map.Entry<ItemNote, Long> entry = ItemNoteStorageUtil.sortedDateCreated().entrySet().stream().skip(rank-1).findFirst().orElse(null);
-                if(entry == null) continue;
-                note = entry.getKey();
-            } else {continue;}
+            ItemNote note = getNote(data.type, rank);
+            if(note == null) continue; //if the note is null, the display isn't showing anything
+
             String price = note.getPriceTrimmed();
             String time = note.getTimeLeftTrimmed(note.timeLeft());
             String playerName = note.getPlayerName();
@@ -113,7 +104,6 @@ public class DisplayUpdate implements Runnable{
             Location loc = CustomConfigDisplayLocations.get().getLocation(String.valueOf(display));
             if (loc != null && loc.getWorld() != null) {
                 data.location = loc;
-                locations.put(loc, display);
                 //get the block display
                 BlockDisplay entity = null;
                 Item itemEntity = null;
@@ -129,25 +119,17 @@ public class DisplayUpdate implements Runnable{
                     data.glassBlock = entity;
                     data.type = getType(entity);
                 }
-//                else {
-//                    AuctionHouse.getPlugin().getLogger().warning("Display entity display glass with ID " + display + " not found in world.");
-//                }
                 if (itemEntity != null) {
                     data.itemEntity = itemEntity;
                     data.itemStack = itemEntity.getItemStack();
                 }
-//                else {
-//                    AuctionHouse.getPlugin().getLogger().warning("Display item entity with ID " + display + " not found in world.");
-//                }
                 if(text != null) {
                     data.text = text;
                     data.itemName = "";
                     data.playerName = "";
                     data.reloaded = true;
                 }
-//                else {
-//                    AuctionHouse.getPlugin().getLogger().warning("Display text entity with ID " + display + " not found in world.");
-//                }
+                locations.put(loc, display);
                 displays.put(display, data);
             } else {
                 AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + display + " is null.");
@@ -184,6 +166,21 @@ public class DisplayUpdate implements Runnable{
         return null;
     }
 
+    public static ItemNote getNote(String type, int rank) {
+        if(type.equals("highest_price")) {
+            int size = ItemNoteStorageUtil.sortedHighestPrice().size();
+            if(rank > size) return null;
+            Map.Entry<ItemNote, Integer> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
+            if(entry == null) return null;
+            return entry.getKey();
+        } else if (type.equals("ending_soon")) {
+            Map.Entry<ItemNote, Long> entry = ItemNoteStorageUtil.sortedDateCreated().entrySet().stream().skip(rank-1).findFirst().orElse(null);
+            if(entry == null) return null;
+            return entry.getKey();
+        }
+        return null;
+    }
+
     public static void removeDisplay(Location loc) {
         Integer display = locations.get(loc);
         loc.add(1,0,0).getBlock().setType(Material.AIR);
@@ -198,6 +195,14 @@ public class DisplayUpdate implements Runnable{
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();
             displays.remove(display);
+            assert loc.getWorld() != null;
+            for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.2,1,0.2),1,1,1)) {
+                if (test instanceof Interaction interaction) {
+                    if (interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER)) {
+                        interaction.remove();
+                    }
+                }
+            }
             CustomConfigDisplayLocations.get().set(String.valueOf(display), null);
             CustomConfigDisplayLocations.save();
             reload();

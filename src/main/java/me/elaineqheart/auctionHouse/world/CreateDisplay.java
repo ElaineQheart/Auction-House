@@ -8,6 +8,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Interaction;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
@@ -36,6 +37,13 @@ public class CreateDisplay {
         AxisAngle4f zeroRotation = new AxisAngle4f(0, 0, 0, 0);
         glass.setTransformation(new Transformation(translation, zeroRotation, scale, zeroRotation));
         glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), type), PersistentDataType.INTEGER, itemRank); // type
+
+        Interaction interaction = (Interaction) world.spawnEntity(loc.clone().add(0.5,1,0.5), EntityType.INTERACTION); //creating an interaction entity
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER, itemRank); //rank
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING, type); //type
+        interaction.setInteractionHeight(0.8f);
+        interaction.setInteractionWidth(0.6f);
+        interaction.setResponsive(true);
 
         //placing the blocks
         loc.getBlock().setType(Material.CHISELED_TUFF_BRICKS);
