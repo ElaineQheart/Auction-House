@@ -11,7 +11,7 @@ import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.DisplayListener;
 import me.elaineqheart.auctionHouse.world.NPCListener;
 import me.elaineqheart.auctionHouse.world.DisplayUpdate;
-import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
+import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -65,9 +65,9 @@ public final class AuctionHouse extends JavaPlugin {
         CustomConfigBannedPlayers.save();
         //also, you need a regular config.yml to generate the folder where the .yml files are, but I now I actually use it for custom settings
         //Setup customConfigEntities.yml
-        CustomConfigDisplayLocations.setup();
-        CustomConfigDisplayLocations.get().options().copyDefaults(false);
-        CustomConfigDisplayLocations.save();
+        DisplaysConfig.setup();
+        DisplaysConfig.get().options().copyDefaults(false);
+        DisplaysConfig.save();
 
         DisplayUpdate.init(); //init the display update task to update block displays
 

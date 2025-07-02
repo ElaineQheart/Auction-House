@@ -9,7 +9,7 @@ import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.world.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.CreateNPC;
 import me.elaineqheart.auctionHouse.world.DisplayUpdate;
-import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
+import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -156,7 +156,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     CustomConfigBannedPlayers.reload();
                     AuctionHouse.getPlugin().reloadConfig();
                     SettingManager.loadData();
-                    CustomConfigDisplayLocations.reload();
+                    DisplaysConfig.reload();
                     DisplayUpdate.reload();
 
                     p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");

@@ -5,7 +5,7 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
-import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
+import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -27,22 +27,38 @@ public class DisplayUpdate implements Runnable{
             Location loc = data.location;
             int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
-            ItemNote note = getNote(data.type, rank);
-            if(note == null) continue; //if the note is null, the display isn't showing anything
+            ItemNote note = getNote(data.type, rank); //need to check if note == null
 
-            String price = note.getPriceTrimmed();
-            String time = note.getTimeLeftTrimmed(note.timeLeft());
-            String playerName = note.getPlayerName();
-            ItemStack item = note.getItem();
-
-
-            //update the signs
+            //Signs
             Sign east = (Sign) loc.add(1,0,0).getBlock().getState();
             Sign west = (Sign) loc.add(-2,0,0).getBlock().getState();
             Sign north = (Sign) loc.add(1,0,-1).getBlock().getState();
             Sign south = (Sign) loc.add(0,0,2).getBlock().getState();
             loc.add(0,0,-1);
             Sign[] signs = {east, west, north, south};
+
+            if(note == null) {
+                for(Sign sign : signs) {
+                    sign.getSide(Side.FRONT).setLine(0, "");
+                    sign.getSide(Side.FRONT).setLine(1, "");
+                    sign.getSide(Side.FRONT).setLine(3, "");
+                    sign.update();
+                }
+                if(data.text != null) data.text.remove();
+                if(data.itemEntity != null) {
+                    data.itemEntity.remove();
+                    data.itemStack = null;
+                }
+                continue;
+            }
+
+            String price = note.getPriceTrimmed();
+            String time = note.getTimeLeftTrimmed(note.timeLeft());
+            String playerName = note.getPlayerName();
+            ItemStack item = note.getItem();
+
+            //update the signs
+
             for(Sign sign : signs) {
                 sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
@@ -68,14 +84,23 @@ public class DisplayUpdate implements Runnable{
                 data.itemStack = item; //update the item stack in the display data
             }
 
-            //update the text display
+            //get the item name
             String name = data.itemEntity.getName();
             if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
+            //update the text display
             if(!data.reloaded) {
                 if (data.text == null || !data.itemName.equals(name) || !data.playerName.equals(playerName)) {
+                    if(data.text != null) {
+                        data.text.remove(); //remove the old text display
+                    }
                     data.text = (TextDisplay) world.spawnEntity(loc.clone().add(0.5, 1.9, 0.5), EntityType.TEXT_DISPLAY);
                     data.text.setVisibleByDefault(true);
-                    data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                    if(data.type.equals("highest_price")) {
+                        data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                    } else if(data.type.equals("ending_soon")) {
+                        data.text.setText(ChatColor.GREEN + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                    }
+
                     data.text.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);
                     data.text.setAlignment(TextDisplay.TextAlignment.CENTER);
                     data.text.setBillboard(Display.Billboard.CENTER);
@@ -97,11 +122,11 @@ public class DisplayUpdate implements Runnable{
         TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new DisplayUpdate(), 0, 20).getTaskId());
     }
     public static void reload() {
-        for(Integer display : CustomConfigDisplayLocations.get().getKeys(false).stream()
+        for(Integer display : DisplaysConfig.get().getKeys(false).stream()
                 .map(Integer::parseInt)
                 .collect(Collectors.toSet())) { //find the data for each display
             DisplayData data = new DisplayData();
-            Location loc = CustomConfigDisplayLocations.get().getLocation(String.valueOf(display));
+            Location loc = DisplaysConfig.get().getLocation(String.valueOf(display));
             if (loc != null && loc.getWorld() != null) {
                 data.location = loc;
                 //get the block display
@@ -203,8 +228,8 @@ public class DisplayUpdate implements Runnable{
                     }
                 }
             }
-            CustomConfigDisplayLocations.get().set(String.valueOf(display), null);
-            CustomConfigDisplayLocations.save();
+            DisplaysConfig.get().set(String.valueOf(display), null);
+            DisplaysConfig.save();
             reload();
         } else {
             AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found.");

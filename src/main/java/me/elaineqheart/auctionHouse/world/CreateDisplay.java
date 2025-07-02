@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.world.files.CustomConfigDisplayLocations;
+import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -77,8 +77,8 @@ public class CreateDisplay {
         loc.getBlock().setBlockData(southData);
         loc.add(0,0,-1);
 
-        CustomConfigDisplayLocations.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
-        CustomConfigDisplayLocations.save();
+        DisplaysConfig.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
+        DisplaysConfig.save();
         DisplayUpdate.reload();
     }
 

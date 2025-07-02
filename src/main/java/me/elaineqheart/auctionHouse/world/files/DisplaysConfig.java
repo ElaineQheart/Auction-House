@@ -7,14 +7,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class CustomConfigDisplayLocations {
+public class DisplaysConfig {
 
     private static File file;
     private static FileConfiguration customFile;
 
     //Finds or generates the custom config file
     public static void setup(){
-        file = new File(AuctionHouse.getPlugin().getDataFolder(), "customConfigEntities.yml");
+        file = new File(AuctionHouse.getPlugin().getDataFolder(), "displays.yml");
 
         if (!file.exists()){
             try{
