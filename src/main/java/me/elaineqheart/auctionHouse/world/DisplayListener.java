@@ -4,10 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +21,9 @@ public class DisplayListener implements Listener {
 
     @EventHandler
     public void onDisplayBreak(BlockBreakEvent event) {
+        if(!event.getBlock().getType().equals(Material.CHISELED_TUFF_BRICKS) && !event.getBlock().getType().equals(Material.DARK_OAK_WALL_SIGN)) {
+            return; // Not a display block
+        }
         Location loc = event.getBlock().getLocation();
         Player p = event.getPlayer();
         Location displayLoc = isProtected(loc);

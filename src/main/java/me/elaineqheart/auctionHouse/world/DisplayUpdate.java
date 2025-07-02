@@ -29,9 +29,14 @@ public class DisplayUpdate implements Runnable{
                 retrieveData(loc, data);
                 continue; //skip unloaded displays
             }
+            if(data.glassBlock.isDead()) {
+                continue;
+            }
             int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
             ItemNote note = getNote(data.type, rank); //need to check if note == null
+
+            if(!loc.getBlock().getType().equals(Material.CHISELED_TUFF_BRICKS)) CreateDisplay.placeBlocks(loc);
 
             //Signs
             Sign east = (Sign) loc.add(1,0,0).getBlock().getState();
@@ -73,7 +78,7 @@ public class DisplayUpdate implements Runnable{
             //update the item
             World world = loc.getWorld();
             assert world != null;
-            if(data.itemEntity == null || data.itemStack == null || data.itemStack.getType() != item.getType()) {
+            if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()) {
                 //if the item entity is null or the item is different, create a new item entity
                 if(data.itemEntity != null) {
                     data.itemEntity.remove(); //remove the old item entity

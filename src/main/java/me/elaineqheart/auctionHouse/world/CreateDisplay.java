@@ -45,8 +45,15 @@ public class CreateDisplay {
         interaction.setInteractionWidth(0.6f);
         interaction.setResponsive(true);
 
-        //placing the blocks
-        loc.getBlock().setType(Material.CHISELED_TUFF_BRICKS);
+        placeBlocks(loc);
+
+        DisplaysConfig.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
+        DisplaysConfig.save();
+        DisplayUpdate.reload();
+    }
+
+    public static void placeBlocks(Location loc) {
+        loc.getBlock().setType(Material.CHISELED_TUFF_BRICKS, false);
         loc.add(1,0,0).getBlock().setType(Material.DARK_OAK_WALL_SIGN);
         loc.add(-2,0,0).getBlock().setType(Material.DARK_OAK_WALL_SIGN);
         loc.add(1,0,-1).getBlock().setType(Material.DARK_OAK_WALL_SIGN);
@@ -73,10 +80,6 @@ public class CreateDisplay {
         southData.setFacing(BlockFace.SOUTH);
         loc.getBlock().setBlockData(southData);
         loc.add(0,0,-1);
-
-        DisplaysConfig.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
-        DisplaysConfig.save();
-        DisplayUpdate.reload();
     }
 
 }

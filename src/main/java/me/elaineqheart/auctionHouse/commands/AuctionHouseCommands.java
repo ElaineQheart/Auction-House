@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
     @Override
@@ -194,7 +195,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                             return true;
                         }
                         for(Location displayLoc : DisplayUpdate.locations.keySet()) {
-                            if(blockLoc.distance(displayLoc) < 2.1) {
+                            if(Objects.equals(blockLoc.getWorld(), displayLoc.getWorld()) && blockLoc.distance(displayLoc) < 2.1) {
                                 p.sendMessage(ChatColor.YELLOW + "There is already a display here. Please remove it first.");
                                 return true;
                             }
