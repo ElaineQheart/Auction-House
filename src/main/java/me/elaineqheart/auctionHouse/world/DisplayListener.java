@@ -13,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
@@ -81,6 +83,22 @@ public class DisplayListener implements Listener {
                 }
             }
         }
+    }
+
+    //protect the tuff block from explosions
+    @EventHandler
+    public void onExplosion(EntityExplodeEvent event) {
+        event.blockList().removeIf(block -> {
+            Location loc = block.getLocation();
+            return isProtected(loc) != null;
+        });
+    }
+    @EventHandler
+    public void onExplosion(BlockExplodeEvent event) {
+        event.blockList().removeIf(block -> {
+            Location loc = block.getLocation();
+            return isProtected(loc) != null;
+        });
     }
 
 }

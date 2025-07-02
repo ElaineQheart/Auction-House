@@ -25,6 +25,10 @@ public class DisplayUpdate implements Runnable{
         for(Integer display : displays.keySet()) {
             DisplayData data = displays.get(display);
             Location loc = data.location;
+            if(data.glassBlock == null){
+                retrieveData(loc, data);
+                continue; //skip unloaded displays
+            }
             int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
             ItemNote note = getNote(data.type, rank); //need to check if note == null
@@ -133,37 +137,41 @@ public class DisplayUpdate implements Runnable{
             if (loc != null && loc.getWorld() != null) {
                 data.location = loc;
                 //get the block display
-                BlockDisplay entity = null;
-                Item itemEntity = null;
-                TextDisplay text = null;
-                for(Entity test : loc.getWorld().getNearbyEntities(loc,1,1,1)) {
-                    if(isDisplayGlass(test)) entity = (BlockDisplay) test;
-                }
-                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,0.5,0.5),1,1,1)) {
-                    if(isDisplayItem(test)) itemEntity = (Item) test;
-                }
-                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,1.9,0.5),1,1,1)) {
-                    if(isTextDisplay(test)) text = (TextDisplay) test;
-                }
-                if (entity != null) {
-                    data.glassBlock = entity;
-                    data.type = getType(entity);
-                }
-                if (itemEntity != null) {
-                    data.itemEntity = itemEntity;
-                    data.itemStack = itemEntity.getItemStack();
-                }
-                if(text != null) {
-                    data.text = text;
-                    data.itemName = "";
-                    data.playerName = "";
-                    data.reloaded = true;
-                }
+                retrieveData(loc,data);
                 locations.put(loc, display);
                 displays.put(display, data);
             } else {
                 AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + display + " is null.");
             }
+        }
+    }
+
+    private static void retrieveData(Location loc, DisplayData data) {
+        BlockDisplay entity = null;
+        Item itemEntity = null;
+        TextDisplay text = null;
+        for(Entity test : loc.getWorld().getNearbyEntities(loc,1,1,1)) {
+            if(isDisplayGlass(test)) entity = (BlockDisplay) test;
+        }
+        if (entity != null) {
+            data.glassBlock = entity;
+            data.type = getType(entity);
+        } else { return; } //if no glass block display found, return
+        for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,0.5,0.5),1,1,1)) {
+            if(isDisplayItem(test)) itemEntity = (Item) test;
+        }
+        if (itemEntity != null) {
+            data.itemEntity = itemEntity;
+            data.itemStack = itemEntity.getItemStack();
+        }
+        for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,1.9,0.5),1,1,1)) {
+            if(isTextDisplay(test)) text = (TextDisplay) test;
+        }
+        if(text != null) {
+            data.text = text;
+            data.itemName = "";
+            data.playerName = "";
+            data.reloaded = true;
         }
     }
 
