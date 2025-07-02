@@ -119,7 +119,9 @@ public class ItemManager {
         meta.setLore(List.of(ChatColor.GRAY + "To set up a new auction use",
                 ChatColor.GRAY + "/ah sell 1000",
                 ChatColor.GRAY + "while holding the item to sell in your hand.",
-                ChatColor.GRAY + "the number will be the price of the item"
+                ChatColor.GRAY + "the number will be the price of the item",
+                //cast the tax value to int and then to double to avoid floating point issues
+                ChatColor.GRAY + "Current tax is " + ChatColor.GOLD + (double)(int)(AuctionHouse.getPlugin().getConfig().getDouble("tax") * 1000) / 10 + "%"
         ));
         item.setItemMeta(meta);
         info = item;

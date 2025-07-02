@@ -79,7 +79,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
     private InventoryButton collectItem() {
-        double price = (double) (note.getPrice() * 99) /100;
+        double price = (double) ((int) (note.getPrice() * 100 * (1 - SettingManager.taxRate))) /100;
         return new InventoryButton()
                 .creator(player -> ItemManager.collectSoldItem(price))
                 .consumer(event -> {

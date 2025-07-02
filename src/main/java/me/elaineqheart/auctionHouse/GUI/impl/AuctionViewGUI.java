@@ -102,7 +102,11 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.createTurtleScute(note.getPrice()))
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note), (Player) event.getWhoClicked());
+                if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
+                    event.getWhoClicked().sendMessage("This is your own auction! You cannot buy it.");
+                    return;
+                }
+                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note), (Player) event.getWhoClicked());
                 });
     }
 

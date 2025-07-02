@@ -62,8 +62,10 @@ public class DisplayListener implements Listener {
             if(type == null) throw new RuntimeException("The display type is null. This should never happen.");
             int rank = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
             ItemNote note = DisplayUpdate.getNote(type,rank);
-            p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
-            if(note != null) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p), p);
+            if(note != null) {
+                p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
+                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p), p);
+            }
         }
     }
 

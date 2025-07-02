@@ -42,7 +42,7 @@ public class DisplayUpdate implements Runnable{
                     sign.getSide(Side.FRONT).setLine(0, "");
                     sign.getSide(Side.FRONT).setLine(1, "");
                     sign.getSide(Side.FRONT).setLine(3, "");
-                    sign.update();
+                    sign.update(true, false); //force = set block type to sign if it's not; applyPhysics = make a block update to surrounding blocks
                 }
                 if(data.text != null) data.text.remove();
                 if(data.itemEntity != null) {
@@ -63,7 +63,7 @@ public class DisplayUpdate implements Runnable{
                 sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
                 sign.getSide(Side.FRONT).setLine(3, ChatColor.LIGHT_PURPLE + "[CLICK]");
-                sign.update();
+                sign.update(true, false);
             }
 
             //update the item
