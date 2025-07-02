@@ -133,8 +133,10 @@ public class DisplayUpdate implements Runnable{
                 BlockDisplay entity = null;
                 Item itemEntity = null;
                 TextDisplay text = null;
-                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,0.5,0.5),1,1,1)) {
+                for(Entity test : loc.getWorld().getNearbyEntities(loc,1,1,1)) {
                     if(isDisplayGlass(test)) entity = (BlockDisplay) test;
+                }
+                for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,0.5,0.5),1,1,1)) {
                     if(isDisplayItem(test)) itemEntity = (Item) test;
                 }
                 for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.5,1.9,0.5),1,1,1)) {
