@@ -66,9 +66,6 @@ public class CreateDisplay {
         Sign north = (Sign) loc.add(1,0,-1).getBlock().getState(); //default is north
         north.setWaxed(true);
         north.update();
-//        Directional northData = (Directional) north.getBlockData();
-//        northData.setFacing(BlockFace.NORTH);
-//        loc.getBlock().setBlockData(northData);
         Sign south = (Sign) loc.add(0,0,2).getBlock().getState();
         south.setWaxed(true);
         south.update();

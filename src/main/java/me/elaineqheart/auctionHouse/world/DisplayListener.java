@@ -1,19 +1,19 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
-import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
@@ -65,6 +65,20 @@ public class DisplayListener implements Listener {
             if(note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p), p);
+            }
+        }
+    }
+
+    //prevent the tuff block to be moved by pistons
+    @EventHandler
+    public void onPiston(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            Location loc = block.getLocation();
+            for (Location loc2 : DisplayUpdate.locations.keySet()) {
+                if(loc.equals(loc2)) {
+                    event.setCancelled(true);
+                    return; // Prevent piston movement if a display is present
+                }
             }
         }
     }

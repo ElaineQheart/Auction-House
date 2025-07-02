@@ -82,6 +82,9 @@ public class DisplayUpdate implements Runnable{
                 data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
                 data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN,true);
                 data.itemStack = item; //update the item stack in the display data
+            } else if (data.itemEntity.getLocation().distance(loc.clone().add(0.5,1,0.5)) > 0.1) {
+                //if the item entity is too far away, teleport it to the correct location
+                data.itemEntity.teleport(loc.clone().add(0.5,1,0.5));
             }
 
             //get the item name
