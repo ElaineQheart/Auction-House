@@ -16,10 +16,18 @@ import java.util.List;
 
 public class CreateNPC{
 
-    public static void createAuctionMaster(Location loc) {
+    public static void createAuctionMaster(Location loc, String facing) {
         World world = loc.getWorld();
         if(world == null) { AuctionHouse.getPlugin().getLogger().severe("Creating an npc failed. The world is null."); return; }
+        int rotation = 0; //default rotation is south
+        switch (facing) {
+            case "north" -> rotation = 180;
+            case "west" -> rotation = 90;
+            case "east" -> rotation = -90;
+        }
+        loc.setYaw(rotation);
         ArmorStand stand = (ArmorStand) world.spawnEntity(loc.add(0,-1,0), EntityType.ARMOR_STAND); //creating an armor stand
+
         stand.setSmall(true);
         stand.setInvulnerable(true);
         stand.setBasePlate(false);

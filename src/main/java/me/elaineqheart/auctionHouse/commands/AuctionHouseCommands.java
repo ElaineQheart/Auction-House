@@ -176,7 +176,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
 
 
                     if(strings[1].equals("npc")) {
-                        CreateNPC.createAuctionMaster(middleBlockLoc);
+                        if(strings.length < 4) {
+                            p.sendMessage("/ah summon npc facing <direcction>");
+                            return true;
+                        }
+                        CreateNPC.createAuctionMaster(middleBlockLoc, strings[3]);
                     } else if(strings[1].equals("display")) {
                         if(strings.length < 4) {
                             p.sendMessage("/ahsummon display <type> <rank number>");
@@ -256,10 +260,24 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     params.add(p);
                 }
             }
-        }else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("display")) {
+        } else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("display")) {
             List<String> displayTypes = new ArrayList<>(List.of(new String[]{"highest_price", "ending_soon"}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0){
+                    params.add(p);
+                }
+            }
+        } else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("npc")) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"facing"}));
+            for (String p : displayTypes) {
+                if (p.indexOf(strings[2]) == 0) {
+                    params.add(p);
+                }
+            }
+        } else if (strings.length == 4 && strings[0].equals("summon") && strings[1].equals("npc")) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"north", "south", "west", "east"}));
+            for (String p : displayTypes) {
+                if (p.indexOf(strings[3]) == 0) {
                     params.add(p);
                 }
             }
