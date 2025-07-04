@@ -1,8 +1,10 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
@@ -46,10 +48,7 @@ public class CreateDisplay {
         interaction.setResponsive(true);
 
         placeBlocks(loc);
-
-        DisplaysConfig.get().set(String.valueOf(DisplayUpdate.displays.size()+1),loc);
-        DisplaysConfig.save();
-        DisplayUpdate.reload();
+        DisplayUpdate.registerDisplay(loc); //register
     }
 
     public static void placeBlocks(Location loc) {
