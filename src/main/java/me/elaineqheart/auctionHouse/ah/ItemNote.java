@@ -39,7 +39,7 @@ public class ItemNote {
         // +30 seconds wait time until the item is up on auction
         return 60*60*48 + 30 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
     }
-    public String getTimeLeft(Long timeLeft){
+    public String getTimeLeft(Long timeLeft){ //output example: 4h 23m 59s
         String s;
         String m;
         String h;
@@ -63,7 +63,7 @@ public class ItemNote {
         }
         return (ChatColor.YELLOW+h+"h "+m+"m "+s+"s");
     }
-    public String getTimeLeftTrimmed(long timeLeft) {
+    public String getTimeLeftTrimmed(long timeLeft) { //output example: 4h
         if(timeLeft < 60) {
             return timeLeft + "s";
         } else if(timeLeft < 60*60) {

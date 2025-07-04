@@ -42,7 +42,7 @@ public class ItemManager {
     public static ItemStack adminExpireAuction;
     public static ItemStack confirm;
 
-    public static void init(){
+    static {
         createFillerItem();
         createLockedSlot();
         createRefresh();

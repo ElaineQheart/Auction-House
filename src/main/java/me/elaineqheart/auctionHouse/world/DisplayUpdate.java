@@ -9,11 +9,13 @@ import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,11 +41,20 @@ public class DisplayUpdate implements Runnable{
             if(!loc.getBlock().getType().equals(Material.CHISELED_TUFF_BRICKS)) CreateDisplay.placeBlocks(loc);
 
             //Signs
-            Sign east = (Sign) loc.add(1,0,0).getBlock().getState();
-            Sign west = (Sign) loc.add(-2,0,0).getBlock().getState();
-            Sign north = (Sign) loc.add(1,0,-1).getBlock().getState();
-            Sign south = (Sign) loc.add(0,0,2).getBlock().getState();
-            loc.add(0,0,-1);
+            Location signLoc = loc.clone();
+            Sign east;
+            Sign west;
+            Sign north;
+            Sign south;
+            try {
+                east = (Sign) signLoc.add(1,0,0).getBlock().getState();
+                west = (Sign) signLoc.add(-2,0,0).getBlock().getState();
+                north = (Sign) signLoc.add(1,0,-1).getBlock().getState();
+                south = (Sign) signLoc.add(0,0,2).getBlock().getState();
+            } catch (ClassCastException e) {
+                CreateDisplay.placeBlocks(loc);
+                continue; //skip if signs are not signs
+            }
             Sign[] signs = {east, west, north, south};
 
             if(note == null) {
@@ -85,7 +96,7 @@ public class DisplayUpdate implements Runnable{
                 }
                 data.itemEntity = (Item) world.spawnEntity(loc.clone().add(0.5,1,0.5), EntityType.ITEM);
                 data.itemEntity.setItemStack(item);
-                data.itemEntity.setPickupDelay(32767);
+                data.itemEntity.setPickupDelay(32767); //will never decay
                 data.itemEntity.setUnlimitedLifetime(true);
                 data.itemEntity.setInvulnerable(true);
                 data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
@@ -128,26 +139,53 @@ public class DisplayUpdate implements Runnable{
 
     public static final HashMap<Integer, DisplayData> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
+    private static final ConfigurationSection ymlData = DisplaysConfig.get().getConfigurationSection("display");
 
     public static void init() {
         reload();
         TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new DisplayUpdate(), 0, 20).getTaskId());
     }
     public static void reload() {
-        for(Integer display : DisplaysConfig.get().getKeys(false).stream()
+        for(Integer displayID : ymlData.getKeys(false).stream()
                 .map(Integer::parseInt)
                 .collect(Collectors.toSet())) { //find the data for each display
             DisplayData data = new DisplayData();
-            Location loc = DisplaysConfig.get().getLocation(String.valueOf(display));
+            Location loc = ymlData.getLocation(String.valueOf(displayID));
             if (loc != null && loc.getWorld() != null) {
                 data.location = loc;
                 //get the block display
                 retrieveData(loc,data);
-                locations.put(loc, display);
-                displays.put(display, data);
+                locations.put(loc, displayID);
+                displays.put(displayID, data);
             } else {
-                AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + display + " is null.");
+                AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + displayID + " is null.");
             }
+        }
+    }
+    public static void registerDisplay(Location loc) {
+        if(locations.containsKey(loc)) {
+            AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " already exists.");
+            return;
+        }
+        DisplayData data = new DisplayData();
+        data.location = loc;
+        retrieveData(loc, data);
+        int displayID = Collections.max(displays.keySet()); //new display ID
+
+        locations.put(loc, displayID);
+        displays.put(displayID, data);
+        ymlData.set(String.valueOf(displayID), loc);
+        DisplaysConfig.save();
+    }
+    public static void unregisterDisplay(Location loc) {
+        Integer displayID = locations.get(loc);
+        if(displayID != null) {
+            locations.remove(loc);
+            displays.remove(displayID);
+            ymlData.set(String.valueOf(displayID), null);
+            DisplaysConfig.save();
+        } else {
+            AuctionHouse.getPlugin().getLogger().warning("DisplayID of " + loc + " not found. Cannot unregister display.");
         }
     }
 
@@ -155,6 +193,7 @@ public class DisplayUpdate implements Runnable{
         BlockDisplay entity = null;
         Item itemEntity = null;
         TextDisplay text = null;
+        assert loc.getWorld() != null;
         for(Entity test : loc.getWorld().getNearbyEntities(loc,1,1,1)) {
             if(isDisplayGlass(test)) entity = (BlockDisplay) test;
         }
@@ -233,11 +272,9 @@ public class DisplayUpdate implements Runnable{
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
         if(display != null) {
             DisplayData data = displays.get(display);
-            locations.remove(loc);
             if(data.glassBlock != null) data.glassBlock.remove();
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();
-            displays.remove(display);
             assert loc.getWorld() != null;
             for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.2,1,0.2),1,1,1)) {
                 if (test instanceof Interaction interaction) {
@@ -246,11 +283,9 @@ public class DisplayUpdate implements Runnable{
                     }
                 }
             }
-            DisplaysConfig.get().set(String.valueOf(display), null);
-            DisplaysConfig.save();
-            reload();
+            unregisterDisplay(loc);
         } else {
-            AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found.");
+            AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
         }
     }
 

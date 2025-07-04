@@ -31,7 +31,6 @@ public final class AuctionHouse extends JavaPlugin {
     public void onEnable() {
         long start = System.currentTimeMillis();
         getPlugin = this;
-        ItemManager.init();
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
         Bukkit.getPluginManager().registerEvents(guiListener, this);

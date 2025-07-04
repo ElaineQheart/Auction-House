@@ -25,6 +25,12 @@ public class DisplaysConfig {
 
         }
         customFile = YamlConfiguration.loadConfiguration(file);
+        if(customFile.getConfigurationSection("display") == null){
+            customFile.createSection("display"); //create the display section if it doesn't exist
+        }
+        if(customFile.getConfigurationSection("npc") == null){
+            customFile.createSection("npc"); //create the npc section if it doesn't exist
+        }
     }
 
     public static FileConfiguration get(){

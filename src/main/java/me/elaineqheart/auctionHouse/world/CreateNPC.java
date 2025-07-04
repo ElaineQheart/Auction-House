@@ -1,18 +1,15 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.List;
 
 public class CreateNPC{
 
@@ -53,12 +50,6 @@ public class CreateNPC{
         npc.setGravity(false);
         npc.setInvulnerable(true);
         npc.setSilent(true);
-        AttributeInstance speed = npc.getAttribute(Attribute.MOVEMENT_SPEED);
-        assert speed != null;
-        speed.setBaseValue(0);
-        MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Material.DIAMOND),0);
-        recipe.addIngredient(new ItemStack(Material.DIAMOND));
-        npc.setRecipes(List.of(recipe));
         //this is to identify the npc
         npc.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"), PersistentDataType.BOOLEAN, true);
     }

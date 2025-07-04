@@ -37,7 +37,6 @@ public class AnvilGUIListener implements Listener {
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);
-            System.out.println(view.getTitle());
             switch (view.getTitle()) {
                 case "Search Item" -> AuctionHouse.getGuiManager().openGUI
                         (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);

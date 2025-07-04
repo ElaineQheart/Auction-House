@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
@@ -74,6 +75,18 @@ public class DisplayListener implements Listener {
     //prevent the tuff block to be moved by pistons
     @EventHandler
     public void onPiston(BlockPistonExtendEvent event) {
+        for (Block block : event.getBlocks()) {
+            Location loc = block.getLocation();
+            for (Location loc2 : DisplayUpdate.locations.keySet()) {
+                if(loc.equals(loc2)) {
+                    event.setCancelled(true);
+                    return; // Prevent piston movement if a display is present
+                }
+            }
+        }
+    }
+    @EventHandler
+    public void onPiston(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
             for (Location loc2 : DisplayUpdate.locations.keySet()) {
