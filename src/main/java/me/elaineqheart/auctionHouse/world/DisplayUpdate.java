@@ -170,7 +170,7 @@ public class DisplayUpdate implements Runnable{
         DisplayData data = new DisplayData();
         data.location = loc;
         retrieveData(loc, data);
-        int displayID = Collections.max(displays.keySet()); //new display ID
+        int displayID = Collections.max(displays.keySet()) + 1; //new display ID
 
         locations.put(loc, displayID);
         displays.put(displayID, data);
