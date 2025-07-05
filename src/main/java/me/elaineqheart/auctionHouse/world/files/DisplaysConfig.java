@@ -3,9 +3,12 @@ package me.elaineqheart.auctionHouse.world.files;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DisplaysConfig {
 
@@ -25,12 +28,7 @@ public class DisplaysConfig {
 
         }
         customFile = YamlConfiguration.loadConfiguration(file);
-        if(customFile.getConfigurationSection("display") == null){
-            customFile.createSection("display"); //create the display section if it doesn't exist
-        }
-        if(customFile.getConfigurationSection("npc") == null){
-            customFile.createSection("npc"); //create the npc section if it doesn't exist
-        }
+        backwardsCompatibility();
     }
 
     public static FileConfiguration get(){
@@ -49,4 +47,29 @@ public class DisplaysConfig {
         customFile = YamlConfiguration.loadConfiguration(file);
     }
 
+
+    private static void backwardsCompatibility() {
+        Set<Integer> set = null;
+        try {
+            // This method is for backwards compatibility
+            set = customFile.getKeys(false).stream()
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toSet());
+        } catch (NumberFormatException ignored) {}
+
+        if (customFile.getConfigurationSection("displays") == null) {
+            customFile.createSection("displays");
+        }
+        if (customFile.getConfigurationSection("npc") == null) {
+            customFile.createSection("npc");
+        }
+        if(set != null) {
+            for (Integer displayID : set) {
+                customFile.getConfigurationSection("displays").set(String.valueOf(displayID), customFile.get(String.valueOf(displayID)));
+                customFile.set(String.valueOf(displayID), null); // Remove the old key
+            }
+        }
+        save();
+
+    }
 }

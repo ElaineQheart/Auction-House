@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,6 +16,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
+
+import java.util.Collections;
 
 public class CreateDisplay {
 
@@ -48,7 +51,13 @@ public class CreateDisplay {
         interaction.setResponsive(true);
 
         placeBlocks(loc);
-        DisplayUpdate.registerDisplay(loc); //register
+
+        int displayID = 1; //default
+        if(!DisplayUpdate.displays.isEmpty()) displayID = Collections.max(DisplayUpdate.displays.keySet()) + 1; //new display ID
+        assert DisplayUpdate.ymlData != null;
+        DisplayUpdate.ymlData.set(String.valueOf(displayID), loc); //save the location in the config
+        DisplaysConfig.save();
+        DisplayUpdate.reload();
     }
 
     public static void placeBlocks(Location loc) {

@@ -60,7 +60,7 @@ public final class AuctionHouse extends JavaPlugin {
         saveConfig();
         //Setup bannedPlayers.yml
         CustomConfigBannedPlayers.setup();
-        CustomConfigBannedPlayers.get().options().copyDefaults(true);
+        CustomConfigBannedPlayers.get().options().copyDefaults(false);
         CustomConfigBannedPlayers.save();
         //also, you need a regular config.yml to generate the folder where the .yml files are, but I now I actually use it for custom settings
         //Setup customConfigEntities.yml

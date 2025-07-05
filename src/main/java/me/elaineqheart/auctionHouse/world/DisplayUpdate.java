@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -42,10 +41,7 @@ public class DisplayUpdate implements Runnable{
 
             //Signs
             Location signLoc = loc.clone();
-            Sign east;
-            Sign west;
-            Sign north;
-            Sign south;
+            Sign east, west, north, south;
             try {
                 east = (Sign) signLoc.add(1,0,0).getBlock().getState();
                 west = (Sign) signLoc.add(-2,0,0).getBlock().getState();
@@ -139,7 +135,7 @@ public class DisplayUpdate implements Runnable{
 
     public static final HashMap<Integer, DisplayData> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
-    private static final ConfigurationSection ymlData = DisplaysConfig.get().getConfigurationSection("display");
+    public static final ConfigurationSection ymlData = DisplaysConfig.get().getConfigurationSection("displays");
 
     public static void init() {
         reload();
@@ -160,32 +156,6 @@ public class DisplayUpdate implements Runnable{
             } else {
                 AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + displayID + " is null.");
             }
-        }
-    }
-    public static void registerDisplay(Location loc) {
-        if(locations.containsKey(loc)) {
-            AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " already exists.");
-            return;
-        }
-        DisplayData data = new DisplayData();
-        data.location = loc;
-        retrieveData(loc, data);
-        int displayID = Collections.max(displays.keySet()) + 1; //new display ID
-
-        locations.put(loc, displayID);
-        displays.put(displayID, data);
-        ymlData.set(String.valueOf(displayID), loc);
-        DisplaysConfig.save();
-    }
-    public static void unregisterDisplay(Location loc) {
-        Integer displayID = locations.get(loc);
-        if(displayID != null) {
-            locations.remove(loc);
-            displays.remove(displayID);
-            ymlData.set(String.valueOf(displayID), null);
-            DisplaysConfig.save();
-        } else {
-            AuctionHouse.getPlugin().getLogger().warning("DisplayID of " + loc + " not found. Cannot unregister display.");
         }
     }
 
@@ -264,14 +234,14 @@ public class DisplayUpdate implements Runnable{
     }
 
     public static void removeDisplay(Location loc) {
-        Integer display = locations.get(loc);
+        Integer displayID = locations.get(loc);
         loc.add(1,0,0).getBlock().setType(Material.AIR);
         loc.add(-2,0,0).getBlock().setType(Material.AIR);
         loc.add(1,0,-1).getBlock().setType(Material.AIR);
         loc.add(0,0,2).getBlock().setType(Material.AIR);
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
-        if(display != null) {
-            DisplayData data = displays.get(display);
+        if(displayID != null) {
+            DisplayData data = displays.get(displayID);
             if(data.glassBlock != null) data.glassBlock.remove();
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();
@@ -283,7 +253,11 @@ public class DisplayUpdate implements Runnable{
                     }
                 }
             }
-            unregisterDisplay(loc);
+            locations.remove(loc);
+            displays.remove(displayID);
+            ymlData.set(String.valueOf(displayID), null);
+            DisplaysConfig.save();
+            reload();
         } else {
             AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
         }
