@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.world.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.CreateNPC;
-import me.elaineqheart.auctionHouse.world.DisplayUpdate;
+import me.elaineqheart.auctionHouse.world.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -160,7 +160,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     AuctionHouse.getPlugin().reloadConfig();
                     SettingManager.loadData();
                     DisplaysConfig.reload();
-                    DisplayUpdate.reload();
+                    UpdateDisplay.reload();
 
                     p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
                     AuctionHouse.getPlugin().getLogger().info("reloaded");
@@ -200,7 +200,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                             p.sendMessage("Invalid item rank number. Please enter a valid number");
                             return true;
                         }
-                        for(Location displayLoc : DisplayUpdate.locations.keySet()) {
+                        for(Location displayLoc : UpdateDisplay.locations.keySet()) {
                             if(Objects.equals(blockLoc.getWorld(), displayLoc.getWorld()) && blockLoc.distance(displayLoc) < 2.1) {
                                 p.sendMessage(ChatColor.YELLOW + "There is already a display here. Please remove it first.");
                                 return true;

@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
@@ -50,11 +51,12 @@ public class NPCListener implements Listener {
     @EventHandler
     public void onVillagerDeath(EntityDeathEvent event) {
         if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"))) {
+            event.getEntity().setHealth(1);
             CreateNPC.removeAuctionMaster((Villager) event.getEntity());
         }
-        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"))) {
-            CreateNPC.removeAuctionMaster((ArmorStand) event.getEntity());
-        }
+//        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"))) {
+//            CreateNPC.removeAuctionMaster((ArmorStand) event.getEntity());
+//        }
     }
 
 }

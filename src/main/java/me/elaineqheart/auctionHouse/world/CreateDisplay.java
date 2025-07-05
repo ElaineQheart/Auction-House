@@ -53,11 +53,11 @@ public class CreateDisplay {
         placeBlocks(loc);
 
         int displayID = 1; //default
-        if(!DisplayUpdate.displays.isEmpty()) displayID = Collections.max(DisplayUpdate.displays.keySet()) + 1; //new display ID
-        assert DisplayUpdate.ymlData != null;
-        DisplayUpdate.ymlData.set(String.valueOf(displayID), loc); //save the location in the config
+        if(!UpdateDisplay.displays.isEmpty()) displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; //new display ID
+        assert UpdateDisplay.ymlData != null;
+        UpdateDisplay.ymlData.set(String.valueOf(displayID), loc); //save the location in the config
         DisplaysConfig.save();
-        DisplayUpdate.reload();
+        UpdateDisplay.reload();
     }
 
     public static void placeBlocks(Location loc) {

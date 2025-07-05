@@ -4,13 +4,13 @@ import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
-import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.ah.SettingManager;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.DisplayListener;
 import me.elaineqheart.auctionHouse.world.NPCListener;
-import me.elaineqheart.auctionHouse.world.DisplayUpdate;
+import me.elaineqheart.auctionHouse.world.UpdateDisplay;
+import me.elaineqheart.auctionHouse.world.UpdateNPC;
 import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -68,7 +68,8 @@ public final class AuctionHouse extends JavaPlugin {
         DisplaysConfig.get().options().copyDefaults(false);
         DisplaysConfig.save();
 
-        DisplayUpdate.init(); //init the display update task to update block displays
+        UpdateDisplay.init(); //init the display update task to update block displays
+        UpdateNPC.init();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }

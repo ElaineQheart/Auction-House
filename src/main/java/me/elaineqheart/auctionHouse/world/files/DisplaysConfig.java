@@ -3,7 +3,6 @@ package me.elaineqheart.auctionHouse.world.files;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,22 +48,24 @@ public class DisplaysConfig {
 
 
     private static void backwardsCompatibility() {
-        Set<Integer> set = null;
+        Set<Integer> oldSet = null;
         try {
             // This method is for backwards compatibility
-            set = customFile.getKeys(false).stream()
+            oldSet = customFile.getKeys(false).stream()
                     .map(Integer::parseInt)
                     .collect(Collectors.toSet());
         } catch (NumberFormatException ignored) {}
 
+        //This section of code is needed, even without backwards compatibility
         if (customFile.getConfigurationSection("displays") == null) {
             customFile.createSection("displays");
         }
         if (customFile.getConfigurationSection("npc") == null) {
             customFile.createSection("npc");
         }
-        if(set != null) {
-            for (Integer displayID : set) {
+
+        if(oldSet != null) {
+            for (Integer displayID : oldSet) {
                 customFile.getConfigurationSection("displays").set(String.valueOf(displayID), customFile.get(String.valueOf(displayID)));
                 customFile.set(String.valueOf(displayID), null); // Remove the old key
             }

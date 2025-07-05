@@ -36,11 +36,11 @@ public class DisplayListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        DisplayUpdate.removeDisplay(displayLoc);
+        UpdateDisplay.removeDisplay(displayLoc);
     }
 
     private Location isProtected(Location loc) {
-        for (Location loc2 : DisplayUpdate.locations.keySet()) {
+        for (Location loc2 : UpdateDisplay.locations.keySet()) {
             if (loc.equals(loc2) || loc.add(0,0,1).equals(loc2) || loc.add(0,0,-2).equals(loc2) || loc.add(1,0,1).equals(loc2) || loc.add(-2,0,0).equals(loc2)) {
                 loc.add(1,0,0);
                 return loc2;
@@ -64,7 +64,7 @@ public class DisplayListener implements Listener {
             String type = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
             if(type == null) throw new RuntimeException("The display type is null. This should never happen.");
             int rank = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
-            ItemNote note = DisplayUpdate.getNote(type,rank);
+            ItemNote note = UpdateDisplay.getNote(type,rank);
             if(note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p), p);
@@ -77,7 +77,7 @@ public class DisplayListener implements Listener {
     public void onPiston(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
-            for (Location loc2 : DisplayUpdate.locations.keySet()) {
+            for (Location loc2 : UpdateDisplay.locations.keySet()) {
                 if(loc.equals(loc2)) {
                     event.setCancelled(true);
                     return; // Prevent piston movement if a display is present
@@ -89,7 +89,7 @@ public class DisplayListener implements Listener {
     public void onPiston(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
-            for (Location loc2 : DisplayUpdate.locations.keySet()) {
+            for (Location loc2 : UpdateDisplay.locations.keySet()) {
                 if(loc.equals(loc2)) {
                     event.setCancelled(true);
                     return; // Prevent piston movement if a display is present

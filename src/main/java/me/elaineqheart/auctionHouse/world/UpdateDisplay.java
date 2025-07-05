@@ -18,9 +18,8 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class DisplayUpdate implements Runnable{
+public class UpdateDisplay implements Runnable{
     @Override
     public void run() {
         for(Integer display : displays.keySet()) {
@@ -139,23 +138,18 @@ public class DisplayUpdate implements Runnable{
 
     public static void init() {
         reload();
-        TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new DisplayUpdate(), 0, 20).getTaskId());
+        TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new UpdateDisplay(), 0, 20).getTaskId());
     }
     public static void reload() {
-        for(Integer displayID : ymlData.getKeys(false).stream()
-                .map(Integer::parseInt)
-                .collect(Collectors.toSet())) { //find the data for each display
+        for(String key : ymlData.getKeys(false)) { //find the data for each display
+            Location loc = ymlData.getLocation(key);
+            assert loc != null;
             DisplayData data = new DisplayData();
-            Location loc = ymlData.getLocation(String.valueOf(displayID));
-            if (loc != null && loc.getWorld() != null) {
-                data.location = loc;
-                //get the block display
-                retrieveData(loc,data);
-                locations.put(loc, displayID);
-                displays.put(displayID, data);
-            } else {
-                AuctionHouse.getPlugin().getLogger().warning("Display location for ID " + displayID + " is null.");
-            }
+            data.location = loc;
+            //get the block display
+            retrieveData(loc,data);
+            locations.put(loc, Integer.parseInt(key));
+            displays.put(Integer.parseInt(key), data);
         }
     }
 
