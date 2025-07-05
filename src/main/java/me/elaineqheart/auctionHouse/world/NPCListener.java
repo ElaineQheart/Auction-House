@@ -2,22 +2,16 @@ package me.elaineqheart.auctionHouse.world;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityRemoveEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.util.Vector;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -51,12 +45,11 @@ public class NPCListener implements Listener {
     @EventHandler
     public void onVillagerDeath(EntityDeathEvent event) {
         if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"))) {
-            event.getEntity().setHealth(1);
             CreateNPC.removeAuctionMaster((Villager) event.getEntity());
         }
-//        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"))) {
-//            CreateNPC.removeAuctionMaster((ArmorStand) event.getEntity());
-//        }
+        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"))) {
+            CreateNPC.removeAuctionMaster((ArmorStand) event.getEntity());
+        }
     }
 
 }

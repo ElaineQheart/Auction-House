@@ -6,7 +6,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 
-public class DisplayData {
+public class DisplayNote {
 
     public Location location;
     public BlockDisplay glassBlock;
@@ -18,6 +18,6 @@ public class DisplayData {
     public String playerName;
     public boolean reloaded;
 
-    public DisplayData() {}
+    public DisplayNote() {}
 
 }

@@ -10,7 +10,6 @@ import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.DisplayListener;
 import me.elaineqheart.auctionHouse.world.NPCListener;
 import me.elaineqheart.auctionHouse.world.UpdateDisplay;
-import me.elaineqheart.auctionHouse.world.UpdateNPC;
 import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -69,7 +68,6 @@ public final class AuctionHouse extends JavaPlugin {
         DisplaysConfig.save();
 
         UpdateDisplay.init(); //init the display update task to update block displays
-        UpdateNPC.init();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }

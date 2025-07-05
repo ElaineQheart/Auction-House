@@ -23,7 +23,7 @@ public class UpdateDisplay implements Runnable{
     @Override
     public void run() {
         for(Integer display : displays.keySet()) {
-            DisplayData data = displays.get(display);
+            DisplayNote data = displays.get(display);
             Location loc = data.location;
             if(data.glassBlock == null){
                 retrieveData(loc, data);
@@ -132,7 +132,7 @@ public class UpdateDisplay implements Runnable{
         }
     }
 
-    public static final HashMap<Integer, DisplayData> displays = new HashMap<>();
+    public static final HashMap<Integer, DisplayNote> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
     public static final ConfigurationSection ymlData = DisplaysConfig.get().getConfigurationSection("displays");
 
@@ -144,7 +144,7 @@ public class UpdateDisplay implements Runnable{
         for(String key : ymlData.getKeys(false)) { //find the data for each display
             Location loc = ymlData.getLocation(key);
             assert loc != null;
-            DisplayData data = new DisplayData();
+            DisplayNote data = new DisplayNote();
             data.location = loc;
             //get the block display
             retrieveData(loc,data);
@@ -153,7 +153,7 @@ public class UpdateDisplay implements Runnable{
         }
     }
 
-    private static void retrieveData(Location loc, DisplayData data) {
+    private static void retrieveData(Location loc, DisplayNote data) {
         BlockDisplay entity = null;
         Item itemEntity = null;
         TextDisplay text = null;
@@ -235,7 +235,7 @@ public class UpdateDisplay implements Runnable{
         loc.add(0,0,2).getBlock().setType(Material.AIR);
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
         if(displayID != null) {
-            DisplayData data = displays.get(displayID);
+            DisplayNote data = displays.get(displayID);
             if(data.glassBlock != null) data.glassBlock.remove();
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();

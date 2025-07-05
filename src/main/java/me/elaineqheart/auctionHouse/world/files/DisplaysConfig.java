@@ -60,9 +60,6 @@ public class DisplaysConfig {
         if (customFile.getConfigurationSection("displays") == null) {
             customFile.createSection("displays");
         }
-        if (customFile.getConfigurationSection("npc") == null) {
-            customFile.createSection("npc");
-        }
 
         if(oldSet != null) {
             for (Integer displayID : oldSet) {
