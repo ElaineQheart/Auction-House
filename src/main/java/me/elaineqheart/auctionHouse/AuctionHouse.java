@@ -46,13 +46,6 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
 
-        //load the data of the notes file
-        try {
-            ItemNoteStorageUtil.loadNotes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        SettingManager.loadData();
         //Setup config.yml
         super.reloadConfig(); //reload if there were changes
         getConfig().options().copyDefaults(true);
@@ -66,6 +59,13 @@ public final class AuctionHouse extends JavaPlugin {
         DisplaysConfig.setup();
         DisplaysConfig.get().options().copyDefaults(false);
         DisplaysConfig.save();
+
+        //load the data of the notes file
+        try {
+            ItemNoteStorageUtil.loadNotes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         UpdateDisplay.init(); //init the display update task to update block displays
 
