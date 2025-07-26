@@ -6,10 +6,10 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.ah.ItemManager;
 import me.elaineqheart.auctionHouse.ah.ItemNote;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.ah.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -67,28 +67,26 @@ public class ConfirmBuyGUI extends InventoryGUI{
                 .creator(player -> ItemManager.createConfirm(note.getPrice()))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    //check if inventory is full
                     if(p.getInventory().firstEmpty() == -1) {
-                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        p.sendMessage(Messages.get("inventory-full"));
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    //check if the item hasn't been sold yet
                     if (note.isSold()) {
-                        p.sendMessage(ChatColor.RED + "This item has already been sold!");
+                        p.sendMessage(Messages.get("item-already-sold"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
-                        p.sendMessage(ChatColor.RED + "This item has been removed!");
+                        p.sendMessage(Messages.get("item-no-longer-available"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     Economy eco = VaultHook.getEconomy();
                     double price = note.getPrice();
                     p.closeInventory();
-                    if(!note.canAfford(eco.getBalance(p))) { //extra check to make sure that they have enough coins
-                        p.sendMessage(ChatColor.RED + "You don't have enough money to buy this item!");
+                    if(!note.canAfford(eco.getBalance(p))) {
+                        p.sendMessage(Messages.get("insufficient-funds"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -102,9 +100,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                    p.sendMessage(ChatColor.YELLOW + "You purchased an item from " + ChatColor.GRAY + note.getPlayerName() + ChatColor.YELLOW + "'s auction!");
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(Messages.getFormatted("purchase-successful", "%seller%", note.getPlayerName()));
                 });
     }
     private InventoryButton cancel(){

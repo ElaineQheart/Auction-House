@@ -27,7 +27,7 @@ dependencies {
 }
 
 jar {
-    destinationDirectory.set(file("/C:\\Elaine\\programmieren\\java\\minecraft\\MC test servers\\1.21.4\\plugins"))
+    destinationDirectory.set(file("D:\\bungeecord\\Server paper 1.21.4\\plugins"))
 }
 
 tasks {

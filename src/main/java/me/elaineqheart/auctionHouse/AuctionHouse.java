@@ -2,10 +2,11 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
+import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.ah.SettingManager;
+import me.elaineqheart.auctionHouse.ah.Messages;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.DisplayListener;
 import me.elaineqheart.auctionHouse.world.NPCListener;
@@ -21,24 +22,25 @@ import java.io.IOException;
 
 public final class AuctionHouse extends JavaPlugin {
 
-    private static AuctionHouse getPlugin;
+    private static AuctionHouse plugin;
     private static GUIManager guiManager;
-    public static AuctionHouse getPlugin() {return getPlugin;}
+    public static AuctionHouse getPlugin() {return plugin;}
     public static GUIManager getGuiManager() {return guiManager;}
 
     @Override
     public void onEnable() {
         long start = System.currentTimeMillis();
-        getPlugin = this;
+        plugin = this;
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
         Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this); //GUI
+        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            Bukkit.getLogger().severe("No registered Vault provider found!");
+            getLogger().severe("No registered Vault provider found! Disabling plugin.");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         getCommand("ah").setExecutor(new AuctionHouseCommands());
@@ -46,28 +48,26 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
 
-        //Setup config.yml
-        super.reloadConfig(); //reload if there were changes
         getConfig().options().copyDefaults(true);
-        saveConfig();
-        //Setup bannedPlayers.yml
+        saveDefaultConfig();
+
+        Messages.init(this);
+
         CustomConfigBannedPlayers.setup();
         CustomConfigBannedPlayers.get().options().copyDefaults(false);
         CustomConfigBannedPlayers.save();
-        //also, you need a regular config.yml to generate the folder where the .yml files are, but I now I actually use it for custom settings
-        //Setup customConfigEntities.yml
+
         DisplaysConfig.setup();
         DisplaysConfig.get().options().copyDefaults(false);
         DisplaysConfig.save();
 
-        //load the data of the notes file
         try {
             ItemNoteStorageUtil.loadNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        UpdateDisplay.init(); //init the display update task to update block displays
+        UpdateDisplay.init();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
@@ -75,8 +75,10 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         for(Player p : Bukkit.getOnlinePlayers()){
-            p.closeInventory();
+            if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryGUI) {
+                p.closeInventory();
+            }
         }
+        getLogger().info("AuctionHouse has been disabled.");
     }
-
 }
