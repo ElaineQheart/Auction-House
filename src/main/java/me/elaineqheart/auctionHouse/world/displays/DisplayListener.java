@@ -6,6 +6,8 @@ import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
@@ -112,6 +114,34 @@ public class DisplayListener implements Listener {
             Location loc = block.getLocation();
             return isProtected(loc) != null;
         });
+    }
+
+    @EventHandler
+    public void onKill(EntityRemoveEvent event) {
+        Entity entity = event.getEntity();
+        if(UpdateDisplay.isDisplayGlass(entity)) {
+            String sortType = entity.getPersistentDataContainer().getKeys().iterator().next().getKey();
+            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER);
+            Location loc = entity.getLocation();
+            UpdateDisplay.removeInteraction(loc); // safety measurement, in case both entities are removed at the same time
+            UpdateDisplay.removeDisplay(loc);
+            CreateDisplay.createDisplay(loc, rank, sortType);
+        }
+        if(UpdateDisplay.isDisplayInteraction(entity)) {
+            Location loc = entity.getLocation().add(-0.5,-1,-0.5);
+            String sortType = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
+            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
+            UpdateDisplay.removeDisplay(loc);
+            CreateDisplay.createDisplay(loc, rank, sortType);
+        }
+    }
+
+    @EventHandler
+    public void onTeleport(EntityTeleportEvent event) {
+        Entity entity = event.getEntity();
+        if(UpdateDisplay.isDisplayGlass(entity) || UpdateDisplay.isDisplayInteraction(entity)) {
+            event.setCancelled(true);
+        }
     }
 
 }

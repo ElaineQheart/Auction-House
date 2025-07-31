@@ -184,10 +184,17 @@ public class UpdateDisplay implements Runnable{
         }
     }
 
-    private static boolean isDisplayGlass(Entity entity) {
+    public static boolean isDisplayGlass(Entity entity) {
         if(entity instanceof BlockDisplay display) {
             return display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER) ||
                    display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER);
+        }
+        return false;
+    }
+    public static boolean isDisplayInteraction(Entity entity) {
+        if(entity instanceof Interaction interaction) {
+            return interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER) &&
+                   interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
         }
         return false;
     }
@@ -237,17 +244,15 @@ public class UpdateDisplay implements Runnable{
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
         if(displayID != null) {
             DisplayNote data = displays.get(displayID);
-            if(data.glassBlock != null) data.glassBlock.remove();
+            if(data.glassBlock != null) {
+                for(NamespacedKey key : data.glassBlock.getPersistentDataContainer().getKeys()) {
+                    data.glassBlock.getPersistentDataContainer().remove(key);
+                }
+                data.glassBlock.remove();
+            }
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();
-            assert loc.getWorld() != null;
-            for(Entity test : loc.getWorld().getNearbyEntities(loc.clone().add(0.2,1,0.2),1,1,1)) {
-                if (test instanceof Interaction interaction) {
-                    if (interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER)) {
-                        interaction.remove();
-                    }
-                }
-            }
+            removeInteraction(loc);
             locations.remove(loc);
             displays.remove(displayID);
             ymlData.set(String.valueOf(displayID), null);
@@ -255,6 +260,18 @@ public class UpdateDisplay implements Runnable{
             reload();
         } else {
             AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
+        }
+    }
+
+    public static void removeInteraction(Location loc) {
+        assert loc.getWorld() != null;
+        for(Entity interaction : loc.getWorld().getNearbyEntities(loc.clone().add(0.2,1,0.2),1,1,1)) {
+            if(isDisplayInteraction(interaction)) {
+                for(NamespacedKey key : interaction.getPersistentDataContainer().getKeys()) {
+                    interaction.getPersistentDataContainer().remove(key);
+                }
+                interaction.remove();
+            }
         }
     }
 
