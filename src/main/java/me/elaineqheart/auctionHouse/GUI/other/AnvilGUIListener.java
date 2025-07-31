@@ -3,7 +3,7 @@ package me.elaineqheart.auctionHouse.GUI.other;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
-import me.elaineqheart.auctionHouse.ah.ItemManager;
+import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

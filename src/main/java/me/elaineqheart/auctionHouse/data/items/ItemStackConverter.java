@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.data.items;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;

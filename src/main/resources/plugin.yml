@@ -4,7 +4,7 @@ main: me.elaineqheart.auctionHouse.AuctionHouse
 api-version: '1.21'
 authors: [ ElaineQheart ]
 website: https://www.youtube.com/@elaineqheart
-softdepend: [ Vault ]
+depend: [ Vault ]
 commands:
   ah:
     description: opens the auction house GUI

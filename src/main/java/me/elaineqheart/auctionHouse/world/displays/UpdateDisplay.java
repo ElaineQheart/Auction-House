@@ -1,11 +1,12 @@
-package me.elaineqheart.auctionHouse.world;
+package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.ah.ItemNote;
-import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.ah.SettingManager;
-import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.SettingManager;
+import me.elaineqheart.auctionHouse.data.DisplaysConfig;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -68,7 +69,7 @@ public class UpdateDisplay implements Runnable{
             }
 
             String price = note.getPriceTrimmed();
-            String time = note.getTimeLeftTrimmed(note.timeLeft());
+            String time = StringUtils.getTimeTrimmed(note.timeLeft());
             String playerName = note.getPlayerName();
             ItemStack item = note.getItem();
 

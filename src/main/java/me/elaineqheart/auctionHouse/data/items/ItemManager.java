@@ -1,8 +1,10 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.data.items;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
+import me.elaineqheart.auctionHouse.data.SettingManager;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -379,9 +381,9 @@ public class ItemManager {
             lore.add(ChatColor.GOLD + "Sold!");
             lore.add(ChatColor.GRAY + "Buyer: " + note.getBuyerName());
         }else if(note.isOnWaitingList()){
-            lore.add("Auction starting in: " + note.getTimeLeft(note.timeLeft()-60*60*48));
+            lore.add("Auction starting in: " + StringUtils.getTime(note.timeLeft()- SettingManager.auctionDuration, false));
         }else{
-            lore.add("Ends in: " + note.getTimeLeft(note.timeLeft()));
+            lore.add("Ends in: " + StringUtils.getTime(note.timeLeft(), false));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);

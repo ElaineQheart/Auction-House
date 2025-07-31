@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
-import me.elaineqheart.auctionHouse.ah.ItemManager;
-import me.elaineqheart.auctionHouse.ah.ItemNote;
+import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.MenuType;

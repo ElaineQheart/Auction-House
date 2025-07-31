@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.data.items;
 
 import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;

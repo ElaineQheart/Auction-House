@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.data;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.Bukkit;
@@ -41,8 +41,12 @@ public class CustomConfigBannedPlayers {
         try {
             customFile.save(file);
         }catch (IOException e){
-            Bukkit.getLogger().warning("Couldn't save auction house banned players file");
+            Bukkit.getLogger().warning("Couldn't save bannedPlayers.yml");
         }
+    }
+
+    public static void reload(){
+        customFile = YamlConfiguration.loadConfiguration(file);
     }
 
     public static void saveBannedPlayer(Player p, int durationInDays, String reason){
@@ -73,46 +77,12 @@ public class CustomConfigBannedPlayers {
             return false;
         }
         long banDuration = banEndDate.getTime() - currentTime;
-        p.sendMessage(ChatColor.WHITE + "You are temporarily banned for " + ChatColor.YELLOW + getTimeLeft(banDuration/1000)
+        p.sendMessage(ChatColor.WHITE + "You are temporarily banned for " + ChatColor.YELLOW + StringUtils.getTime(banDuration/1000, true)
                 + ChatColor.WHITE + " from the auction house.");
         p.sendMessage(ChatColor.GRAY + "Reason: " + customFile.getString(path + ".Reason"));
         return true;
     }
 
-    public static void reload(){
-        customFile = YamlConfiguration.loadConfiguration(file);
-    }
 
-    public static String getTimeLeft(Long timeLeft){
-        String s;
-        String m;
-        String h;
-        String d;
-        int sec = (int) ((timeLeft)%60);
-        if(String.valueOf(sec).length()==1) {
-            s = '0' + String.valueOf(sec);
-        }else{
-            s = String.valueOf(sec);
-        }
-        int min = (int) ((timeLeft/60)%60);
-        if(String.valueOf(min).length()==1) {
-            m = '0' + String.valueOf(min);
-        }else{
-            m = String.valueOf(min);
-        }
-        int hours = (int) (timeLeft/60/60%24);
-        if(String.valueOf(hours).length()==1) {
-            h = '0' + String.valueOf(hours);
-        }else{
-            h = String.valueOf(hours);
-        }
-        int days = (int) (timeLeft/60/60/24);
-        if(String.valueOf(days).length()==1) {
-            d = '0' + String.valueOf(days);
-        }else{
-            d = String.valueOf(days);
-        }
-        return (ChatColor.YELLOW+d+"d "+h+"h "+m+"m "+s+"s");
-    }
 
 }

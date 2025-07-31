@@ -1,5 +1,6 @@
-package me.elaineqheart.auctionHouse.ah;
+package me.elaineqheart.auctionHouse.data.items;
 
+import me.elaineqheart.auctionHouse.data.SettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -37,47 +38,14 @@ public class ItemNote {
     }
     public long timeLeft(){
         // +30 seconds wait time until the item is up on auction
-        return 60*60*48 + 30 - (new Date().getTime() - dateCreated.getTime())/1000; // devided by 1000 to get seconds
-    }
-    public String getTimeLeft(Long timeLeft){ //output example: 4h 23m 59s
-        String s;
-        String m;
-        String h;
-        int sec = (int) ((timeLeft)%60);
-        if(String.valueOf(sec).length()==1) {
-            s = '0' + String.valueOf(sec);
-        }else{
-            s = String.valueOf(sec);
-        }
-        int min = (int) ((timeLeft/60)%60);
-        if(String.valueOf(min).length()==1) {
-            m = '0' + String.valueOf(min);
-        }else{
-            m = String.valueOf(min);
-        }
-        int hours = (int) (timeLeft/60/60);
-        if(String.valueOf(hours).length()==1) {
-            h = '0' + String.valueOf(hours);
-        }else{
-            h = String.valueOf(hours);
-        }
-        return (ChatColor.YELLOW+h+"h "+m+"m "+s+"s");
-    }
-    public String getTimeLeftTrimmed(long timeLeft) { //output example: 4h
-        if(timeLeft < 60) {
-            return timeLeft + "s";
-        } else if(timeLeft < 60*60) {
-            return (int)(timeLeft/60) + "m";
-        } else {
-            return (int)(timeLeft/60/60) + "h";
-        }
+        return SettingManager.auctionDuration + 30 - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
     }
     public boolean isExpired(){
         return timeLeft()<0;
     }
 
     public boolean isOnWaitingList() {
-        return timeLeft() > 60*60*48;
+        return timeLeft() > SettingManager.auctionDuration;
     }
 
     public boolean canAfford(double coins){

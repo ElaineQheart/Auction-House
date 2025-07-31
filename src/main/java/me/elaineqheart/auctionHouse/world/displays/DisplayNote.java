@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.world;
+package me.elaineqheart.auctionHouse.world.displays;
 
 import org.bukkit.Location;
 import org.bukkit.entity.BlockDisplay;

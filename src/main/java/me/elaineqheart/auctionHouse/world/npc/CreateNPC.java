@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.world;
+package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.ChatColor;

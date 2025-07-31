@@ -1,9 +1,9 @@
-package me.elaineqheart.auctionHouse.world;
+package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.Permissions;
-import me.elaineqheart.auctionHouse.ah.ItemNote;
+import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

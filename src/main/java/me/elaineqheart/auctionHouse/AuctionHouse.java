@@ -2,15 +2,15 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
+import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
-import me.elaineqheart.auctionHouse.ah.CustomConfigBannedPlayers;
-import me.elaineqheart.auctionHouse.ah.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.ah.SettingManager;
+import me.elaineqheart.auctionHouse.data.CustomConfigBannedPlayers;
+import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
-import me.elaineqheart.auctionHouse.world.DisplayListener;
-import me.elaineqheart.auctionHouse.world.NPCListener;
-import me.elaineqheart.auctionHouse.world.UpdateDisplay;
-import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
+import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
+import me.elaineqheart.auctionHouse.world.npc.NPCListener;
+import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
+import me.elaineqheart.auctionHouse.data.DisplaysConfig;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,19 +21,19 @@ import java.io.IOException;
 
 public final class AuctionHouse extends JavaPlugin {
 
-    private static AuctionHouse getPlugin;
+    private static AuctionHouse instance;
     private static GUIManager guiManager;
-    public static AuctionHouse getPlugin() {return getPlugin;}
+    public static AuctionHouse getPlugin() {return instance;}
     public static GUIManager getGuiManager() {return guiManager;}
 
     @Override
     public void onEnable() {
         long start = System.currentTimeMillis();
-        getPlugin = this;
+        instance = this;
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
         Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this); //GUI
+        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -60,14 +60,13 @@ public final class AuctionHouse extends JavaPlugin {
         DisplaysConfig.get().options().copyDefaults(false);
         DisplaysConfig.save();
 
-        //load the data of the notes file
         try {
             ItemNoteStorageUtil.loadNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        UpdateDisplay.init(); //init the display update task to update block displays
+        UpdateDisplay.init();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
@@ -75,7 +74,9 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         for(Player p : Bukkit.getOnlinePlayers()){
-            p.closeInventory();
+            if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryGUI) {
+                p.closeInventory();
+            }
         }
     }
 

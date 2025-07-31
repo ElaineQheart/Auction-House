@@ -1,2 +1,4 @@
 currency: " coins"
 tax: 0.01 # 1% tax
+auction-duration: 60*60*48 # the time an auction lasts in seconds
+auction-waiting-time: 30 # the time it takes to put an item on auction

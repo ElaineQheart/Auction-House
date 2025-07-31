@@ -1,7 +1,7 @@
-package me.elaineqheart.auctionHouse.world;
+package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.world.files.DisplaysConfig;
+import me.elaineqheart.auctionHouse.data.DisplaysConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
