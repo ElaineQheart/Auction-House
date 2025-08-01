@@ -2,15 +2,19 @@ package me.elaineqheart.auctionHouse.commands;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
+import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.data.CustomConfigBannedPlayers;
-import me.elaineqheart.auctionHouse.data.StringUtils;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.data.SettingManager;
-import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
-import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
-import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.data.DisplaysConfig;
+import me.elaineqheart.auctionHouse.data.SettingManager;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
+import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
+import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -90,6 +94,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 item.setAmount(0);
                 p.sendMessage(ChatColor.YELLOW + "You have put up an auction for " + StringUtils.formatPrice(price,0));
 
+            }
+            if(strings.length == 2 && strings[0].equals("view")) {
+                String noteId = strings[1];
+                ItemNote note = ItemNoteStorageUtil.findNoteByID(noteId);
+                if(note == null) return true;
+                Sounds.click(p);
+                AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS), p);
             }
             // /ah admin
             if(p.hasPermission(Permissions.MODERATE) && strings.length > 0) {

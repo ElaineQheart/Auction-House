@@ -5,3 +5,4 @@ auction-setup-time: 30 # the time it takes to put an item on auction
 filler-item: "BLACK_STAINED_GLASS_PANE"
 format-numbers: "#,###.##" # this character is used to format numbers, e.g. 9,999,999.99
 default-max-auctions: 10
+sold-message: true # send a message to the player when one of their auctions is sold

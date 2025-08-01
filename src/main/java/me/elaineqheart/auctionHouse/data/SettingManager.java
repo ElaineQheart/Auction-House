@@ -13,6 +13,7 @@ public class SettingManager {
     public static String formatNumbersComma;
     public static String formatNumbersDot;
     public static int defaultMaxAuctions;
+    public static boolean soldMessageEnabled;
 
     static {
         loadData();
@@ -29,6 +30,7 @@ public class SettingManager {
         formatNumbersComma = String.valueOf(format.charAt(1));
         formatNumbersDot = String.valueOf(format.charAt(5));
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
+        soldMessageEnabled = c.getBoolean("sold-message", true);
     }
 
 }

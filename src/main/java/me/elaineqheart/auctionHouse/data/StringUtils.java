@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.data;
 
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
 
 public class StringUtils {
 
@@ -59,6 +60,24 @@ public class StringUtils {
     }
     public static String formatPrice(double price, int decimalPlaces) {
         return formatNumber(price,decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
+    }
+
+    public static String getItemName(ItemStack item) {
+        if(item.getItemMeta() == null) return null;
+        return item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() :
+                ChatColor.WHITE + capitalizeWords((item.getType().toString().toLowerCase()).replace("_", " "));
+    }
+
+    // function to capitalize the first letter of each word
+    public static String capitalizeWords(String input) {
+        String[] words = input.split("\\s");
+        StringBuilder result = new StringBuilder();
+        for (String word : words) {
+            result.append(Character.toTitleCase(word.charAt(0)))
+                    .append(word.substring(1))
+                    .append(" ");
+        }
+        return result.toString().trim();
     }
 
 }

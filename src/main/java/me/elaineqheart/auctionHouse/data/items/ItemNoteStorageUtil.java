@@ -82,6 +82,15 @@ public class ItemNoteStorageUtil {
         }
     }
 
+    public static ItemNote findNoteByID(String noteID) {
+        for (ItemNote note : itemNotes) {
+            if (note.getNoteID().toString().equals(noteID)) {
+                return note;
+            }
+        }
+        return null;
+    }
+
     public static List<ItemNote> findAllNotes(){
         return itemNotes;
     }

@@ -25,4 +25,8 @@ public class Sounds {
         ((Player) event.getWhoClicked()).playSound(event.getWhoClicked(), Sound.ENTITY_VILLAGER_NO,0.5f,1);
     }
 
+    public static void click(Player p) {
+        p.playSound(p.getLocation(), Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
+    }
+
 }

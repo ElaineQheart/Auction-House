@@ -3,11 +3,14 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -106,6 +109,14 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                     p.sendMessage(ChatColor.YELLOW + "You purchased an item from " + ChatColor.GRAY + note.getPlayerName() + ChatColor.YELLOW + "'s auction!");
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    Player seller = Bukkit.getPlayer(note.getPlayerName());
+                    if(SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
+                        TextComponent component = new TextComponent(ChatColor.GOLD + "[Auction] " + ChatColor.GRAY + p.getName() + ChatColor.YELLOW + " bought " +
+                                 StringUtils.getItemName(note.getItem()) + ChatColor.YELLOW + " for " + StringUtils.formatPrice(price, 0) + " ");
+                        TextComponent click = new TextComponent(ChatColor.WHITE + "" + ChatColor.BOLD + "CLICK");
+                        click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
+                        seller.spigot().sendMessage(component,click);
+                    }
                 });
     }
     private InventoryButton cancel(){
