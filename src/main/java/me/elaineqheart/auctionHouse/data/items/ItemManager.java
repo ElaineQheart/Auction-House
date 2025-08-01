@@ -71,7 +71,7 @@ public class ItemManager {
     }
 
     private static void createFillerItem(){
-        ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemStack item = new ItemStack(Material.matchMaterial(SettingManager.fillerItem));
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setHideTooltip(true);
@@ -360,7 +360,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.add(ChatColor.DARK_GRAY + "------------------");
         lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + ChatColor.GOLD + note.getPrice());
+        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
         lore.add("");
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.add(ChatColor.GREEN + "This is your own item!");
@@ -409,7 +409,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.add(ChatColor.DARK_GRAY + "------------------");
         lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + ChatColor.GOLD + note.getPrice());
+        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
         lore.add("");
         lore.add(ChatColor.RED + "Expired by a moderator!");
         lore.add(ChatColor.GRAY + "Reason: " + reason);
@@ -425,7 +425,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.add(ChatColor.DARK_GRAY + "------------------");
         lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + ChatColor.GOLD + note.getPrice());
+        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
         lore.add("");
         lore.add(ChatColor.RED + "Deleted by a moderator!");
         lore.add(ChatColor.GRAY + "Reason: " + reason);
@@ -433,42 +433,45 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createTurtleScute(double price) {
+    public static ItemStack createTurtleScute(String price) {
         ItemStack item = new ItemStack(Material.TURTLE_SCUTE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GOLD + "Buy Item right now!");
         meta.setLore(List.of("", ChatColor.GRAY + "Price: " + ChatColor.GOLD + price,
-                "", ChatColor.YELLOW + "Click to buy!"));
+                "",
+                ChatColor.YELLOW + "Click to buy!"));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createArmadilloScute(double price) {
+    public static ItemStack createArmadilloScute(String price) {
         ItemStack item = new ItemStack(Material.ARMADILLO_SCUTE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GOLD + "Buy Item right now!");
-        meta.setLore(List.of("", ChatColor.GRAY + "Price: " + ChatColor.GOLD + price,
-                "", ChatColor.RED + "Not enough money!"));
+        meta.setLore(List.of("", ChatColor.GRAY + "Price: " + price,
+                "",
+                ChatColor.RED + "Not enough money!"));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createConfirm(double price) {
+    public static ItemStack createConfirm(String price) {
         ItemStack item = new ItemStack(Material.GREEN_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GREEN + "Confirm");
-        meta.setLore(List.of(ChatColor.GRAY + "Cost: " + ChatColor.GOLD + price));
+        meta.setLore(List.of(ChatColor.GRAY + "Cost: " + price));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack collectSoldItem(double price) {
+    public static ItemStack collectSoldItem(String price) {
         ItemStack item = new ItemStack(Material.DIAMOND);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GREEN + "Collect Sold Item");
-        meta.setLore(List.of("", ChatColor.GRAY + "Value with taxes: " + ChatColor.GOLD + price,
-                "", ChatColor.YELLOW + "Click to collect!"));
+        meta.setLore(List.of("", ChatColor.GRAY + "Value with taxes: " + price,
+                "",
+                ChatColor.YELLOW + "Click to collect!"));
         item.setItemMeta(meta);
         return item;
     }

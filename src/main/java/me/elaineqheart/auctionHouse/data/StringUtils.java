@@ -50,4 +50,15 @@ public class StringUtils {
         }
     }
 
+    public static String formatNumber(double number, int decimalPlaces) {
+        String formatted = String.format("%,.0" + decimalPlaces + "f", number);
+        formatted = formatted.replace(",", "{COMMA}");
+        formatted = formatted.replace(".", "{DOT}");
+        formatted = formatted.replace("{COMMA}", SettingManager.formatNumbersComma);
+        return ChatColor.GOLD + formatted.replace("{DOT}", SettingManager.formatNumbersDot);
+    }
+    public static String formatPrice(double price, int decimalPlaces) {
+        return formatNumber(price,decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
+    }
+
 }

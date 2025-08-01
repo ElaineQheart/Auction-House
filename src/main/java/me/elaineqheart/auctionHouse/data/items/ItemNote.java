@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.items;
 
 import me.elaineqheart.auctionHouse.data.SettingManager;
-import org.bukkit.ChatColor;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

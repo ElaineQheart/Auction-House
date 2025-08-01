@@ -244,15 +244,11 @@ public class UpdateDisplay implements Runnable{
         loc.add(0,0,-1).getBlock().setType(Material.AIR);
         if(displayID != null) {
             DisplayNote data = displays.get(displayID);
-            if(data.glassBlock != null) {
-                for(NamespacedKey key : data.glassBlock.getPersistentDataContainer().getKeys()) {
-                    data.glassBlock.getPersistentDataContainer().remove(key);
-                }
-                data.glassBlock.remove();
-            }
+            retrieveData(loc,data);
+            safeRemoveGlass(data.glassBlock);
             if(data.itemEntity != null) data.itemEntity.remove();
             if(data.text != null) data.text.remove();
-            removeInteraction(loc);
+            safeRemoveInteraction(loc);
             locations.remove(loc);
             displays.remove(displayID);
             ymlData.set(String.valueOf(displayID), null);
@@ -263,7 +259,7 @@ public class UpdateDisplay implements Runnable{
         }
     }
 
-    public static void removeInteraction(Location loc) {
+    public static void safeRemoveInteraction(Location loc) {
         assert loc.getWorld() != null;
         for(Entity interaction : loc.getWorld().getNearbyEntities(loc.clone().add(0.2,1,0.2),1,1,1)) {
             if(isDisplayInteraction(interaction)) {
@@ -272,6 +268,15 @@ public class UpdateDisplay implements Runnable{
                 }
                 interaction.remove();
             }
+        }
+    }
+
+    public static void safeRemoveGlass(BlockDisplay glass) {
+        if(glass != null) {
+            for(NamespacedKey key : glass.getPersistentDataContainer().getKeys()) {
+                glass.getPersistentDataContainer().remove(key);
+            }
+            glass.remove();
         }
     }
 

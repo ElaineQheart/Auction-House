@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -64,7 +65,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
     }
     private InventoryButton confirm(){
         return new InventoryButton()
-                .creator(player -> ItemManager.createConfirm(note.getPrice()))
+                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(note.getPrice(),0)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full

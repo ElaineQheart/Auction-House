@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -81,7 +82,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     private InventoryButton collectItem() {
         double price = (double) ((int) (note.getPrice() * 100 * (1 - SettingManager.taxRate))) /100;
         return new InventoryButton()
-                .creator(player -> ItemManager.collectSoldItem(price))
+                .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price,2)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Economy eco = VaultHook.getEconomy();

@@ -6,7 +6,6 @@ import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -117,22 +116,24 @@ public class DisplayListener implements Listener {
     }
 
     @EventHandler
-    public void onKill(EntityRemoveEvent event) {
+    public void onKill(EntityRemoveEvent event) { //this event can cause an infinite loop when the display is removed in the code again
         Entity entity = event.getEntity();
+        if(!entity.isValid()) return;
+        if(entity.isDead()) return;
         if(UpdateDisplay.isDisplayGlass(entity)) {
-            String sortType = entity.getPersistentDataContainer().getKeys().iterator().next().getKey();
-            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER);
             Location loc = entity.getLocation();
-            UpdateDisplay.removeInteraction(loc); // safety measurement, in case both entities are removed at the same time
+            UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
             UpdateDisplay.removeDisplay(loc);
-            CreateDisplay.createDisplay(loc, rank, sortType);
+//            String sortType = entity.getPersistentDataContainer().getKeys().iterator().next().getKey();
+//            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER);
+//            CreateDisplay.createDisplay(loc, rank, sortType);
         }
         if(UpdateDisplay.isDisplayInteraction(entity)) {
             Location loc = entity.getLocation().add(-0.5,-1,-0.5);
-            String sortType = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
-            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
             UpdateDisplay.removeDisplay(loc);
-            CreateDisplay.createDisplay(loc, rank, sortType);
+//            String sortType = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
+//            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
+//            CreateDisplay.createDisplay(loc, rank, sortType);
         }
     }
 
