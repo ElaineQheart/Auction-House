@@ -76,7 +76,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -94,7 +94,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
                     p.sendMessage(ChatColor.YELLOW + "You collected an auction for " + ChatColor.GOLD + price + SettingManager.currencySymbol + ChatColor.YELLOW + "!");
                     p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");

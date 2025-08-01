@@ -49,8 +49,8 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
                     return true;
                 }
-                if(ItemNoteStorageUtil.numberOfAuctions(p) >= 10) {
-                    p.sendMessage(ChatColor.YELLOW + "You can only have 10 auctions at a time");
+                if(ItemNoteStorageUtil.numberOfAuctions(p) >= SettingManager.defaultMaxAuctions) {
+                    p.sendMessage(ChatColor.YELLOW + "You can only have " + SettingManager.defaultMaxAuctions + " auctions at a time");
                     return true;
                 }
                 ItemStack item = p.getInventory().getItemInMainHand();

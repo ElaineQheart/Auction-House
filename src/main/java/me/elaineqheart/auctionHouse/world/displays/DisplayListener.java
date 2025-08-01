@@ -124,16 +124,10 @@ public class DisplayListener implements Listener {
             Location loc = entity.getLocation();
             UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
             UpdateDisplay.removeDisplay(loc);
-//            String sortType = entity.getPersistentDataContainer().getKeys().iterator().next().getKey();
-//            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER);
-//            CreateDisplay.createDisplay(loc, rank, sortType);
         }
         if(UpdateDisplay.isDisplayInteraction(entity)) {
             Location loc = entity.getLocation().add(-0.5,-1,-0.5);
             UpdateDisplay.removeDisplay(loc);
-//            String sortType = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
-//            int rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
-//            CreateDisplay.createDisplay(loc, rank, sortType);
         }
     }
 

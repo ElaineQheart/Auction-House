@@ -72,7 +72,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -108,7 +108,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                         p.getInventory().addItem(note.getItem());
                         ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!
                         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
-                                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,p), p)
+                                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p)
                         ,1);
                     }
 

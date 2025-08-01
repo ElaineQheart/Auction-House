@@ -47,7 +47,7 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
 
         //Setup config.yml
-        super.reloadConfig(); //reload if there were changes
+        reloadConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
         //Setup bannedPlayers.yml

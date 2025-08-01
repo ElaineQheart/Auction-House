@@ -5,21 +5,27 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
+import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
+    private final int currentPage;
     private final MySort currentSort;
     private final Player currentPlayer;
     private final UUID invID = UUID.randomUUID();
@@ -35,14 +41,16 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         EXPIRED_ITEMS,
         ACTIVE_AUCTIONS
     }
-    public MyAuctionsGUI(MySort sort, Player p) {
+    public MyAuctionsGUI(int page, MySort sort, Player p) {
         super();
+        this.currentPage = page;
         currentSort = sort;
         currentPlayer = p;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public MyAuctionsGUI(Player p) {
         super();
+        this.currentPage = 0;
         currentSort = MySort.ALL_AUCTIONS;
         currentPlayer = p;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
@@ -63,16 +71,16 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 "# # # # # # # # #",
                 ". . # # . # # # .",
         },fillerItem());
-        fillOutPlaces(new String[]{
-                ". . . . . . . . .",
-                ". . . . . . . . .",
-                ". . . . # # # # .",
-                ". # # # # # # # .",
-        },barrier());
-        fillOutItems(currentSort,player.getUniqueId());
+        fillOutBarriers(currentPage,SettingManager.defaultMaxAuctions);
+        int auctionItems = fillOutItems(currentPage,currentSort,player.getUniqueId());
         this.addButton(45,back());
         this.addButton(46,sortButton(ItemManager.getMySort(currentSort)));
+
         this.addButton(49,refresh());
+        if(SettingManager.defaultMaxAuctions > 21) {
+            this.addButton(48,previousPage(auctionItems));
+            this.addButton(50,nextPage(auctionItems));
+        }
         this.addButton(53,info());
         super.decorate(player);
     }
@@ -82,16 +90,17 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         TaskManager.cancelTask(invID);
     }
 
-    private void fillOutItems(MySort sort,UUID playerID){
+    private int fillOutItems(int page,MySort sort,UUID playerID){
         switch (sort){
-            case ALL_AUCTIONS -> fillOutAllAuctions(playerID);
-            case SOLD_ITEMS -> fillOutSoldItems(playerID);
-            case EXPIRED_ITEMS -> fillOutExpiredItems(playerID);
-            case ACTIVE_AUCTIONS -> fillOutActiveAuctions(playerID);
+            case ALL_AUCTIONS -> {return fillOutAllAuctions(playerID,page);}
+            case SOLD_ITEMS -> {return fillOutSoldItems(playerID,page);}
+            case EXPIRED_ITEMS -> {return fillOutExpiredItems(playerID,page);}
+            case ACTIVE_AUCTIONS -> {return fillOutActiveAuctions(playerID,page);}
         }
+        return 0;
     }
 
-    private void fillOutAllAuctions(UUID id){
+    private int fillOutAllAuctions(UUID id, int page){
         LinkedHashMap<ItemNote, Long> myAuctions = new LinkedHashMap<>();
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.mySortedDateCreated();
         for(ItemNote key : sortedDateCreated.keySet()) {
@@ -99,39 +108,43 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
             if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id))
                 myAuctions.put(key, sortedDateCreated.get(key));
         }
-        createButtonsForAuctionItems(myAuctions);
+        createButtonsForAuctionItems(myAuctions,page);
+        return myAuctions.size();
     }
-    private void fillOutSoldItems(UUID id){
+    private int fillOutSoldItems(UUID id, int page){
         LinkedHashMap<ItemNote, Long> myAuctions = new LinkedHashMap<>();
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.mySortedDateCreated();
         for(ItemNote key : sortedDateCreated.keySet()) {
             if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id) && key.isSold())
                 myAuctions.put(key, sortedDateCreated.get(key));
         }
-        createButtonsForAuctionItems(myAuctions);
+        createButtonsForAuctionItems(myAuctions,page);
+        return myAuctions.size();
     }
-    private void fillOutExpiredItems(UUID id){
+    private int fillOutExpiredItems(UUID id, int page){
         LinkedHashMap<ItemNote, Long> myAuctions = new LinkedHashMap<>();
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.mySortedDateCreated();
         for(ItemNote key : sortedDateCreated.keySet()) {
             if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id) && key.isExpired() && !key.isSold())
                 myAuctions.put(key, sortedDateCreated.get(key));
         }
-        createButtonsForAuctionItems(myAuctions);
+        createButtonsForAuctionItems(myAuctions,page);
+        return myAuctions.size();
     }
-    private void fillOutActiveAuctions(UUID id){
+    private int fillOutActiveAuctions(UUID id, int page){
         LinkedHashMap<ItemNote, Long> myAuctions = new LinkedHashMap<>();
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.mySortedDateCreated();
         for(ItemNote key : sortedDateCreated.keySet()) {
             if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id) && !key.isExpired() && !key.isSold())
                 myAuctions.put(key, sortedDateCreated.get(key));
         }
-        createButtonsForAuctionItems(myAuctions);
+        createButtonsForAuctionItems(myAuctions,page);
+        return myAuctions.size();
     }
-    private void createButtonsForAuctionItems(LinkedHashMap<ItemNote, Long> myAuctions){
+    private void createButtonsForAuctionItems(LinkedHashMap<ItemNote, Long> myAuctions, int page){
+        int startPage = page*21;
         int size = myAuctions.size();
-        if(myAuctions.size()>10)size=10;
-        for(int i = 0; i < 21; ++i){
+        for(int i = startPage; i < startPage+21; ++i){
             if(size-1<i)break;
             Map.Entry<ItemNote,Long> entry = myAuctions.entrySet().stream().skip(size-i-1).findFirst().orElse(null);
             if(entry == null) continue;
@@ -165,6 +178,15 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
             }
         }
     }
+    private void fillOutBarriers(int currentPage, int auctions) {
+        int startPage = currentPage*21 + 21;
+        int barriers = startPage - auctions;
+        for(int i = 0; i < barriers; i++){
+            int j = 34 - i;
+            int k = (i/7)*2;
+            this.addButton(j-k, barrier());
+        }
+    }
     private InventoryButton fillerItem(){
         return new InventoryButton()
                 .creator(player -> ItemManager.fillerItem)
@@ -183,7 +205,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.refresh)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentSort,currentPlayer), currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,currentSort,currentPlayer), currentPlayer);
                 });
     }
     private InventoryButton sortButton(ItemStack item){
@@ -193,9 +215,9 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     if(event.isRightClick()){
                         //go backwards
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(previousSort(currentSort),currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,previousSort(currentSort),currentPlayer), currentPlayer);
                     }else {
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(nextSort(currentSort),currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,nextSort(currentSort),currentPlayer), currentPlayer);
                     }
                 });
     }
@@ -224,6 +246,57 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         if(input.equals(MySort.EXPIRED_ITEMS)) return MySort.SOLD_ITEMS;
         if(input.equals(MySort.SOLD_ITEMS)) return MySort.ALL_AUCTIONS;
         return MySort.ACTIVE_AUCTIONS;
+    }
+
+    private InventoryButton nextPage(int auctionItemsAmount){
+        ItemStack item = new ItemStack(Material.ARROW);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.GREEN + "Next Page");
+        meta.setLore(List.of(ChatColor.GRAY + String.valueOf(currentPage) + "/" + auctionItemsAmount/21,
+                "",ChatColor.YELLOW + "Right-Click to skip!",
+                ChatColor.GREEN + "Click to turn the page!"
+        ));
+        item.setItemMeta(meta);
+        return new InventoryButton()
+                .creator(player -> item)
+                .consumer(event -> {
+                    Sounds.click(event);
+                    if(event.isRightClick()){
+                        if(currentPage != auctionItemsAmount/21){
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(auctionItemsAmount/21,currentSort,currentPlayer), currentPlayer);
+                        }
+                    }else {
+                        if(currentPage < auctionItemsAmount/21){
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage+1,currentSort,currentPlayer), currentPlayer);
+                        }
+                    }
+                });
+    }
+    private InventoryButton previousPage(int auctionItemsAmount){
+        ItemStack item = new ItemStack(Material.ARROW);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(ChatColor.GREEN + "Previous Page");
+        meta.setLore(List.of(ChatColor.GRAY + String.valueOf(currentPage) + "/" + auctionItemsAmount/21,
+                "",ChatColor.YELLOW + "Right-Click to skip!",
+                ChatColor.GREEN + "Click to turn the page!"
+        ));
+        item.setItemMeta(meta);
+        return new InventoryButton()
+                .creator(player -> item)
+                .consumer(event -> {
+                    Sounds.click(event);
+                    if(event.isRightClick()){
+                        if(currentPage != 0){
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,currentPlayer), currentPlayer);
+                        }
+                    }else {
+                        if(currentPage > 0){
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage-1,currentSort,currentPlayer),currentPlayer);
+                        }
+                    }
+                });
     }
 
 }
