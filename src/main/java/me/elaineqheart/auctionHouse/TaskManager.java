@@ -21,6 +21,8 @@ public class TaskManager {
         taskID.put(uniqueId.toString(),taskId);
     }
 
+    // *usage in another class:
+
     // TaskManager.addTaskID(uuid,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     // TaskManager.cancelTask(uuid);
 

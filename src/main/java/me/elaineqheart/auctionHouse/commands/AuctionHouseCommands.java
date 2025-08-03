@@ -47,19 +47,20 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
             }
             if(strings.length==1 && strings[0].equals("sell")) {
-                p.sendMessage(Messages.getFormatted("commands-feedback.usage"));
+                p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
             if(strings.length==2 && strings[0].equals("sell")) {
                 if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
                     return true;
                 }
                 if(ItemNoteStorageUtil.numberOfAuctions(p) >= SettingManager.defaultMaxAuctions) {
-                    p.sendMessage(ChatColor.YELLOW + "You can only have " + SettingManager.defaultMaxAuctions + " auctions at a time");
+                    p.sendMessage(Messages.getFormatted("command-feedback.reached-max-auctions",
+                            "%limit%", String.valueOf(SettingManager.defaultMaxAuctions)));
                     return true;
                 }
                 ItemStack item = p.getInventory().getItemInMainHand();
                 if(item.getType().equals(Material.AIR)){
-                    p.sendMessage(ChatColor.YELLOW + "You need to hold an item in your hand to sell it");
+                    p.sendMessage(Messages.getFormatted("command-feedback.no-item-in-hand"));
                     return true;
                 }
                 int price;
@@ -77,22 +78,22 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                                 price *= 1000000;
                                 break;
                             default:
-                                p.sendMessage("That is not a valid number");
+                                p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
                                 return true;
                         }
                     } catch (Exception f) {
-                        p.sendMessage("That is not a valid number");
+                        p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
                         return true;
                     }
 
                 }
                 if(price<=0){
-                    p.sendMessage("That is not a valid price");
+                    p.sendMessage(Messages.getFormatted("command-feedback.invalid-number2"));
                     return true;
                 }
                 ItemNoteStorageUtil.createNote(p,item,price);
                 item.setAmount(0);
-                p.sendMessage(ChatColor.YELLOW + "You have put up an auction for " + StringUtils.formatPrice(price,0));
+                p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price,0)));
 
             }
             if(strings.length == 2 && strings[0].equals("view")) {
@@ -108,20 +109,20 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 if(strings.length == 1 && strings[0].equals("admin")) {
                     AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, true), p);
                 } else if (strings.length < 4 && strings[0].equals("ban")) {
-                    p.sendMessage(ChatColor.YELLOW + "Usage: /ah ban <player> <time in days> <reason>");
+                    p.sendMessage(Messages.getFormatted("command-feedback.ban-usage"));
                 } else if (strings.length != 2 && strings[0].equals("pardon")) {
-                    p.sendMessage(ChatColor.YELLOW + "Usage: /ah pardon <player>");
+                    p.sendMessage(Messages.getFormatted("command-feedback.pardon-usage"));
                     // /ah ban player:
                 } else if (strings.length > 3 && strings[0].equals("ban")) {
                     Player targetPlayer = Bukkit.getPlayer(strings[1]);
                     if (targetPlayer==null) {
-                        p.sendMessage(ChatColor.YELLOW + "That player is not online");
+                        p.sendMessage(Messages.getFormatted("command-feedback.player-not-found"));
                         return true;
                     }
                     try {
                         int duration = Integer.parseInt(strings[2]);
                         if (duration <= 0) {
-                            p.sendMessage(ChatColor.YELLOW + "That is not a valid amount of days");
+                            p.sendMessage(Messages.getFormatted("command-feedback.invalid-number3"));
                             return true;
                         }
                         //use a StringBuilder to get all arguments
@@ -133,19 +134,19 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                             }
                         }
                         CustomConfigBannedPlayers.saveBannedPlayer(targetPlayer, duration, reason.toString());
-                        p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                        p.sendMessage(ChatColor.YELLOW + targetPlayer.getDisplayName() + " was banned from the ah for " + duration + " days.");
-                        p.sendMessage("Reason: " + reason);
-                        p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                        p.sendMessage(Messages.getFormatted("command-feedback.ban",
+                                "%player%", targetPlayer.getDisplayName(),
+                                "%duration%", String.valueOf(duration),
+                                "%reason%", reason.toString()));
                     } catch (Exception e) {
-                        p.sendMessage(ChatColor.YELLOW + "That is not a valid duration");
+                        p.sendMessage(Messages.getFormatted("command-feedback.invalid-number4"));
                     }
                     // /ah pardon player:
                 } else if (strings.length == 2 && strings[0].equals("pardon")) {
                     String input = strings[1];
                     ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
                     if (section == null) {
-                        p.sendMessage(ChatColor.YELLOW + "There are no players banned");
+                        p.sendMessage(Messages.getFormatted("command-feedback.no-banned-players"));
                         return true;
                     }
                     for(String key : section.getKeys(false)) {
@@ -155,13 +156,12 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         if (playerName.equals(input)) {
                             CustomConfigBannedPlayers.get().set("BannedPlayers." + key, null);
                             CustomConfigBannedPlayers.save();
-                            p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                            p.sendMessage(ChatColor.WHITE + "Unbanned " + playerName + " from the auction house");
-                            p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                            p.sendMessage(Messages.getFormatted("command-feedback.pardon",
+                                    "%player%", playerName));
                             return true;
                         }
                     }
-                    p.sendMessage("That player isn't banned from the auction house");
+                    p.sendMessage(Messages.getFormatted("command-feedback.not-banned"));
 
                 } else if (strings[0].equals("reload")) {
                     try {
@@ -176,13 +176,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     UpdateDisplay.reload();
                     Messages.reload();
 
-                    p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
+                    p.sendMessage(Messages.getFormatted("command-feedback.reload"));
                     AuctionHouse.getPlugin().getLogger().info("reloaded");
                     return true;
 
                 } else if (strings[0].equals("summon")) {
                     if(strings.length < 2) {
-                        p.sendMessage("/ah summon <entity>");
+                        p.sendMessage(Messages.getFormatted("command-feedback.summon-usage"));
                         return true;
                     }
                     //get the player location
@@ -193,13 +193,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
 
                     if(strings[1].equals("npc")) {
                         if(strings.length < 4) {
-                            p.sendMessage("/ah summon npc facing <direcction>");
+                            p.sendMessage(Messages.getFormatted("command-feedback.npc-usage"));
                             return true;
                         }
                         CreateNPC.createAuctionMaster(middleBlockLoc, strings[3]);
                     } else if(strings[1].equals("display")) {
                         if(strings.length < 4) {
-                            p.sendMessage("/ahsummon display <type> <rank number>");
+                            p.sendMessage(Messages.getFormatted("command-feedback.display-usage"));
                             return true;
                         }
 
@@ -207,16 +207,16 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         try {
                             itemNumber = Integer.parseInt(strings[3]);
                             if(itemNumber < 1) {
-                                p.sendMessage("Item rank number must be greater than 0");
+                                p.sendMessage(Messages.getFormatted("command-feedback.invalid-number5"));
                                 return true;
                             }
                         } catch (NumberFormatException e) {
-                            p.sendMessage("Invalid item rank number. Please enter a valid number");
+                            p.sendMessage(Messages.getFormatted("command-feedback.invalid-number6"));
                             return true;
                         }
                         for(Location displayLoc : UpdateDisplay.locations.keySet()) {
                             if(Objects.equals(blockLoc.getWorld(), displayLoc.getWorld()) && blockLoc.distance(displayLoc) < 2.1) {
-                                p.sendMessage(ChatColor.YELLOW + "There is already a display here. Please remove it first.");
+                                p.sendMessage(Messages.getFormatted("command-feedback.no-space-for-display"));
                                 return true;
                             }
                         }
