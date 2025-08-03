@@ -15,6 +15,7 @@ public class SettingManager {
     public static int defaultMaxAuctions;
     public static boolean soldMessageEnabled;
     public static String formatTimeCharacters;
+    public static String permissionModerate;
 
     static {
         loadData();
@@ -33,6 +34,7 @@ public class SettingManager {
         formatNumbersComma = String.valueOf(format.charAt(1));
         formatNumbersDot = String.valueOf(format.charAt(5));
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
+        permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
     }
 
 }

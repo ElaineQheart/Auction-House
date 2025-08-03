@@ -2,7 +2,7 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
-import me.elaineqheart.auctionHouse.Permissions;
+import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -33,7 +33,7 @@ public class DisplayListener implements Listener {
             return; // Not a display location
         }
 
-        if(!p.getGameMode().equals(GameMode.CREATIVE) || !p.hasPermission(Permissions.MODERATE)) {
+        if(!p.getGameMode().equals(GameMode.CREATIVE) || !p.hasPermission(SettingManager.permissionModerate)) {
             event.setCancelled(true);
             return;
         }

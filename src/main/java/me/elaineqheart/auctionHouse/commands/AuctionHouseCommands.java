@@ -5,7 +5,6 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.Permissions;
 import me.elaineqheart.auctionHouse.data.CustomConfigBannedPlayers;
 import me.elaineqheart.auctionHouse.data.DisplaysConfig;
 import me.elaineqheart.auctionHouse.data.SettingManager;
@@ -105,7 +104,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS), p);
             }
             // /ah admin
-            if(p.hasPermission(Permissions.MODERATE) && strings.length > 0) {
+            if(p.hasPermission(SettingManager.permissionModerate) && strings.length > 0) {
                 if(strings.length == 1 && strings[0].equals("admin")) {
                     AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, true), p);
                 } else if (strings.length < 4 && strings[0].equals("ban")) {
@@ -244,7 +243,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         if(strings.length==1) {
             //check for every item if it's half typed out, then add accordingly to the params list
             List<String> assetParams = new ArrayList<>(List.of(new String[]{"sell"}));
-            if(commandSender.hasPermission(Permissions.MODERATE)) {
+            if(commandSender.hasPermission(SettingManager.permissionModerate)) {
                 assetParams.add("admin");
                 assetParams.add("ban");
                 assetParams.add("pardon");
