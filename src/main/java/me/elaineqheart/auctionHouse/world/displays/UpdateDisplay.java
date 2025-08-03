@@ -238,13 +238,15 @@ public class UpdateDisplay implements Runnable{
         return null;
     }
 
-    public static void removeDisplay(Location loc) {
+    public static void removeDisplay(Location loc, boolean removeBlocks) {
         Integer displayID = locations.get(loc);
-        loc.add(1,0,0).getBlock().setType(Material.AIR);
-        loc.add(-2,0,0).getBlock().setType(Material.AIR);
-        loc.add(1,0,-1).getBlock().setType(Material.AIR);
-        loc.add(0,0,2).getBlock().setType(Material.AIR);
-        loc.add(0,0,-1).getBlock().setType(Material.AIR);
+        if(removeBlocks) {
+            loc.add(1, 0, 0).getBlock().setType(Material.AIR);
+            loc.add(-2, 0, 0).getBlock().setType(Material.AIR);
+            loc.add(1, 0, -1).getBlock().setType(Material.AIR);
+            loc.add(0, 0, 2).getBlock().setType(Material.AIR);
+            loc.add(0, 0, -1).getBlock().setType(Material.AIR);
+        }
         if(displayID != null) {
             DisplayNote data = displays.get(displayID);
             retrieveData(loc,data);

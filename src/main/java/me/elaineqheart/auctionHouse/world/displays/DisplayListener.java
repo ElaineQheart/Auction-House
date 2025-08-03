@@ -39,7 +39,7 @@ public class DisplayListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        UpdateDisplay.removeDisplay(displayLoc);
+        UpdateDisplay.removeDisplay(displayLoc,true);
     }
 
     private Location isProtected(Location loc) {
@@ -125,11 +125,11 @@ public class DisplayListener implements Listener {
         if(UpdateDisplay.isDisplayGlass(entity)) {
             Location loc = entity.getLocation();
             UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
-            UpdateDisplay.removeDisplay(loc);
+            UpdateDisplay.removeDisplay(loc,false);
         }
         if(UpdateDisplay.isDisplayInteraction(entity)) {
             Location loc = entity.getLocation().add(-0.5,-1,-0.5);
-            UpdateDisplay.removeDisplay(loc);
+            UpdateDisplay.removeDisplay(loc,false);
         }
     }
 
