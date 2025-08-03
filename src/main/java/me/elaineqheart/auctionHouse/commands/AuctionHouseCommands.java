@@ -12,6 +12,8 @@ import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.messages.Messages;
+import me.elaineqheart.auctionHouse.data.messages.MessagesConfig;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
@@ -99,6 +101,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 String noteId = strings[1];
                 ItemNote note = ItemNoteStorageUtil.findNoteByID(noteId);
                 if(note == null) return true;
+                if(note == null) return true;
                 Sounds.click(p);
                 AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS), p);
             }
@@ -173,6 +176,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     SettingManager.loadData();
                     DisplaysConfig.reload();
                     UpdateDisplay.reload();
+                    MessagesConfig.reload();
 
                     p.sendMessage(ChatColor.YELLOW + "The auction house plugin has reloaded.");
                     AuctionHouse.getPlugin().getLogger().info("reloaded");

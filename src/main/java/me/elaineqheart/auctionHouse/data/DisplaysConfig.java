@@ -24,7 +24,6 @@ public class DisplaysConfig {
             }catch (IOException e){
                 //uwu
             }
-
         }
         customFile = YamlConfiguration.loadConfiguration(file);
         backwardsCompatibility();
@@ -38,7 +37,7 @@ public class DisplaysConfig {
         try {
             customFile.save(file);
         }catch (IOException e){
-            System.out.println("Couldn't save file");
+            AuctionHouse.getPlugin().getLogger().severe("Couldn't save displays.yml file");
         }
     }
 

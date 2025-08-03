@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.data.CustomConfigBannedPlayers;
+import me.elaineqheart.auctionHouse.data.messages.MessagesConfig;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
@@ -52,13 +53,15 @@ public final class AuctionHouse extends JavaPlugin {
         saveConfig();
         //Setup bannedPlayers.yml
         CustomConfigBannedPlayers.setup();
-        CustomConfigBannedPlayers.get().options().copyDefaults(false);
-        CustomConfigBannedPlayers.save();
-        //also, you need a regular config.yml to generate the folder where the .yml files are, but I now I actually use it for custom settings
         //Setup customConfigEntities.yml
         DisplaysConfig.setup();
-        DisplaysConfig.get().options().copyDefaults(false);
-        DisplaysConfig.save();
+
+        MessagesConfig.setup();
+        MessagesConfig.get().options().copyDefaults(true);
+        MessagesConfig.save();
+
+        System.out.println(MessagesConfig.getValue("inventory-full"));
+        System.out.println(MessagesConfig.getValue("inventory-ful"));
 
         try {
             ItemNoteStorageUtil.loadNotes();
