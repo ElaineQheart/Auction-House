@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.data;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -88,18 +87,6 @@ public class StringUtils {
         itemEntity.remove();
         if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
         return ChatColor.RESET + name;
-    }
-
-    // function to capitalize the first letter of each word
-    public static String capitalizeWords(String input) {
-        String[] words = input.split("\\s");
-        StringBuilder result = new StringBuilder();
-        for (String word : words) {
-            result.append(Character.toTitleCase(word.charAt(0)))
-                    .append(word.substring(1))
-                    .append(" ");
-        }
-        return result.toString().trim();
     }
 
 }

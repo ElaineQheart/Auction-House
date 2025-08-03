@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public class DisplaysConfig {
 
         if(oldSet != null) {
             for (Integer displayID : oldSet) {
-                customFile.getConfigurationSection("displays").set(String.valueOf(displayID), customFile.get(String.valueOf(displayID)));
+                Objects.requireNonNull(customFile.getConfigurationSection("displays")).set(String.valueOf(displayID), customFile.get(String.valueOf(displayID)));
                 customFile.set(String.valueOf(displayID), null); // Remove the old key
             }
         }

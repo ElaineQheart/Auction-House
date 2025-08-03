@@ -3,8 +3,8 @@ package me.elaineqheart.auctionHouse.GUI.other;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.Messages;
+import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -73,13 +73,11 @@ public class AnvilGUIListener implements Listener {
         if(event.getInventory().getItem(2) != null) return;
         AnvilView view = (AnvilView) event.getView();
         if(view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-search"))) {
-            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,false), p);
-            },1);
+            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,false), p),1);
         } else {
-            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,true), p);
-            },1);
+            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,true), p),1);
         }
 
     }
