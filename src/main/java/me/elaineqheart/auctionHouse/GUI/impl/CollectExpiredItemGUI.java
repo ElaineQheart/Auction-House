@@ -7,8 +7,8 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -27,7 +27,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Collect Expired Item");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.collect-expired"));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
                     if(p.getInventory().firstEmpty() == -1){
-                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        p.sendMessage(Messages.getFormatted("chat.inventory-full"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -90,16 +90,10 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     //expired by a moderator:
                     if(note.getAdminMessage() != null) {
                         if(note.getItem().equals(ItemManager.createDirt())) {
-                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
-                            p.sendMessage(ChatColor.RED + "Yor auction was deleted by a moderator");
-                            p.sendMessage(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
-                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.sendMessage(Messages.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.closeInventory();
                         }else {
-                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
-                            p.sendMessage(ChatColor.RED + "Your auction was expired by a moderator");
-                            p.sendMessage(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
-                            p.sendMessage(ChatColor.DARK_RED + "-------------------------------------------------");
+                            p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.getInventory().addItem(note.getItem());
                             ItemNoteStorageUtil.deleteNote(note);
                             p.closeInventory();

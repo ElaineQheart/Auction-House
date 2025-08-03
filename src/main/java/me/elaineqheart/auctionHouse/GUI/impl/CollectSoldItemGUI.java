@@ -9,10 +9,10 @@ import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.data.SettingManager;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -31,7 +31,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Collect Sold Item");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.collect-sold"));
     }
 
     @Override
@@ -95,9 +95,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                         throw new RuntimeException(e);
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                    p.sendMessage(ChatColor.YELLOW + "You collected an auction for " + ChatColor.GOLD + price + SettingManager.currencySymbol + ChatColor.YELLOW + "!");
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(Messages.getFormatted("chat.collect-sold-auction", "%price%", StringUtils.formatPrice(price,-1)));
                 });
     }
 

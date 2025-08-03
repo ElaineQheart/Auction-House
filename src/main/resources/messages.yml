@@ -1,1 +1,109 @@
-inventory-full: "Your inventory is full. Please make space before continuing."
+# color codes:
+# §0: Black
+# §1: Dark Blue
+# §2: Dark Green
+# §3: Dark Aqua
+# §4: Dark Red
+# §5: Dark Purple
+# §6: Gold
+# §7: Gray
+# §8: Dark Gray
+# §9: Blue
+# §a: Green
+# §b: Aqua
+# §c: Red
+# §d: Light Purple
+# §e: Yellow
+# §f: White
+
+# §k obfuscated
+# §l bold
+# §m strikethrough
+# §n underline
+# §o italic
+# §r reset
+# &n new line
+
+# chat messages from the auction house
+chat:
+  already-sold: "§cERROR! This item has already been sold!"
+  already-sold2: "§cThis item has already been sold!"
+  non-existent: "§cERROR! This item has been removed!"
+  non-existent2: "§cThis item has been removed!"
+  not-enough-money: "§cYou don't have enough money to buy this item!"
+  inventory-full: "§cYour inventory is full!
+    &nPlease empty a slot in order to take the item!"
+  admin-expire-auction: "§b-------------------------------------------------
+    &n§aYou successfully expired the auction
+    &n§rReason: %reason%
+    &n§b-------------------------------------------------"
+  admin-delete-auction: "§b-------------------------------------------------
+    &n§aYou successfully deleted the auction
+    &n§rReason: %reason%
+    &n§b-------------------------------------------------"
+  expired-auction-by-admin: "§4-------------------------------------------------
+    &n§cYour auction was expired by a moderator
+    &n§7Reason: %reason%
+    &n§4-------------------------------------------------"
+  deleted-auction-by-admin: "§4-------------------------------------------------
+    &n§cYour auction was deleted by a moderator
+    &n§7Reason: %reason%
+    &n§4-------------------------------------------------"
+  own-auction: "This is your own auction! You cannot buy it."
+  auction-canceled: "§b-------------------------------------------------
+    &n§eYour auction was canceled!
+    &n§b-------------------------------------------------"
+  collect-sold-auction: "§b-------------------------------------------------
+    &n§eYou collected an auction for %price%!
+    &n§b-------------------------------------------------"
+  purchase-auction: "§b-------------------------------------------------
+    &n§eYou purchased an item from §7%player%§e's auction
+    &n§b-------------------------------------------------"
+  sold-message:
+    prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
+    interaction: "§f§l[CLICK]"
+
+inventory-titles:
+  admin-confirm-gui: "Confirm Action"
+  admin-menu: "Admin Menu"
+  auction-house: "Auction House"
+  cancel-auction: "Cancel Auction"
+  collect-expired: "Collect Expired Item"
+  collect-sold: "Collect Sold Item"
+  my-auctions: "My Auctions"
+  anvil-search: "Search Item"
+  anvil-admin-search: "Admin Search Item"
+  anvil-admin-expire-message: "Expire Item Reason"
+  anvil-admin-delete-message: "Delete Item Reason"
+
+items:
+  next-page:
+    name: "§aNext Page"
+    lore: "§7%page%/%pages%
+      &n
+      &n§eRight-Click to skip!
+      &n§aClick to turn the page!"
+  previous-page:
+    name: "§aPrevious Page"
+    lore: "§7%page%/%pages%
+      &n
+      &n§eRight-Click to skip!
+      &n§aClick to turn the page!"
+  search:
+    name: "§aSearch"
+    lore: "§7Find Items by name, type or enchants
+      &n
+      &n§7Filter: %filter%
+      &n
+      &n§eRight-Click to clear!
+      &n§aClick to set filter!"
+
+world:
+  npc: "§6Auction Master"
+  displays:
+    sign-interaction: "§d[CLICK]"
+    by-player: "by: "
+
+# command-feedback:
+commands-feedback:
+  usage: "§eUsage: /ah sell <price>"

@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -35,7 +36,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Admin Menu");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.admin-menu"));
     }
 
     @Override

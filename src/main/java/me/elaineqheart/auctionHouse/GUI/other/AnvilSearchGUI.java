@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.MenuType;
@@ -26,10 +27,10 @@ public class AnvilSearchGUI implements Listener {
         currentAdminNoteMap.put(player, note);
         AnvilView view = null;
         switch (type) {
-            case AH -> view = MenuType.ANVIL.create(player,"Search Item");
-            case ADMIN_AH -> view = MenuType.ANVIL.create(player,"Admin Search Item");
-            case ITEM_EXPIRE_MESSAGE -> view = MenuType.ANVIL.create(player,"Expire Item Reason");
-            case ITEM_DELETE_MESSAGE -> view = MenuType.ANVIL.create(player,"Delete Item Reason");
+            case AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-search"));
+            case ADMIN_AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-search"));
+            case ITEM_EXPIRE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("anvil-admin-expire-message"));
+            case ITEM_DELETE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("anvil-admin-delete-message"));
         }
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);

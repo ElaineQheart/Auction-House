@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -78,7 +79,7 @@ public class UpdateDisplay implements Runnable{
             for(Sign sign : signs) {
                 sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
-                sign.getSide(Side.FRONT).setLine(3, ChatColor.LIGHT_PURPLE + "[CLICK]");
+                sign.getSide(Side.FRONT).setLine(3, Messages.getFormatted("world.displays.sign-interaction"));
                 sign.update(true, false);
             }
 
@@ -115,9 +116,11 @@ public class UpdateDisplay implements Runnable{
                     data.text = (TextDisplay) world.spawnEntity(loc.clone().add(0.5, 1.9, 0.5), EntityType.TEXT_DISPLAY);
                     data.text.setVisibleByDefault(true);
                     if(data.type.equals("highest_price")) {
-                        data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                        data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
+                                Messages.getFormatted("world.displays.by-player") + playerName);
                     } else if(data.type.equals("ending_soon")) {
-                        data.text.setText(ChatColor.GREEN + "#" + rank + " " + ChatColor.WHITE + name + ChatColor.GRAY + "\nby: " + playerName);
+                        data.text.setText(ChatColor.GREEN + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
+                                Messages.getFormatted("world.displays.by-player")+ playerName);
                     }
 
                     data.text.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);

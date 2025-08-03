@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +23,7 @@ public class AnvilGUIListener implements Listener {
     public void handleClick(InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL) return;
         ItemStack paperItem = event.getInventory().getItem(0);
-        if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
+        if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return; // emptyPaper has a custom persistent data value
         event.setCancelled(true);
         AnvilView view = (AnvilView) event.getView();
         view.setRepairCost(0);
@@ -37,14 +38,15 @@ public class AnvilGUIListener implements Listener {
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);
-            switch (view.getTitle()) {
-                case "Search Item" -> AuctionHouse.getGuiManager().openGUI
-                        (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);
-                case "Admin Search Item" -> AuctionHouse.getGuiManager().openGUI
-                        (new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
-                case "Expire Item Reason" -> AuctionHouse.getGuiManager().openGUI
+            if(view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-search"))) {
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);
+            } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-search"))) {
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
+            } else if (view.getTitle().equals(Messages.getFormatted("anvil-admin-expire-message"))) {
+                AuctionHouse.getGuiManager().openGUI
                         (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
-                case "Delete Item Reason" -> AuctionHouse.getGuiManager().openGUI
+            } else if (view.getTitle().equals(Messages.getFormatted("anvil-admin-delete-message"))) {
+                AuctionHouse.getGuiManager().openGUI
                         (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
             }
 
@@ -70,11 +72,12 @@ public class AnvilGUIListener implements Listener {
         p.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
         if(event.getInventory().getItem(2) != null) return;
         AnvilView view = (AnvilView) event.getView();
-        switch (view.getTitle()) {
-            case "Search Item" -> Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+        if(view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-search"))) {
+            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,false), p);
             },1);
-            case "Admin Search Item","Expire Item Reason", "Delete Item Reason" -> Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+        } else {
+            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,true), p);
             },1);
         }

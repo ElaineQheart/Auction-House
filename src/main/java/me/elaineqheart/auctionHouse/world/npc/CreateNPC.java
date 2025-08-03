@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import org.bukkit.ChatColor;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -46,7 +46,7 @@ public class CreateNPC{
         npc.setVillagerType(Villager.Type.JUNGLE);
         npc.setAdult();
         npc.setCanPickupItems(false);
-        npc.setCustomName(ChatColor.GOLD + "Auction Master");
+        npc.setCustomName(Messages.getFormatted("world.npc"));
         npc.setCustomNameVisible(true);
         npc.setCollidable(false);
         npc.setGravity(false);

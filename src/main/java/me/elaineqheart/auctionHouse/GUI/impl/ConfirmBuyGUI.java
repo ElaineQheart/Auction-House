@@ -8,12 +8,12 @@ import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -30,7 +30,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,3*9,"Auction House");
+        return Bukkit.createInventory(null,3*9, Messages.getFormatted("inventory-titles.auction-house"));
     }
 
     @Override
@@ -73,18 +73,18 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
                     if(p.getInventory().firstEmpty() == -1) {
-                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        p.sendMessage(Messages.getFormatted("chat.inventory-full"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     //check if the item hasn't been sold yet
                     if (note.isSold()) {
-                        p.sendMessage(ChatColor.RED + "This item has already been sold!");
+                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
-                        p.sendMessage(ChatColor.RED + "This item has been removed!");
+                        p.sendMessage(Messages.getFormatted("chat.non-existent2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -92,7 +92,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     double price = note.getPrice();
                     p.closeInventory();
                     if(!note.canAfford(eco.getBalance(p))) { //extra check to make sure that they have enough coins
-                        p.sendMessage(ChatColor.RED + "You don't have enough money to buy this item!");
+                        p.sendMessage(Messages.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -106,14 +106,14 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                    p.sendMessage(ChatColor.YELLOW + "You purchased an item from " + ChatColor.GRAY + note.getPlayerName() + ChatColor.YELLOW + "'s auction!");
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(Messages.getFormatted("chat.purchase-auction", "%player%", note.getPlayerName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerName());
                     if(SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
-                        TextComponent component = new TextComponent(ChatColor.GOLD + "[Auction] " + ChatColor.GRAY + p.getName() + ChatColor.YELLOW + " bought " +
-                                 StringUtils.getItemName(note.getItem()) + ChatColor.YELLOW + " for " + StringUtils.formatPrice(price, 0) + " ");
-                        TextComponent click = new TextComponent(ChatColor.WHITE + "" + ChatColor.BOLD + "CLICK");
+                        TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix",
+                                "%player%", p.getName(),
+                                "%item%", StringUtils.getItemName(note.getItem(), p.getWorld()),
+                                "%price%", StringUtils.formatPrice(price, 0)));
+                        TextComponent click = new TextComponent(Messages.getFormatted("chat.sold-message.interaction"));
                         click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
                         seller.spigot().sendMessage(component,click);
                     }

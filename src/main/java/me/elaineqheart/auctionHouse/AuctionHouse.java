@@ -5,7 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.data.CustomConfigBannedPlayers;
-import me.elaineqheart.auctionHouse.data.messages.MessagesConfig;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
@@ -56,12 +56,9 @@ public final class AuctionHouse extends JavaPlugin {
         //Setup customConfigEntities.yml
         DisplaysConfig.setup();
 
-        MessagesConfig.setup();
-        MessagesConfig.get().options().copyDefaults(true);
-        MessagesConfig.save();
-
-        System.out.println(MessagesConfig.getValue("inventory-full"));
-        System.out.println(MessagesConfig.getValue("inventory-ful"));
+        Messages.setup();
+        Messages.get().options().copyDefaults(true);
+        Messages.save();
 
         try {
             ItemNoteStorageUtil.loadNotes();

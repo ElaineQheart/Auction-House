@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,7 +37,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Auction House");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.auction-house"));
     }
 
     @Override
@@ -104,7 +105,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Sounds.click(event);
                 if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
-                    event.getWhoClicked().sendMessage("This is your own auction! You cannot buy it.");
+                    event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
                     return;
                 }
                 AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note), (Player) event.getWhoClicked());

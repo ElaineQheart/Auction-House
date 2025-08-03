@@ -9,8 +9,8 @@ import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -58,7 +57,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"My Auctions");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.my-auctions"));
     }
 
     @Override
@@ -252,11 +251,10 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Next Page");
-        meta.setLore(List.of(ChatColor.GRAY + String.valueOf(currentPage) + "/" + auctionItemsAmount/21,
-                "",ChatColor.YELLOW + "Right-Click to skip!",
-                ChatColor.GREEN + "Click to turn the page!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.next-page.name"));
+        meta.setLore(Messages.getLoreList("items.next-page.lore",
+                "%page%", String.valueOf(currentPage),
+                "%pages%", String.valueOf(auctionItemsAmount/21)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
@@ -277,11 +275,10 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Previous Page");
-        meta.setLore(List.of(ChatColor.GRAY + String.valueOf(currentPage) + "/" + auctionItemsAmount/21,
-                "",ChatColor.YELLOW + "Right-Click to skip!",
-                ChatColor.GREEN + "Click to turn the page!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.previous-page.name"));
+        meta.setLore(Messages.getLoreList("items.previous-page.lore",
+                "%page%", String.valueOf(currentPage),
+                "%pages%", String.valueOf(auctionItemsAmount/21)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)

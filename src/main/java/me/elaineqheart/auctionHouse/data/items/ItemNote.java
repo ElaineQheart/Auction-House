@@ -37,8 +37,8 @@ public class ItemNote {
         return ItemStackConverter.decode(itemData);
     }
     public long timeLeft(){
-        // +30 seconds wait time until the item is up on auction
-        return SettingManager.auctionDuration + 30 - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
+        // +30 seconds [auctionSetupTime] wait time until the item is up on auction
+        return SettingManager.auctionDuration + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
     }
     public boolean isExpired(){
         return timeLeft()<0;

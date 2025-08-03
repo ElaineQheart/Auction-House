@@ -18,6 +18,4 @@ public class DisplayNote {
     public String playerName;
     public boolean reloaded;
 
-    public DisplayNote() {}
-
 }

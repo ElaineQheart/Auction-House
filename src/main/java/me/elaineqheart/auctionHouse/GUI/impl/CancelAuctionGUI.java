@@ -7,8 +7,8 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.Messages;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -27,7 +27,7 @@ public class CancelAuctionGUI extends InventoryGUI {
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,6*9,"Cancel Auction");
+        return Bukkit.createInventory(null,6*9, Messages.getFormatted("inventory-titles.cancel-auction"));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CancelAuctionGUI extends InventoryGUI {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
                     if(p.getInventory().firstEmpty() == -1){
-                        p.sendMessage(ChatColor.RED + "Your inventory is full!");
+                        p.sendMessage(Messages.getFormatted("chat.inventory-full"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -96,9 +96,7 @@ public class CancelAuctionGUI extends InventoryGUI {
                         throw new RuntimeException(e);
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
-                    p.sendMessage(ChatColor.YELLOW + "Your auction was canceled!");
-                    p.sendMessage(ChatColor.AQUA + "-------------------------------------------------");
+                    p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                 });
     }
 

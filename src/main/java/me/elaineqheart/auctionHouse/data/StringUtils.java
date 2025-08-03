@@ -1,6 +1,11 @@
 package me.elaineqheart.auctionHouse.data;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 public class StringUtils {
@@ -35,19 +40,25 @@ public class StringUtils {
             } else {
                 d = String.valueOf(days);
             }
-            return (ChatColor.YELLOW+d+"d "+h+"h "+m+"m "+s+"s");
+            return (ChatColor.YELLOW+d+SettingManager.formatTimeCharacters.charAt(0)+" "+
+                    h+SettingManager.formatTimeCharacters.charAt(1)+" "+
+                    m+SettingManager.formatTimeCharacters.charAt(2)+" "+
+                    s+SettingManager.formatTimeCharacters.charAt(3));
         } else {
-            return (ChatColor.YELLOW+h+"h "+m+"m "+s+"s");
+            return (ChatColor.YELLOW+h+SettingManager.formatTimeCharacters.charAt(1)+" "+
+                    m+SettingManager.formatTimeCharacters.charAt(2)+" "+
+                    s+SettingManager.formatTimeCharacters.charAt(3));
         }
     }
+    //dhms
 
     public static String getTimeTrimmed(long seconds) { //output example: 4h
         if(seconds < 60) {
-            return seconds + "s";
+            return seconds + SettingManager.formatTimeCharacters.substring(3,4);
         } else if(seconds < 60*60) {
-            return (int)(seconds/60) + "m";
+            return (int)(seconds/60) + SettingManager.formatTimeCharacters.substring(2,3);
         } else {
-            return (int)(seconds/60/60) + "h";
+            return (int)(seconds/60/60) + SettingManager.formatTimeCharacters.substring(1,2);
         }
     }
 
@@ -59,13 +70,24 @@ public class StringUtils {
         return ChatColor.GOLD + formatted.replace("{DOT}", SettingManager.formatNumbersDot);
     }
     public static String formatPrice(double price, int decimalPlaces) {
-        return formatNumber(price,decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        if(decimalPlaces >= 0) {
+            return formatNumber(price,decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        }
+        if(price % 1 == 0) {
+            // if the price is a whole number, format it without decimal places
+            return formatNumber(price, 0) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        } else {
+            return formatNumber(price, 2) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        }
     }
 
-    public static String getItemName(ItemStack item) {
-        if(item.getItemMeta() == null) return null;
-        return item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() :
-                ChatColor.WHITE + capitalizeWords((item.getType().toString().toLowerCase()).replace("_", " "));
+    public static String getItemName(ItemStack item, World world) {
+        Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
+        itemEntity.setItemStack(item);
+        String name = itemEntity.getName();
+        itemEntity.remove();
+        if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
+        return ChatColor.RESET + name;
     }
 
     // function to capitalize the first letter of each word
