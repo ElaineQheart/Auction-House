@@ -82,7 +82,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     private InventoryButton collectItem() {
         double price = (double) ((int) (note.getPrice() * 100 * (1 - SettingManager.taxRate))) /100;
         return new InventoryButton()
-                .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price,2)))
+                .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price,-1)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Economy eco = VaultHook.getEconomy();
@@ -95,7 +95,8 @@ public class CollectSoldItemGUI extends InventoryGUI {
                         throw new RuntimeException(e);
                     }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
-                    p.sendMessage(Messages.getFormatted("chat.collect-sold-auction", "%price%", StringUtils.formatPrice(price,-1)));
+                    p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
+                            "%price%", StringUtils.formatPrice(price,-1)));
                 });
     }
 

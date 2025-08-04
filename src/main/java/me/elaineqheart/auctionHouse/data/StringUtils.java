@@ -62,22 +62,16 @@ public class StringUtils {
     }
 
     public static String formatNumber(double number, int decimalPlaces) {
+        // if the price is a whole number, format it without decimal places
+        if(decimalPlaces < 0) decimalPlaces = number % 1 == 0 ? 0 : 2;
         String formatted = String.format("%,.0" + decimalPlaces + "f", number);
         formatted = formatted.replace(",", "{COMMA}");
         formatted = formatted.replace(".", "{DOT}");
         formatted = formatted.replace("{COMMA}", SettingManager.formatNumbersComma);
-        return ChatColor.GOLD + formatted.replace("{DOT}", SettingManager.formatNumbersDot);
+        return ChatColor.GOLD + formatted.replace("{DOT}", SettingManager.formatNumbersDot) + ChatColor.RESET;
     }
     public static String formatPrice(double price, int decimalPlaces) {
-        if(decimalPlaces >= 0) {
-            return formatNumber(price,decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
-        }
-        if(price % 1 == 0) {
-            // if the price is a whole number, format it without decimal places
-            return formatNumber(price, 0) + ChatColor.YELLOW + SettingManager.currencySymbol;
-        } else {
-            return formatNumber(price, 2) + ChatColor.YELLOW + SettingManager.currencySymbol;
-        }
+        return formatNumber(price, decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
     }
 
     public static String getItemName(ItemStack item, World world) {

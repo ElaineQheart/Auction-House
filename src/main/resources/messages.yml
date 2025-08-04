@@ -97,6 +97,189 @@ items:
       &n
       &n§eRight-Click to clear!
       &n§aClick to set filter!"
+  locked-slot:
+    name: "§cLocked Slot"
+  refresh:
+    name: "§aRefresh"
+    lore: "§7Click to refresh the menu"
+  back-main-menu:
+    name: "§aMain Menu"
+    lore: "§7Click to go back!"
+  back-my-auctions:
+    name: "§aMy Auctions"
+    lore: "§7Click to go back!"
+  info:
+    name: "§aInfo"
+    lore: "§7To set up a new auction use
+      &n§7/ah sell 1000
+      &n§7while holding the item to sell in your hand
+      &n§7The number will be the price of the item
+      &n§7Current tax is %tax%"
+  my-auctions:
+    name: "§aMy Auctions"
+    lore: "§7Click to view your auctions!"
+  sort-highest-price:
+    name: "§aSort"
+    lore: "
+      &n§b► Highest Price
+      &n§7 Lowest Price
+      &n§7 Ending Soon
+      &n§7 Alphabetical
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  sort-lowest-price:
+    name: "§aSort"
+    lore: "
+      &n§7 Highest Price
+      &n§b► Lowest Price
+      &n§7 Ending Soon
+      &n§7 Alphabetical
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  sort-ending-soon:
+    name: "§aSort"
+    lore: "
+      &n§7 Highest Price
+      &n§7 Lowest Price
+      &n§b► Ending Soon
+      &n§7 Alphabetical
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  sort-alphabetical:
+    name: "§aSort"
+    lore: "
+      &n§7 Highest Price
+      &n§7 Lowest Price
+      &n§7 Ending Soon
+      &n§b► Alphabetical
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  my-sort-all:
+    name: "§aSort"
+    lore: "
+      &n§b► All Auctions
+      &n§7 Sold Items
+      &n§7 Expired Items
+      &n§7 Active Auctions
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  my-sort-sold:
+    name: "§aSort"
+    lore: "
+      &n§7 All Auctions
+      &n§b► Sold Items
+      &n§7 Expired Items
+      &n§7 Active Auctions
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  my-sort-expired:
+    name: "§aSort"
+    lore: "
+      &n§7 All Auctions
+      &n§7 Sold Items
+      &n§b► Expired Items
+      &n§7 Active Auctions
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  my-sort-active:
+    name: "§aSort"
+    lore: "
+      &n§7 All Auctions
+      &n§7 Sold Items
+      &n§7 Expired Items
+      &n§b► Active Auctions
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch sort!"
+  cancel:
+    name: "§cCancel"
+  collect-expired:
+    name: "§cCollect Expired Item"
+    lore: "
+      &n§eClick to collect!"
+  cancel-auction:
+    name: "§cCancel Auction Item"
+    lore: "
+      &n§eClick to collect!"
+  admin-info:
+    name: "§aInfo"
+    lore: "§7Click on an item to expire or delete it
+      &n§7Expired items can be collected again by the player
+      &n§7Deleted items will be removed from the auction house
+      &n§7and you will get them in your inventory"
+  admin-cancel-auction:
+    name: "§cCancel Auction Item"
+    lore: "
+      &n§eThe player won't get the item back! You will collect it!"
+  admin-expire-auction:
+    name: "§eExpire Auction Item"
+    lore: "
+      &n§eClick to make it expire!"
+  confirm:
+    name: "§aConfirm"
+  deleted:
+    name: "§cCanceled Item"
+  auction:
+    lore:
+      default: "§8------------------
+        &n§7Seller: %player%
+        &n§7Price: %price%
+        &n "
+      own-auction: "§aThis is your own item!
+        &n "
+      admin-deleted: "§cDeleted by a moderator!"
+      admin-expired: "§cExpired by a moderator!"
+      admin-message: "§7Reason: %reason%"
+      expired: "§cExpired!"
+      sold: "§6Sold!
+        &n§7Buyer: %buyer%"
+      waiting-list: "Auction starting in: %time%"
+      active: "Ends in: %time%"
+      buying-item: "§8------------------
+        &n§e§nBUYING ITEM!"
+  admin-expire-item:
+    lore: "§8------------------
+      &n§7Seller: %player%
+      &n§7Price: %price%
+      &n
+      &n§cExpired by a moderator!
+      &n§7Reason: %reason%"
+  admin-delete-item:
+    lore: "§8------------------
+      &n§7Seller: %player%
+      &n§7Price: %price%
+      &n
+      &n§cDeleted by a moderator!
+      &n§7Reason: %reason%"
+  buy-item:
+    name: "§6Buy Item right now!"
+    lore: "
+      &n§7Price: %price%
+      &n
+      &n§eClick to buy!"
+  not-enough-money:
+    name: "§6Buy Item right now!"
+    lore: "
+      &n§7You need %price%§7 to buy this item!
+      &n
+      &n§cNot enough money!"
+  confirm-buy:
+    name: "§aConfirm"
+    lore: "§7Cost: %price%"
+  collect-sold:
+    name: "§aCollect Sold Item"
+    lore: "
+      &n§7Value with taxes: %price%
+      &n
+      &n§eClick to collect!"
+
 
 world:
   npc: "§6Auction Master"

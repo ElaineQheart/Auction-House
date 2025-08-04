@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.data.items;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
+import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.data.SettingManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import org.bukkit.Bukkit;
@@ -82,7 +83,7 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Locked Slot");
+        meta.setItemName(Messages.getFormatted("items.locked-slot.name"));
         item.setItemMeta(meta);
         lockedSlot = item;
     }
@@ -90,8 +91,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Refresh");
-        meta.setLore(List.of(ChatColor.GRAY + "Click to refresh the menu"));
+        meta.setItemName(Messages.getFormatted("items.refresh.name"));
+        meta.setLore(Messages.getLoreList("items.refresh.lore"));
         item.setItemMeta(meta);
         refresh = item;
     }
@@ -99,8 +100,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Main Menu");
-        meta.setLore(List.of(ChatColor.GRAY + "Click to go back!"));
+        meta.setItemName(Messages.getFormatted("items.back-main-menu.name"));
+        meta.setLore(Messages.getLoreList("items.back-main-menu.lore"));
         item.setItemMeta(meta);
         backToMainMenu = item;
     }
@@ -108,8 +109,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "My Auctions");
-        meta.setLore(List.of(ChatColor.GRAY + "Click to go back!"));
+        meta.setItemName(Messages.getFormatted("items.back-my-auctions.name"));
+        meta.setLore(Messages.getLoreList("items.back-my-auctions.lore"));
         item.setItemMeta(meta);
         backToMyAuctions = item;
     }
@@ -117,14 +118,10 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Info");
-        meta.setLore(List.of(ChatColor.GRAY + "To set up a new auction use",
-                ChatColor.GRAY + "/ah sell 1000",
-                ChatColor.GRAY + "while holding the item to sell in your hand.",
-                ChatColor.GRAY + "the number will be the price of the item",
-                //cast the tax value to int and then to double to avoid floating point issues
-                ChatColor.GRAY + "Current tax is " + ChatColor.GOLD + (double)(int)(AuctionHouse.getPlugin().getConfig().getDouble("tax") * 1000) / 10 + "%"
-        ));
+        meta.setItemName(Messages.getFormatted("items.info.name"));
+        //cast the tax value to int and then to double to avoid floating point issues
+        String tax = ChatColor.GOLD + "" + (double)(int)(AuctionHouse.getPlugin().getConfig().getDouble("tax") * 1000) / 10 + "%";
+        meta.setLore(Messages.getLoreList("items.info.lore", "%tax%", tax));
         item.setItemMeta(meta);
         info = item;
     }
@@ -132,8 +129,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.ENDER_CHEST);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "My Auctions");
-        meta.setLore(List.of(ChatColor.GRAY + "Click to view your auctions!"));
+        meta.setItemName(Messages.getFormatted("items.my-auctions.name"));
+        meta.setLore(Messages.getLoreList("items.my-auctions.lore"));
         item.setItemMeta(meta);
         myAuction = item;
     }
@@ -141,14 +138,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.AQUA + "► Highest Price",
-                ChatColor.GRAY + " Lowest Price",
-                ChatColor.GRAY + " Ending soon",
-                ChatColor.GRAY + " Alphabetical", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.sort-highest-price.name"));
+        meta.setLore(Messages.getLoreList("items.sort-highest-price.lore"));
         item.setItemMeta(meta);
         sortHighestPrice = item;
     }
@@ -156,14 +147,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " Highest Price",
-                ChatColor.AQUA + "► Lowest Price",
-                ChatColor.GRAY + " Ending soon",
-                ChatColor.GRAY + " Alphabetical", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.sort-lowest-price.name"));
+        meta.setLore(Messages.getLoreList("items.sort-lowest-price.lore"));
         item.setItemMeta(meta);
         sortLowestPrice = item;
     }
@@ -171,14 +156,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " Highest Price",
-                ChatColor.GRAY + " Lowest Price",
-                ChatColor.AQUA + "► Ending soon",
-                ChatColor.GRAY + " Alphabetical", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.sort-ending-soon.name"));
+        meta.setLore(Messages.getLoreList("items.sort-ending-soon.lore"));
         item.setItemMeta(meta);
         sortEndingSoon = item;
     }
@@ -186,14 +165,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " Highest Price",
-                ChatColor.GRAY + " Lowest Price",
-                ChatColor.GRAY + " Ending soon",
-                ChatColor.AQUA + "► Alphabetical", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.sort-alphabetical.name"));
+        meta.setLore(Messages.getLoreList("items.sort-alphabetical.lore"));
         item.setItemMeta(meta);
         sortAlphabetical = item;
     }
@@ -213,14 +186,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.AQUA + "► All Auctions",
-                ChatColor.GRAY + " Sold Items",
-                ChatColor.GRAY + " Expired Items",
-                ChatColor.GRAY + " Active Auctions", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.my-sort-all.name"));
+        meta.setLore(Messages.getLoreList("items.my-sort-all.lore"));
         item.setItemMeta(meta);
         mySortAllAuctions = item;
     }
@@ -228,14 +195,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " All Auctions",
-                ChatColor.AQUA + "► Sold Items",
-                ChatColor.GRAY + " Expired Items",
-                ChatColor.GRAY + " Active Auctions", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.my-sort-sold.name"));
+        meta.setLore(Messages.getLoreList("items.my-sort-sold.lore"));
         item.setItemMeta(meta);
         mySortSoldItems = item;
     }
@@ -243,14 +204,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " All Auctions",
-                ChatColor.GRAY + " Sold Items",
-                ChatColor.AQUA + "► Expired Items",
-                ChatColor.GRAY + " Active Auctions", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.my-sort-expired.name"));
+        meta.setLore(Messages.getLoreList("items.my-sort-expired.lore"));
         item.setItemMeta(meta);
         mySortExpiredItems = item;
     }
@@ -258,14 +213,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Sort");
-        meta.setLore(List.of("", ChatColor.GRAY + " All Auctions",
-                ChatColor.GRAY + " Sold Items",
-                ChatColor.GRAY + " Expired Items",
-                ChatColor.AQUA + "► Active Auctions", "",
-                ChatColor.YELLOW + "Right-Click to go backwards!",
-                ChatColor.GREEN + "Click to switch sort!"
-        ));
+        meta.setItemName(Messages.getFormatted("items.my-sort-active.name"));
+        meta.setLore(Messages.getLoreList("items.my-sort-active.lore"));
         item.setItemMeta(meta);
         mySortActiveAuctions = item;
     }
@@ -282,7 +231,7 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.RED_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Cancel");
+        meta.setItemName(Messages.getFormatted("items.cancel.name"));
         item.setItemMeta(meta);
         cancel = item;
     }
@@ -290,8 +239,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.RED_DYE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Collect Expired Item");
-        meta.setLore(List.of("", ChatColor.YELLOW + "Click to collect!"));
+        meta.setItemName(Messages.getFormatted("items.collect-expired.name"));
+        meta.setLore(Messages.getLoreList("items.collect-expired.lore"));
         item.setItemMeta(meta);
         collectExpiredItem = item;
     }
@@ -299,8 +248,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.RED_CONCRETE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Cancel Auction Item");
-        meta.setLore(List.of("", ChatColor.YELLOW + "Click to collect!"));
+        meta.setItemName(Messages.getFormatted("items.cancel-auction.name"));
+        meta.setLore(Messages.getLoreList("items.cancel-auction.lore"));
         item.setItemMeta(meta);
         cancelAuction = item;
     }
@@ -308,12 +257,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.STRUCTURE_BLOCK);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Info");
-        meta.setLore(List.of(ChatColor.GRAY + "Click on an item to expire or delete it",
-                ChatColor.GRAY + "Expired items can be collected again by the player",
-                ChatColor.GRAY + "Deleted items will be removed from the auction house",
-                ChatColor.GRAY + "and you will get them in your inventory"
-        ));
+        meta.setItemName(Messages.getFormatted("items.admin-info.name"));
+        meta.setLore(Messages.getLoreList("items.admin-info.lore"));
         item.setItemMeta(meta);
         commandBlockInfo = item;
     }
@@ -321,8 +266,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.RED_CONCRETE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Cancel Auction Item");
-        meta.setLore(List.of("", ChatColor.YELLOW + "The player won't get the item back! You will collect it!"));
+        meta.setItemName(Messages.getFormatted("items.admin-cancel-auction.name"));
+        meta.setLore(Messages.getLoreList("items.admin-cancel-auction.lore"));
         item.setItemMeta(meta);
         adminCancelAuction = item;
     }
@@ -330,8 +275,8 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.RED_DYE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Expire Auction Item");
-        meta.setLore(List.of("", ChatColor.YELLOW + "Click to make it expire!"));
+        meta.setItemName(Messages.getFormatted("items.admin-expire-auction.name"));
+        meta.setLore(Messages.getLoreList("items.admin-expire-auction.lore"));
         item.setItemMeta(meta);
         adminExpireAuction = item;
     }
@@ -339,7 +284,7 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.GREEN_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Confirm");
+        meta.setItemName(Messages.getFormatted("items.confirm.name"));
         item.setItemMeta(meta);
         confirm = item;
     }
@@ -348,7 +293,7 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.DIRT);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.RED + "Canceled Item");
+        meta.setItemName(Messages.getFormatted("items.deleted.name"));
         item.setItemMeta(meta);
         return item;
     }
@@ -358,32 +303,33 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "------------------");
-        lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
-        lore.add("");
+        lore.addAll(Messages.getLoreList("items.auction.lore.default",
+                "%player%", note.getPlayerName(),
+                "%price%", StringUtils.formatNumber(note.getPrice(),0)));
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
-            lore.add(ChatColor.GREEN + "This is your own item!");
-            lore.add("");
+            lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
         if(note.isExpired() && !note.isSold()){
             if(note.getAdminMessage()!=null){
                 if(note.getItem().equals(createDirt())){
-                    lore.add(ChatColor.RED + "Deleted by a moderator!");
+                    lore.addAll(Messages.getLoreList("items.auction.lore.admin-deleted"));
                 }else {
-                    lore.add(ChatColor.RED + "Expired by a moderator!");
+                    lore.addAll(Messages.getLoreList("items.auction.lore.admin-expired"));
                 }
-                lore.add(ChatColor.GRAY + "Reason: " + note.getAdminMessage());
+                lore.addAll(Messages.getLoreList("items.auction.lore.admin-message",
+                        "%reason%", note.getAdminMessage()));
             }else {
-                lore.add(ChatColor.RED + "Expired!");
+                lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
             }
         }else if(note.isSold()){
-            lore.add(ChatColor.GOLD + "Sold!");
-            lore.add(ChatColor.GRAY + "Buyer: " + note.getBuyerName());
+            lore.addAll(Messages.getLoreList("items.auction.lore.sold",
+                    "%buyer%", note.getBuyerName()));
         }else if(note.isOnWaitingList()){
-            lore.add("Auction starting in: " + StringUtils.getTime(note.timeLeft()- SettingManager.auctionDuration, false));
+            lore.addAll(Messages.getLoreList("items.auction.lore.waiting-list",
+                    "%time%", StringUtils.getTime(note.timeLeft() - SettingManager.auctionDuration, false)));
         }else{
-            lore.add("Ends in: " + StringUtils.getTime(note.timeLeft(), false));
+            lore.addAll(Messages.getLoreList("items.auction.lore.active",
+                    "%time%", StringUtils.getTime(note.timeLeft(), false)));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -395,8 +341,7 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "------------------");
-        lore.add(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + "BUYING ITEM!");
+        lore.addAll(Messages.getLoreList("items.auction.lore.buying-item"));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
@@ -407,12 +352,10 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "------------------");
-        lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
-        lore.add("");
-        lore.add(ChatColor.RED + "Expired by a moderator!");
-        lore.add(ChatColor.GRAY + "Reason: " + reason);
+        lore.addAll(Messages.getLoreList("items.admin-expire-item.lore",
+                "%player%", note.getPlayerName(),
+                "%price%", StringUtils.formatNumber(note.getPrice(),0),
+                "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
@@ -423,12 +366,10 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.add(ChatColor.DARK_GRAY + "------------------");
-        lore.add(ChatColor.GRAY + "Seller: " + note.getPlayerName());
-        lore.add(ChatColor.GRAY + "Price: " + StringUtils.formatNumber(note.getPrice(),0));
-        lore.add("");
-        lore.add(ChatColor.RED + "Deleted by a moderator!");
-        lore.add(ChatColor.GRAY + "Reason: " + reason);
+        lore.addAll(Messages.getLoreList("items.admin-delete-item.lore",
+                "%player%", note.getPlayerName(),
+                "%price%", StringUtils.formatNumber(note.getPrice(),0),
+                "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
@@ -437,10 +378,9 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.TURTLE_SCUTE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GOLD + "Buy Item right now!");
-        meta.setLore(List.of("", ChatColor.GRAY + "Price: " + ChatColor.GOLD + price,
-                "",
-                ChatColor.YELLOW + "Click to buy!"));
+        meta.setItemName(Messages.getFormatted("items.buy-item.name"));
+        meta.setLore(Messages.getLoreList("items.buy-item.lore",
+                        "%price%", price));
         item.setItemMeta(meta);
         return item;
     }
@@ -448,10 +388,9 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.ARMADILLO_SCUTE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GOLD + "Buy Item right now!");
-        meta.setLore(List.of("", ChatColor.GRAY + "Price: " + price,
-                "",
-                ChatColor.RED + "Not enough money!"));
+        meta.setItemName(Messages.getFormatted("items.not-enough-money.name"));
+        meta.setLore(Messages.getLoreList("items.not-enough-money.lore",
+                "%price%", price));
         item.setItemMeta(meta);
         return item;
     }
@@ -459,8 +398,9 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.GREEN_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Confirm");
-        meta.setLore(List.of(ChatColor.GRAY + "Cost: " + price));
+        meta.setItemName(Messages.getFormatted("items.confirm-buy.name"));
+        meta.setLore(Messages.getLoreList("items.confirm-buy.lore",
+                        "%price%", price));
         item.setItemMeta(meta);
         return item;
     }
@@ -468,10 +408,9 @@ public class ItemManager {
         ItemStack item = new ItemStack(Material.DIAMOND);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(ChatColor.GREEN + "Collect Sold Item");
-        meta.setLore(List.of("", ChatColor.GRAY + "Value with taxes: " + price,
-                "",
-                ChatColor.YELLOW + "Click to collect!"));
+        meta.setItemName(Messages.getFormatted("items.collect-sold.name"));
+        meta.setLore(Messages.getLoreList("items.collect-sold.lore",
+                        "%price%", price));
         item.setItemMeta(meta);
         return item;
     }
