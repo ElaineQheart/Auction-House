@@ -14,10 +14,7 @@ import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,6 +31,14 @@ import java.util.Objects;
 public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if(commandSender instanceof ConsoleCommandSender) {
+            if(strings.length == 1 && (strings[0].equals(Messages.getFormatted("commands.reload")))) {
+                reload();
+                AuctionHouse.getPlugin().getLogger().info("reloaded files");
+                return true;
+            }
+        }
+
         if(commandSender instanceof Player p){
             if(strings.length==0) {
                 if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
@@ -41,10 +46,10 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
             }
-            if(strings.length==1 && strings[0].equals("sell")) {
+            if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
                 p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
-            if(strings.length==2 && strings[0].equals("sell")) {
+            if(strings.length==2 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
                 if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
                     return true;
                 }
@@ -94,20 +99,22 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             if(strings.length == 2 && strings[0].equals("view")) {
                 String noteId = strings[1];
                 ItemNote note = ItemNoteStorageUtil.findNoteByID(noteId);
-                if(note == null) return true;
+                if(note == null
+                    || !note.getPlayerUUID().equals(p.getUniqueId())
+                    || note.getBuyerName() == null) return true;
                 Sounds.click(p);
                 AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS), p);
             }
             // /ah admin
             if(p.hasPermission(SettingManager.permissionModerate) && strings.length > 0) {
-                if(strings.length == 1 && strings[0].equals("admin")) {
+                if(strings.length == 1 && strings[0].equals(Messages.getFormatted("commands.admin"))) {
                     AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, true), p);
-                } else if (strings.length < 4 && strings[0].equals("ban")) {
+                } else if (strings.length < 4 && strings[0].equals(Messages.getFormatted("commands.ban"))) {
                     p.sendMessage(Messages.getFormatted("command-feedback.ban-usage"));
-                } else if (strings.length != 2 && strings[0].equals("pardon")) {
+                } else if (strings.length != 2 && strings[0].equals(Messages.getFormatted("commands.pardon"))) {
                     p.sendMessage(Messages.getFormatted("command-feedback.pardon-usage"));
                     // /ah ban player:
-                } else if (strings.length > 3 && strings[0].equals("ban")) {
+                } else if (strings.length > 3 && strings[0].equals(Messages.getFormatted("commands.ban"))) {
                     Player targetPlayer = Bukkit.getPlayer(strings[1]);
                     if (targetPlayer==null) {
                         p.sendMessage(Messages.getFormatted("command-feedback.player-not-found"));
@@ -136,7 +143,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         p.sendMessage(Messages.getFormatted("command-feedback.invalid-number4"));
                     }
                     // /ah pardon player:
-                } else if (strings.length == 2 && strings[0].equals("pardon")) {
+                } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.pardon"))) {
                     String input = strings[1];
                     ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
                     if (section == null) {
@@ -157,24 +164,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     }
                     p.sendMessage(Messages.getFormatted("command-feedback.not-banned"));
 
-                } else if (strings[0].equals("reload")) {
-                    try {
-                        ItemNoteStorageUtil.loadNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    CustomConfigBannedPlayers.reload();
-                    AuctionHouse.getPlugin().reloadConfig();
-                    SettingManager.loadData();
-                    DisplaysConfig.reload();
-                    UpdateDisplay.reload();
-                    Messages.reload();
-
+                } else if (strings[0].equals(Messages.getFormatted("commands.reload"))) {
+                    reload();
                     p.sendMessage(Messages.getFormatted("command-feedback.reload"));
                     AuctionHouse.getPlugin().getLogger().info("reloaded");
                     return true;
 
-                } else if (strings[0].equals("summon")) {
+                } else if (strings[0].equals(Messages.getFormatted("commands.summon"))) {
                     if(strings.length < 2) {
                         p.sendMessage(Messages.getFormatted("command-feedback.summon-usage"));
                         return true;
@@ -185,13 +181,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     Location blockLoc = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 
 
-                    if(strings[1].equals("npc")) {
+                    if(strings[1].equals(Messages.getFormatted("commands.npc"))) {
                         if(strings.length < 4) {
                             p.sendMessage(Messages.getFormatted("command-feedback.npc-usage"));
                             return true;
                         }
                         CreateNPC.createAuctionMaster(middleBlockLoc, strings[3]);
-                    } else if(strings[1].equals("display")) {
+                    } else if(strings[1].equals(Messages.getFormatted("commands.display"))) {
                         if(strings.length < 4) {
                             p.sendMessage(Messages.getFormatted("command-feedback.display-usage"));
                             return true;
@@ -214,13 +210,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                                 return true;
                             }
                         }
-                        switch (strings[2]) {
-                            case "highest_price":
-                                CreateDisplay.createDisplayHighestPrice(blockLoc, itemNumber);
-                                break;
-                            case "ending_soon":
-                                CreateDisplay.createDisplayEndingSoon(blockLoc, itemNumber);
-                                break;
+                        if(strings[2].equals(Messages.getFormatted("commands.highest_price"))) {
+                            CreateDisplay.createDisplayHighestPrice(blockLoc, itemNumber);
+                        } else if (strings[2].equals(Messages.getFormatted("commands.ending_soon"))) {
+                            CreateDisplay.createDisplayEndingSoon(blockLoc, itemNumber);
+                        } else {
+                            p.sendMessage(Messages.getFormatted("command-feedback.display-usage"));
+                            return true;
                         }
                     }
                 }
@@ -236,13 +232,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         List<String> params = new ArrayList<>();
         if(strings.length==1) {
             //check for every item if it's half typed out, then add accordingly to the params list
-            List<String> assetParams = new ArrayList<>(List.of(new String[]{"sell"}));
+            List<String> assetParams = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.sell")}));
             if(commandSender.hasPermission(SettingManager.permissionModerate)) {
-                assetParams.add("admin");
-                assetParams.add("ban");
-                assetParams.add("pardon");
-                assetParams.add("reload");
-                assetParams.add("summon");
+                assetParams.add(Messages.getFormatted("commands.admin"));
+                assetParams.add(Messages.getFormatted("commands.ban"));
+                assetParams.add(Messages.getFormatted("commands.pardon"));
+                assetParams.add(Messages.getFormatted("commands.reload"));
+                assetParams.add(Messages.getFormatted("commands.summon"));
             }
             for (String p : assetParams) {
                 if (p.indexOf(strings[0]) == 0){
@@ -251,11 +247,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             }
 
         }
-        if(strings.length == 2 && strings[0].equals("ban")) {
+        if(strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.ban"))) {
             for (Player p : Bukkit.getOnlinePlayers()) {
                 params.add(p.getDisplayName());
             }
-        } else if (strings.length == 2 && strings[0].equals("pardon")) {
+        } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.pardon"))) {
             ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
             if (section != null) {
                 for(String key : section.getKeys(false)) {
@@ -263,29 +259,34 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     params.add(CustomConfigBannedPlayers.get().getString(path));
                 }
             }
-        } else if (strings.length == 2 && strings[0].equals("summon")) {
-            List<String> summonTypes = new ArrayList<>(List.of(new String[]{"npc", "display"}));
+        } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.summon"))) {
+            List<String> summonTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.npc"),
+                    Messages.getFormatted("commands.display")}));
             for (String p : summonTypes) {
                 if (p.indexOf(strings[1]) == 0){
                     params.add(p);
                 }
             }
-        } else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("display")) {
-            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"highest_price", "ending_soon"}));
+        } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.summon"))
+                && strings[1].equals(Messages.getFormatted("commands.display"))) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.highest_price"),
+                    Messages.getFormatted("commands.ending_soon")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0){
                     params.add(p);
                 }
             }
-        } else if (strings.length == 3 && strings[0].equals("summon") && strings[1].equals("npc")) {
-            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"facing"}));
+        } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.summon"))
+                && strings[1].equals(Messages.getFormatted("commands.npc"))) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.facing")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0) {
                     params.add(p);
                 }
             }
-        } else if (strings.length == 4 && strings[0].equals("summon") && strings[1].equals("npc")) {
-            List<String> displayTypes = new ArrayList<>(List.of(new String[]{"north", "south", "west", "east"}));
+        } else if (strings.length == 4 && strings[0].equals(Messages.getFormatted("commands.summon")) && strings[1].equals(Messages.getFormatted("commands.npc"))) {
+            List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.north"), Messages.getFormatted("commands.east"),
+                    Messages.getFormatted("commands.south"), Messages.getFormatted("commands.west")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[3]) == 0) {
                     params.add(p);
@@ -293,5 +294,20 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             }
         }
         return params;
+    }
+
+
+    public static void reload() {
+        try {
+            ItemNoteStorageUtil.loadNotes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        CustomConfigBannedPlayers.reload();
+        AuctionHouse.getPlugin().reloadConfig();
+        SettingManager.loadData();
+        DisplaysConfig.reload();
+        UpdateDisplay.reload();
+        Messages.reload();
     }
 }

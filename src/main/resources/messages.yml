@@ -287,7 +287,23 @@ world:
     sign-interaction: "§d[CLICK]"
     by-player: "by: "
 
-# command-feedback:
+commands:
+  sell: "sell"
+  admin: "admin"
+  ban: "ban"
+  pardon: "pardon"
+  reload: "reload"
+  summon: "summon"
+  npc: "npc"
+  display: "display"
+  highest_price: "highest-price"
+  ending_soon: "ending-soon"
+  facing: "facing"
+  north: "north"
+  east: "east"
+  south: "south"
+  west: "west"
+
 command-feedback:
   usage: "§eUsage: /ah sell <price>"
   reached-max-auctions: "§eYou can only have %limit% auctions at a time"
