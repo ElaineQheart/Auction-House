@@ -3,7 +3,7 @@ tax: 0.01 # 1% tax
 auction-duration: 60*60*48 # the time an auction lasts in seconds
 auction-setup-time: 30 # the time it takes to put an item on auction
 filler-item: "BLACK_STAINED_GLASS_PANE"
-format-numbers: "#,###.##" # this character is used to format numbers, e.g. 9,999,999.99
+format-numbers: "#,###.##" # this is used to format numbers. Here you can learn how to do it: https://www.gooddata.com/docs/cloud/create-metrics/format-numbers/
 format-time-characters: "dhms" # these characters are used to format time, e.g. 1d 2h 3m 4s
 default-max-auctions: 10
 sold-message: true # send a message to the player when one of their auctions is sold

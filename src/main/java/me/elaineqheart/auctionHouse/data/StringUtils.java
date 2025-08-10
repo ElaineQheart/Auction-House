@@ -65,8 +65,7 @@ public class StringUtils {
 
     public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
-        DecimalFormat formatter = new DecimalFormat(SettingManager.formatNumbers);
-        return ChatColor.GOLD + formatter.format(number) + ChatColor.RESET;
+        return ChatColor.GOLD + SettingManager.formatter.format(number) + ChatColor.RESET;
     }
     public static String formatPrice(double price) {
         return formatNumber(price) + ChatColor.YELLOW + SettingManager.currencySymbol;
