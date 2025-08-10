@@ -68,7 +68,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
     }
     private InventoryButton confirm(){
         return new InventoryButton()
-                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(note.getPrice(),0)))
+                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(note.getPrice())))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
@@ -112,7 +112,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix",
                                 "%player%", p.getName(),
                                 "%item%", StringUtils.getItemName(note.getItem(), p.getWorld()),
-                                "%price%", StringUtils.formatPrice(price, 0)));
+                                "%price%", StringUtils.formatPrice(price)));
                         TextComponent click = new TextComponent(Messages.getFormatted("chat.sold-message.interaction"));
                         click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
                         seller.spigot().sendMessage(component,click);

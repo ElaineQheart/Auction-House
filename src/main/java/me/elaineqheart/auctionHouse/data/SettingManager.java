@@ -10,8 +10,7 @@ public class SettingManager {
     public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
     public static String fillerItem;
-    public static String formatNumbersComma;
-    public static String formatNumbersDot;
+    public static String formatNumbers;
     public static int defaultMaxAuctions;
     public static boolean soldMessageEnabled;
     public static String formatTimeCharacters;
@@ -30,9 +29,7 @@ public class SettingManager {
         fillerItem = c.getString("filler-item", "BLACK_STAINED_GLASS_PANE");
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
-        String format = c.getString("format-numbers", "#,###.##");
-        formatNumbersComma = String.valueOf(format.charAt(1));
-        formatNumbersDot = String.valueOf(format.charAt(5));
+        formatNumbers = c.getString("format-numbers", "#,###.##");
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
     }

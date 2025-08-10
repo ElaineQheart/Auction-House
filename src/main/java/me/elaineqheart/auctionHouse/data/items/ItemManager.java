@@ -305,7 +305,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.addAll(Messages.getLoreList("items.auction.lore.default",
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice(),0)));
+                "%price%", StringUtils.formatNumber(note.getPrice())));
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
@@ -354,7 +354,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.addAll(Messages.getLoreList("items.admin-expire-item.lore",
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice(),0),
+                "%price%", StringUtils.formatNumber(note.getPrice()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -368,7 +368,7 @@ public class ItemManager {
         if(lore==null) lore = new ArrayList<>();
         lore.addAll(Messages.getLoreList("items.admin-delete-item.lore",
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice(),0),
+                "%price%", StringUtils.formatNumber(note.getPrice()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);

@@ -93,7 +93,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 ItemNoteStorageUtil.createNote(p,item,price);
                 item.setAmount(0);
-                p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price,0)));
+                p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
 
             }
             if(strings.length == 2 && strings[0].equals("view")) {

@@ -7,6 +7,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.DecimalFormat;
+
 public class StringUtils {
 
     public static String getTime(Long seconds, boolean convertDays) { //output example: 4h 23m 59s
@@ -61,17 +63,13 @@ public class StringUtils {
         }
     }
 
-    public static String formatNumber(double number, int decimalPlaces) {
+    public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
-        if(decimalPlaces < 0) decimalPlaces = number % 1 == 0 ? 0 : 2;
-        String formatted = String.format("%,.0" + decimalPlaces + "f", number);
-        formatted = formatted.replace(",", "{COMMA}");
-        formatted = formatted.replace(".", "{DOT}");
-        formatted = formatted.replace("{COMMA}", SettingManager.formatNumbersComma);
-        return ChatColor.GOLD + formatted.replace("{DOT}", SettingManager.formatNumbersDot) + ChatColor.RESET;
+        DecimalFormat formatter = new DecimalFormat(SettingManager.formatNumbers);
+        return ChatColor.GOLD + formatter.format(number) + ChatColor.RESET;
     }
-    public static String formatPrice(double price, int decimalPlaces) {
-        return formatNumber(price, decimalPlaces) + ChatColor.YELLOW + SettingManager.currencySymbol;
+    public static String formatPrice(double price) {
+        return formatNumber(price) + ChatColor.YELLOW + SettingManager.currencySymbol;
     }
 
     public static String getItemName(ItemStack item, World world) {

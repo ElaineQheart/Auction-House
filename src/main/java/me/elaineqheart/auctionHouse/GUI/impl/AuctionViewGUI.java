@@ -96,12 +96,12 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
     }
     private InventoryButton armadilloScute() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createArmadilloScute(StringUtils.formatNumber(note.getPrice(),0)))
+                .creator(player -> ItemManager.createArmadilloScute(StringUtils.formatNumber(note.getPrice())))
                 .consumer(Sounds::villagerDeny);
     }
     private InventoryButton turtleScute() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createTurtleScute(StringUtils.formatNumber(note.getPrice(),0)))
+                .creator(player -> ItemManager.createTurtleScute(StringUtils.formatNumber(note.getPrice())))
                 .consumer(event -> {
                     Sounds.click(event);
                 if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
