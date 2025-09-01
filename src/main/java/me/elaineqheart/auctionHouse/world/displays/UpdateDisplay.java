@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -142,7 +143,7 @@ public class UpdateDisplay implements Runnable{
 
     public static ConfigurationSection getYmlData() {
         if(ymlData != null) return ymlData;
-        ConfigManager.displays.get().set("displays", null);
+        ConfigManager.displays.get().createSection("displays");
         ConfigManager.displays.save();
         return ConfigManager.displays.get().getConfigurationSection("displays");
     }
