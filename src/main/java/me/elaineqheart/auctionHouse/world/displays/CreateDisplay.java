@@ -54,8 +54,8 @@ public class CreateDisplay {
 
         int displayID = 1; //default
         if(!UpdateDisplay.displays.isEmpty()) displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; //new display ID
-        assert UpdateDisplay.ymlData != null;
-        UpdateDisplay.ymlData.set(String.valueOf(displayID), loc); //save the location in the config
+        assert UpdateDisplay.getYmlData() != null;
+        UpdateDisplay.getYmlData().set(String.valueOf(displayID), loc); //save the location in the config
         ConfigManager.displays.save();
         UpdateDisplay.reload();
     }

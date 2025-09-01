@@ -138,15 +138,22 @@ public class UpdateDisplay implements Runnable{
 
     public static final HashMap<Integer, DisplayNote> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
-    public static final ConfigurationSection ymlData = ConfigManager.displays.get().getConfigurationSection("displays");
+    private static final ConfigurationSection ymlData = ConfigManager.displays.get().getConfigurationSection("displays");
+
+    public static ConfigurationSection getYmlData() {
+        if(ymlData != null) return ymlData;
+        ConfigManager.displays.get().set("displays", null);
+        ConfigManager.displays.save();
+        return ConfigManager.displays.get().getConfigurationSection("displays");
+    }
 
     public static void init() {
         reload();
         TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new UpdateDisplay(), 0, 20).getTaskId());
     }
     public static void reload() {
-        for(String key : ymlData.getKeys(false)) { //find the data for each display
-            Location loc = ymlData.getLocation(key);
+        for(String key : getYmlData().getKeys(false)) { //find the data for each display
+            Location loc = getYmlData().getLocation(key);
             assert loc != null;
             DisplayNote data = new DisplayNote();
             data.location = loc;
@@ -256,7 +263,7 @@ public class UpdateDisplay implements Runnable{
             safeRemoveInteraction(loc);
             locations.remove(loc);
             displays.remove(displayID);
-            ymlData.set(String.valueOf(displayID), null);
+            getYmlData().set(String.valueOf(displayID), null);
             ConfigManager.displays.save();
             reload();
         } else {
