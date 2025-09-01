@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.data.items;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
+import me.elaineqheart.auctionHouse.data.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
@@ -326,7 +327,7 @@ public class ItemManager {
                     "%buyer%", note.getBuyerName()));
         }else if(note.isOnWaitingList()){
             lore.addAll(Messages.getLoreList("items.auction.lore.waiting-list",
-                    "%time%", StringUtils.getTime(note.timeLeft() - SettingManager.auctionDuration, false)));
+                    "%time%", StringUtils.getTime(note.timeLeft() - Permissions.getAuctionDuration(p), false)));
         }else{
             lore.addAll(Messages.getLoreList("items.auction.lore.active",
                     "%time%", StringUtils.getTime(note.timeLeft(), false)));

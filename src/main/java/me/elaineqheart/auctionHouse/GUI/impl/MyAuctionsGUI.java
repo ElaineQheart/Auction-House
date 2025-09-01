@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
+import me.elaineqheart.auctionHouse.data.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
@@ -70,13 +71,13 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 "# # # # # # # # #",
                 ". . # # . # # # .",
         },fillerItem());
-        fillOutBarriers(currentPage,SettingManager.defaultMaxAuctions);
+        fillOutBarriers(currentPage, Permissions.getAuctionSlots(player));
         int auctionItems = fillOutItems(currentPage,currentSort,player.getUniqueId());
         this.addButton(45,back());
         this.addButton(46,sortButton(ItemManager.getMySort(currentSort)));
 
         this.addButton(49,refresh());
-        if(SettingManager.defaultMaxAuctions > 21) {
+        if(Permissions.getAuctionSlots(player) > 21) {
             this.addButton(48,previousPage(auctionItems));
             this.addButton(50,nextPage(auctionItems));
         }

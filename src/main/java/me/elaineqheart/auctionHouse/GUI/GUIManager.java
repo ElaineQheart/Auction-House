@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,6 +57,14 @@ public class GUIManager {
         if (handler != null){
             handler.onClose(event);
             this.unregisterInventory(inventory);
+        }
+    }
+
+    public void forceCloseAll() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            InventoryHandler handler = this.activeInventories.get(player.getOpenInventory().getTopInventory());
+            if (handler == null) return;
+            player.closeInventory();
         }
     }
 

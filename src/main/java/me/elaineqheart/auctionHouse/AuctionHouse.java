@@ -70,11 +70,7 @@ public final class AuctionHouse extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for(Player p : Bukkit.getOnlinePlayers()){
-            if (p.getOpenInventory().getTopInventory().getHolder() instanceof InventoryGUI) {
-                p.closeInventory();
-            }
-        }
+        guiManager.forceCloseAll();
     }
 
 }

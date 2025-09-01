@@ -1,6 +1,8 @@
 package me.elaineqheart.auctionHouse.data.items;
 
+import me.elaineqheart.auctionHouse.data.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,14 +39,14 @@ public class ItemNote {
     }
     public long timeLeft(){
         // +30 seconds [auctionSetupTime] wait time until the item is up on auction
-        return SettingManager.auctionDuration + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
+        return Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)) + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
     }
     public boolean isExpired(){
         return timeLeft()<0;
     }
 
     public boolean isOnWaitingList() {
-        return timeLeft() > SettingManager.auctionDuration;
+        return timeLeft() > Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID));
     }
 
     public boolean canAfford(double coins){
