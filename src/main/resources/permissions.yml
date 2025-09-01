@@ -1,0 +1,4 @@
+auction-slots:
+  elaineqheart.example.permission.vip: 12
+auction-duration:
+  elaineqheart.example.permission.vip: 60*60*72 # 72 hours
