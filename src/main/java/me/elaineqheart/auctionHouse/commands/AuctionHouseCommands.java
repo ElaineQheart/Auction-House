@@ -8,6 +8,9 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.*;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.yml.Messages;
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
@@ -41,7 +44,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
 
         if(commandSender instanceof Player p){
             if(strings.length==0) {
-                if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
+                if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
@@ -50,7 +53,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
             if(strings.length==2 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
-                if(CustomConfigBannedPlayers.checkIsBannedSendMessage(p)) {
+                if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
                 if(ItemNoteStorageUtil.numberOfAuctions(p) >= SettingManager.defaultMaxAuctions) {
@@ -134,7 +137,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                                 reason.append(" ");
                             }
                         }
-                        CustomConfigBannedPlayers.saveBannedPlayer(targetPlayer, duration, reason.toString());
+                        BannedPlayersUtil.saveBannedPlayer(targetPlayer, duration, reason.toString());
                         p.sendMessage(Messages.getFormatted("command-feedback.ban",
                                 "%player%", targetPlayer.getDisplayName(),
                                 "%duration%", String.valueOf(duration),
@@ -145,18 +148,18 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     // /ah pardon player:
                 } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.pardon"))) {
                     String input = strings[1];
-                    ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
+                    ConfigurationSection section = ConfigManager.bannedPlayers.get().getConfigurationSection("BannedPlayers");
                     if (section == null) {
                         p.sendMessage(Messages.getFormatted("command-feedback.no-banned-players"));
                         return true;
                     }
                     for(String key : section.getKeys(false)) {
                         String path = "BannedPlayers." + key + ".PlayerName";
-                        String playerName = CustomConfigBannedPlayers.get().getString(path);
+                        String playerName = ConfigManager.bannedPlayers.get().getString(path);
                         if (playerName == null) continue;
                         if (playerName.equals(input)) {
-                            CustomConfigBannedPlayers.get().set("BannedPlayers." + key, null);
-                            CustomConfigBannedPlayers.save();
+                            ConfigManager.bannedPlayers.get().set("BannedPlayers." + key, null);
+                            ConfigManager.bannedPlayers.save();
                             p.sendMessage(Messages.getFormatted("command-feedback.pardon",
                                     "%player%", playerName));
                             return true;
@@ -252,11 +255,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 params.add(p.getDisplayName());
             }
         } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.pardon"))) {
-            ConfigurationSection section = CustomConfigBannedPlayers.get().getConfigurationSection("BannedPlayers");
+            ConfigurationSection section = ConfigManager.bannedPlayers.get().getConfigurationSection("BannedPlayers");
             if (section != null) {
                 for(String key : section.getKeys(false)) {
                     String path = "BannedPlayers." + key + ".PlayerName";
-                    params.add(CustomConfigBannedPlayers.get().getString(path));
+                    params.add(ConfigManager.bannedPlayers.get().getString(path));
                 }
             }
         } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.summon"))) {

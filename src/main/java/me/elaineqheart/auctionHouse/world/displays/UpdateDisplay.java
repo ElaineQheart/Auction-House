@@ -2,12 +2,12 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.ConfigManager;
-import me.elaineqheart.auctionHouse.data.Messages;
+import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.data.SettingManager;
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;

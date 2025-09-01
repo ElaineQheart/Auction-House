@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.data;
+package me.elaineqheart.auctionHouse.data.yml;
 
 public class ConfigManager {
 

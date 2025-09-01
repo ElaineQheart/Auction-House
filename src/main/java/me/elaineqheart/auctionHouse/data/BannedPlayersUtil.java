@@ -1,53 +1,13 @@
 package me.elaineqheart.auctionHouse.data;
 
-import me.elaineqheart.auctionHouse.AuctionHouse;
-import org.bukkit.Bukkit;
+import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
-public class CustomConfigBannedPlayers {
-
-    //In the yml file the players that are banned from the auction house will be stored
-
-    private static File file;
-    private static FileConfiguration customFile;
-
-    //Finds or generates the custom config file
-    public static void setup(){
-        file = new File(AuctionHouse.getPlugin().getDataFolder(), "bannedPlayers.yml");
-
-        if (!file.exists()){
-            try{
-                file.createNewFile();
-            }catch (IOException e){
-                //uwu
-            }
-
-        }
-        customFile = YamlConfiguration.loadConfiguration(file);
-    }
-
-    public static FileConfiguration get(){
-        return customFile;
-    }
-
-    public static void save(){
-        try {
-            customFile.save(file);
-        }catch (IOException e){
-            Bukkit.getLogger().warning("Couldn't save bannedPlayers.yml");
-        }
-    }
-
-    public static void reload(){
-        customFile = YamlConfiguration.loadConfiguration(file);
-    }
+public class BannedPlayersUtil {
 
     public static void saveBannedPlayer(Player p, int durationInDays, String reason){
         int timeInMillis = durationInDays * 24 * 60 * 60 * 1000;
@@ -56,15 +16,16 @@ public class CustomConfigBannedPlayers {
 
         String path = "BannedPlayers." + p.getUniqueId();
         String playerName = p.getName();
-
+        FileConfiguration customFile = ConfigManager.bannedPlayers.get();
         customFile.set(path + ".Date", date);
         customFile.set(path + ".PlayerName", playerName);
         customFile.set(path + ".Reason", reason);
-        save();
+        ConfigManager.bannedPlayers.save();
     }
 
     //if the player is banned, send them a message
     public static boolean checkIsBannedSendMessage(Player p){
+        FileConfiguration customFile = ConfigManager.bannedPlayers.get();
         String path = "BannedPlayers." + p.getUniqueId();
         if (customFile.get(path) == null) return false;
         Date banEndDate = (Date) customFile.get(path + ".Date");
@@ -73,7 +34,7 @@ public class CustomConfigBannedPlayers {
         System.out.println(currentTime);
         if (currentTime > banEndDate.getTime()){
             customFile.set(path, null);
-            save();
+            ConfigManager.bannedPlayers.save();
             return false;
         }
         long banDuration = banEndDate.getTime() - currentTime;
@@ -82,7 +43,6 @@ public class CustomConfigBannedPlayers {
         p.sendMessage(ChatColor.GRAY + "Reason: " + customFile.getString(path + ".Reason"));
         return true;
     }
-
 
 
 }

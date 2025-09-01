@@ -1,13 +1,12 @@
 package me.elaineqheart.auctionHouse.data;
 
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-
-import java.text.DecimalFormat;
 
 public class StringUtils {
 
@@ -41,7 +40,7 @@ public class StringUtils {
             } else {
                 d = String.valueOf(days);
             }
-            return (ChatColor.YELLOW+d+SettingManager.formatTimeCharacters.charAt(0)+" "+
+            return (ChatColor.YELLOW+d+ SettingManager.formatTimeCharacters.charAt(0)+" "+
                     h+SettingManager.formatTimeCharacters.charAt(1)+" "+
                     m+SettingManager.formatTimeCharacters.charAt(2)+" "+
                     s+SettingManager.formatTimeCharacters.charAt(3));

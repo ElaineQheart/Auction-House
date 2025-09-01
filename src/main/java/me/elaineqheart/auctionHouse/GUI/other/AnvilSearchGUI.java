@@ -1,6 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
-import me.elaineqheart.auctionHouse.data.Messages;
+import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.entity.Player;
