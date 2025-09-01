@@ -1,8 +1,11 @@
 auction-slots:
-  vip: 12
-  mvp: 15
-  custom.example.permission: 50
 auction-duration:
-  vip: 60*60*72 # 72 hours = 3 days
-  mvp: 60*60*96 # 96 hours = 4 days
-  custom.example.permission: 60*60*24*5 # 5 days
+
+#  auction-slots:
+#    vip: 12
+#    mvp: 15
+#    custom.example.permission: 50
+#  auction-duration:
+#    vip: 60*60*72 # 72 hours = 3 days
+#    mvp: 60*60*96 # 96 hours = 4 days
+#    custom.example.permission: 60*60*24*5 # 5 days

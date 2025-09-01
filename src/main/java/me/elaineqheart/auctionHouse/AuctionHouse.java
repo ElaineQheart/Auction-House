@@ -2,18 +2,16 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
-import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
+import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
+import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
-import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
-import me.elaineqheart.auctionHouse.world.npc.NPCListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
+import me.elaineqheart.auctionHouse.world.npc.NPCListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
