@@ -303,10 +303,9 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        CustomConfigBannedPlayers.reload();
         AuctionHouse.getPlugin().reloadConfig();
         SettingManager.loadData();
-        DisplaysConfig.reload();
+        ConfigManager.reloadConfigs();
         UpdateDisplay.reload();
         Messages.reload();
     }

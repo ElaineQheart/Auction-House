@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.DisplaysConfig;
+import me.elaineqheart.auctionHouse.data.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -56,7 +56,7 @@ public class CreateDisplay {
         if(!UpdateDisplay.displays.isEmpty()) displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; //new display ID
         assert UpdateDisplay.ymlData != null;
         UpdateDisplay.ymlData.set(String.valueOf(displayID), loc); //save the location in the config
-        DisplaysConfig.save();
+        ConfigManager.displays.save();
         UpdateDisplay.reload();
     }
 

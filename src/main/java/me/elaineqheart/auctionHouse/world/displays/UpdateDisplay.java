@@ -2,12 +2,12 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
+import me.elaineqheart.auctionHouse.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.Messages;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.data.SettingManager;
-import me.elaineqheart.auctionHouse.data.DisplaysConfig;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -138,7 +138,7 @@ public class UpdateDisplay implements Runnable{
 
     public static final HashMap<Integer, DisplayNote> displays = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
-    public static final ConfigurationSection ymlData = DisplaysConfig.get().getConfigurationSection("displays");
+    public static final ConfigurationSection ymlData = ConfigManager.displays.get().getConfigurationSection("displays");
 
     public static void init() {
         reload();
@@ -257,7 +257,7 @@ public class UpdateDisplay implements Runnable{
             locations.remove(loc);
             displays.remove(displayID);
             ymlData.set(String.valueOf(displayID), null);
-            DisplaysConfig.save();
+            ConfigManager.displays.save();
             reload();
         } else {
             AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
