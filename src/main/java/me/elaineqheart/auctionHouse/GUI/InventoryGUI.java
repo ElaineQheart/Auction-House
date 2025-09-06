@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -17,6 +18,9 @@ public abstract class InventoryGUI implements InventoryHandler {
 
     public InventoryGUI() {
         this.inventory = this.createInventory();
+    }
+    public InventoryGUI(Inventory inv) {
+        this.inventory = inv;
     }
 
     public Inventory getInventory() {

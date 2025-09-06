@@ -62,9 +62,7 @@ public class GUIManager {
 
     public void forceCloseAll() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            InventoryHandler handler = this.activeInventories.get(player.getOpenInventory().getTopInventory());
-            if (handler == null) return;
-            player.closeInventory();
+            if(this.activeInventories.containsKey(player.getOpenInventory().getTopInventory())) player.closeInventory();
         }
     }
 

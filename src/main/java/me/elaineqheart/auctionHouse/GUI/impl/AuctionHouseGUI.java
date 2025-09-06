@@ -164,6 +164,10 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .creator(player -> item)
                 .consumer(event -> {
                     Sounds.click(event);
+                    if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
+                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,currentPage,currentSort, currentSearch,isAdmin), currentPlayer);
+                        return;
+                    }
                     if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),currentPlayer)) {
                         if(isAdmin) {
                             AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, currentPlayer), currentPlayer);

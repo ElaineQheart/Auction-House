@@ -75,7 +75,6 @@ inventory-titles:
   anvil-admin-search: "Admin Search Item"
   anvil-admin-expire-message: "Expire Item Reason"
   anvil-admin-delete-message: "Delete Item Reason"
-
 items:
   next-page:
     name: "§aNext Page"
@@ -244,6 +243,7 @@ items:
       active: "Ends in: %time%"
       buying-item: "§8------------------
         &n§e§nBUYING ITEM!"
+      shulker-preview: "§f§oRight-Click to preview!"
   admin-expire-item:
     lore: "§8------------------
       &n§7Seller: %player%

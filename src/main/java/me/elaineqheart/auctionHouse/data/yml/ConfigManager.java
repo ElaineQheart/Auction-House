@@ -17,6 +17,7 @@ public class ConfigManager {
         backwardsCompatibilityDisplays();
         bannedPlayers.setup("bannedPlayers", false);
         permissions.setup("permissions", true);
+        permissions();
     }
 
     public static void reloadConfigs() {
@@ -25,6 +26,17 @@ public class ConfigManager {
         permissions.reload();
     }
 
+
+    private static void permissions() {
+        if(permissions.get().getConfigurationSection("auction-slots") == null) {
+            permissions.get().createSection("auction-slots");
+            permissions.save();
+        }
+        if(permissions.get().getConfigurationSection("auction-duration") == null) {
+            permissions.get().createSection("auction-duration");
+            permissions.save();
+        }
+    }
 
     private static void backwardsCompatibilityDisplays() {
         Set<Integer> oldSet = null;
