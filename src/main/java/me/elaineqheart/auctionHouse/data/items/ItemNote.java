@@ -23,6 +23,7 @@ public class ItemNote {
     private boolean isSold;
     private final UUID noteID = UUID.randomUUID();
     private String adminMessage;
+    private long auctionTime;
 
     public ItemNote(Player player, String itemData, int price) {
         this.playerName = player.getDisplayName();
@@ -32,6 +33,7 @@ public class ItemNote {
         this.itemData = itemData;
         this.price = price;
         this.isSold = false;
+        this.auctionTime = Permissions.getAuctionDuration(player);
     }
 
     public ItemStack getItem(){
@@ -39,14 +41,16 @@ public class ItemNote {
     }
     public long timeLeft(){
         // +30 seconds [auctionSetupTime] wait time until the item is up on auction
-        return Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)) + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
+        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)); //backwards compatibility
+        return auctionTime + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
     }
     public boolean isExpired(){
         return timeLeft()<0;
     }
 
     public boolean isOnWaitingList() {
-        return timeLeft() > Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID));
+        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)); //backwards compatibility
+        return timeLeft() > auctionTime;
     }
 
     public boolean canAfford(double coins){
