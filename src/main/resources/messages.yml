@@ -329,6 +329,6 @@ command-feedback:
   not-banned: "That player isn't banned from the auction house"
   reload: "§eThe auction house plugin has reloaded."
   summon-usage: "/ah summon <entity>"
-  npc-usage: "/ah summon npc facing <direcction>"
+  npc-usage: "/ah summon npc facing <direction>"
   display-usage: "/ah summon display <sort type> <item rank>"
   no-space-for-display: "§eThere is already a display here. Please remove it first."

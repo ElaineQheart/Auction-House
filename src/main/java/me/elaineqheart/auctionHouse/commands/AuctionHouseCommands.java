@@ -300,7 +300,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
     }
 
 
-    public static void reload() {
+    private static void reload() {
         try {
             ItemNoteStorageUtil.loadNotes();
         } catch (IOException e) {
