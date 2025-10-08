@@ -4,13 +4,15 @@ import me.elaineqheart.auctionHouse.data.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.UUID;
 
 public class ItemNote {
 

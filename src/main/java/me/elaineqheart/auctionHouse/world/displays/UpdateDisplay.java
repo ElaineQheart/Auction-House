@@ -2,11 +2,11 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
-import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -78,7 +77,11 @@ public class UpdateDisplay implements Runnable{
             //update the signs
 
             for(Sign sign : signs) {
-                sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
+                if(SettingManager.currencyBeforeNumber) {
+                    sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + SettingManager.currencySymbol + price);
+                } else {
+                    sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
+                }
                 sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
                 sign.getSide(Side.FRONT).setLine(3, Messages.getFormatted("world.displays.sign-interaction"));
                 sign.update(true, false);

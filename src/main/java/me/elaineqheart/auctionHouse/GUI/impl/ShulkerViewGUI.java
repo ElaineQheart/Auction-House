@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class ShulkerViewGUI extends InventoryGUI {
 
-    private final ItemNote note;
     private final int currentPage;
     private final AuctionHouseGUI.Sort currentSort;
     private final String currentSearch;
@@ -21,7 +20,6 @@ public class ShulkerViewGUI extends InventoryGUI {
 
     public ShulkerViewGUI(ItemNote note, int page, AuctionHouseGUI.Sort sort, String search, boolean isAdmin) {
         super(((ShulkerBox) ((BlockStateMeta) note.getItem().getItemMeta()).getBlockState()).getInventory());
-        this.note = note;
         this.currentPage = page;
         this.currentSort = sort;
         this.currentSearch = search;

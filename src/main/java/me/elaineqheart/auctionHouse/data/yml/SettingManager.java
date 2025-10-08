@@ -17,6 +17,7 @@ public class SettingManager {
     public static boolean soldMessageEnabled;
     public static String formatTimeCharacters;
     public static String permissionModerate;
+    public static boolean currencyBeforeNumber;
 
     static {
         loadData();
@@ -35,6 +36,7 @@ public class SettingManager {
         formatter = new DecimalFormat(formatNumbers);
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
+        currencyBeforeNumber = c.getBoolean("currency-before-number", false);
     }
 
 }

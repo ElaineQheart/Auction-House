@@ -67,7 +67,11 @@ public class StringUtils {
         return ChatColor.GOLD + SettingManager.formatter.format(number) + ChatColor.RESET;
     }
     public static String formatPrice(double price) {
-        return formatNumber(price) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        if(SettingManager.currencyBeforeNumber) {
+            return ChatColor.YELLOW + SettingManager.currencySymbol + formatNumber(price);
+        } else {
+            return formatNumber(price) + ChatColor.YELLOW + SettingManager.currencySymbol;
+        }
     }
 
     public static String getItemName(ItemStack item, World world) {
