@@ -14,11 +14,13 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UpdateDisplay implements Runnable{
@@ -90,7 +92,8 @@ public class UpdateDisplay implements Runnable{
             //update the item
             World world = loc.getWorld();
             assert world != null;
-            if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()) {
+            if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()
+                    || !Objects.equals(data.itemStack.getItemMeta(), item.getItemMeta())) {
                 //if the item entity is null or the item is different, create a new item entity
                 if(data.itemEntity != null) {
                     data.itemEntity.remove(); //remove the old item entity
