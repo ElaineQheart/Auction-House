@@ -1,6 +1,6 @@
-package me.elaineqheart.auctionHouse.data;
+package me.elaineqheart.auctionHouse.data.yml;
 
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

@@ -11,12 +11,14 @@ public class ConfigManager {
     public static Config displays = new Config();
     public static Config bannedPlayers = new Config();
     public static Config permissions = new Config();
+    public static Config blacklist = new Config();
 
     public static void setupConfigs() {
         displays.setup("displays", false);
-        backwardsCompatibilityDisplays();
+        displaysBackwardsCompatibility();
         bannedPlayers.setup("bannedPlayers", false);
         permissions.setup("permissions", true);
+        blacklist.setup("blacklist", false);
         permissions();
     }
 
@@ -24,6 +26,7 @@ public class ConfigManager {
         displays.reload();
         bannedPlayers.reload();
         permissions.reload();
+        blacklist.reload();
     }
 
 
@@ -38,7 +41,7 @@ public class ConfigManager {
         }
     }
 
-    private static void backwardsCompatibilityDisplays() {
+    private static void displaysBackwardsCompatibility() {
         Set<Integer> oldSet = null;
         FileConfiguration customFile = displays.get();
         try {
