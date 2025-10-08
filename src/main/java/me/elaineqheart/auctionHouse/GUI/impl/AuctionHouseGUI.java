@@ -163,11 +163,12 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Sounds.click(event);
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
+                        Sounds.openShulker(event);
                         AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,currentPage,currentSort, currentSearch,isAdmin), currentPlayer);
                         return;
                     }
+                    Sounds.click(event);
                     if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),currentPlayer)) {
                         if(isAdmin) {
                             AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, currentPlayer), currentPlayer);
@@ -294,7 +295,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         return new InventoryButton()
                 .creator(player -> ItemManager.myAuction)
                 .consumer(event -> {
-                    Sounds.enderChest(event);
+                    Sounds.openEnderChest(event);
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPlayer), (Player) event.getWhoClicked());
                 });
     }

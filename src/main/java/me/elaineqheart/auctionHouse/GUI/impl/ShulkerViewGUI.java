@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
+import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
@@ -30,9 +31,10 @@ public class ShulkerViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,currentSearch,p,isAdmin), p),
-                0);
+        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+            Sounds.closeShulker(event);
+            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,currentSearch,p,isAdmin), p);
+                },0);
     }
 
     @Override
