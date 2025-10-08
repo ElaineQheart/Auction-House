@@ -305,7 +305,7 @@ commands:
   west: "west"
 
 command-feedback:
-  usage: "§eUsage: /ah sell <price>"
+  usage: "§eUsage: /ah sell <price> <amount>"
   reached-max-auctions: "§eYou can only have %limit% auctions at a time"
   no-item-in-hand: "§eYou need to hold an item in your hand to sell it"
   invalid-number: "That is not a valid number"
@@ -314,6 +314,7 @@ command-feedback:
   invalid-number4: "§eThat is not a valid duration"
   invalid-number5: "Item rank number must be greater than 0"
   invalid-number6: "Invalid item rank number. Please enter a valid number"
+  invalid-number7: "That is not a valid amount"
   auction: "§eYou have put up an auction for %price%"
   ban-usage: "$eUsage: /ah ban <player> <time in days> <reason>"
   pardon-usage: "§eUsage: /ah pardon <player>"

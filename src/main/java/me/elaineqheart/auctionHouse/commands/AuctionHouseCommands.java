@@ -52,7 +52,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
                 p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
-            if(strings.length==2 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
+            if((strings.length==2 || strings.length==3) && strings[0].equals(Messages.getFormatted("commands.sell"))) {
                 if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
@@ -94,8 +94,20 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     p.sendMessage(Messages.getFormatted("command-feedback.invalid-number2"));
                     return true;
                 }
-                ItemNoteStorageUtil.createNote(p,item,price);
-                item.setAmount(0);
+                int amount = item.getAmount();
+                if(strings.length == 3) {
+                    try {
+                        amount = Integer.parseInt(strings[2]);
+                        if(amount < 1 || amount > item.getAmount()) throw new RuntimeException();
+                    } catch (Exception e) {
+                        p.sendMessage(Messages.getFormatted("command-feedback.invalid-number7"));
+                        return true;
+                    }
+                }
+                ItemStack inputItem = item.clone();
+                inputItem.setAmount(amount);
+                ItemNoteStorageUtil.createNote(p, inputItem, price);
+                item.setAmount(item.getAmount() - amount);
                 p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
 
             }
