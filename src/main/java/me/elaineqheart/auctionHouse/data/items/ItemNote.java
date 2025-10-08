@@ -3,14 +3,14 @@ package me.elaineqheart.auctionHouse.data.items;
 import me.elaineqheart.auctionHouse.data.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.Bukkit;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 public class ItemNote {
 
@@ -58,22 +58,15 @@ public class ItemNote {
     }
 
     public String[] getSearchIndex() {
-        ArrayList<String> index = new ArrayList<>();
-        index.add(getItem().toString().toLowerCase());
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
-        if(meta!=null) {
-            for(Enchantment enchant : meta.getEnchants().keySet()){
-                index.add(enchant.toString().toLowerCase());
-            }
-            index.add(meta.getDisplayName().toLowerCase());
-            if(meta.getLore()!=null){
-                for(String lore : meta.getLore()){
-                    index.add(lore.toLowerCase());
-                }
+        ArrayList<String> index = new ArrayList<>(Collections.singleton(item.toString().toLowerCase()));
+        if(meta != null && ItemManager.isShulkerBox(item)) {
+            for (ItemStack itemStack : ((ShulkerBox) ((BlockStateMeta) meta).getBlockState()).getInventory().getContents()) {
+                if(itemStack != null) index.add(itemStack.toString().toLowerCase());
             }
         }
-        return index.toArray(index.toArray(new String[0]));
+        return index.toArray(String[]::new);
     }
 
     //Getters and Setters
