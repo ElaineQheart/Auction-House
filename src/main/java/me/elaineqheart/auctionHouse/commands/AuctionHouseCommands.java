@@ -5,9 +5,9 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.*;
+import me.elaineqheart.auctionHouse.data.Permissions;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.Blacklist;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
 import me.elaineqheart.auctionHouse.data.yml.BannedPlayersUtil;
@@ -244,55 +244,47 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                             return true;
                         }
                     }
-                } else if (strings.length == 2 && strings[1].equals(Messages.getFormatted("commands.remove"))) {
-                    p.sendMessage(Messages.getFormatted("command-feedback.blacklist-usage-remove"));
-                    return true;
-                } else if (strings.length == 3 && strings[1].equals(Messages.getFormatted("commands.remove"))) {
-                    if (Blacklist.exists(strings[2])) {
-                        Blacklist.remove(strings[2]);
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-remove"));
+                } else if (strings.length == 2 && strings[1].equals(Messages.getFormatted("commands.undo"))) {
+                    if (Blacklist.undo()) {
+                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-undo"));
                     } else {
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-remove-error"));
+                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-undo-error"));
                     }
                     return true;
-                } else if (strings.length < 4 && strings[0].equals(Messages.getFormatted("commands.blacklist"))) {
+                } else if (strings.length < 3 && strings[0].equals(Messages.getFormatted("commands.blacklist"))) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.blacklist-usage"));
+                    return true;
+                } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.blacklist"))
+                        && strings[1].equals(Messages.getFormatted("commands.add"))) {
+                    if (strings[2].equals(Messages.getFormatted("commands.exact")) || strings[2].equals(Messages.getFormatted("commands.material"))) {
+                        ItemStack item = p.getInventory().getItemInMainHand();
+                        if (item.getType().equals(Material.AIR)) {
+                            p.sendMessage(Messages.getFormatted("command-feedback.blacklist-no-item-in-hand"));
+                            return true;
+                        }
+                        ItemMeta meta = item.getItemMeta();
+                        assert meta != null;
+                        if (strings[2].equals(Messages.getFormatted("commands.exact"))) {
+                            Blacklist.addExact(item);
+                        } else {
+                            Blacklist.addMaterial(item.getType().toString());
+                        }
+                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-success", "%item%", item.getType().name()));
+                        return true;
+                    }
                     p.sendMessage(Messages.getFormatted("command-feedback.blacklist-usage"));
                     return true;
                 } else if (strings.length == 4 && strings[0].equals(Messages.getFormatted("commands.blacklist"))
-                        && strings[1].equals(Messages.getFormatted("commands.add"))) {
-                    if(Blacklist.exists(strings[3])) {
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-already-exists"));
-                        return true;
+                    && strings[1].equals(Messages.getFormatted("commands.add"))) {
+
+                    if (strings[2].equals(Messages.getFormatted("commands.exact")) || strings[2].equals(Messages.getFormatted("commands.material"))) return true;
+
+                    if(strings[2].equals(Messages.getFormatted("commands.contains_lore"))) {
+                        Blacklist.addLoreContains(strings[3]);
+                    } else if (strings[2].equals(Messages.getFormatted("commands.name_contains"))) {
+                        Blacklist.addNameContains(strings[3]);
                     }
-                    ItemStack item = p.getInventory().getItemInMainHand();
-                    if(item.getType().equals(Material.AIR) && (strings[2].equals("exact") || strings[2].equals("material"))) {
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-no-item-in-hand"));
-                        return true;
-                    }
-                    ItemMeta meta = item.getItemMeta();
-                    assert meta != null;
-                    switch (strings[2]) {
-                        case "exact" -> Blacklist.addExact(item, strings[3]);
-                        case "material" -> Blacklist.addMaterial(item.getType().toString(), strings[3]);
-                        case "contains_lore" -> {
-                            p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%", strings[3]));
-                            Blacklist.addLoreContains(strings[3], strings[3]);
-                            return true;
-                        }
-                        case "name_contains" -> {
-                            p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%", strings[3]));
-                            Blacklist.addNameContains(strings[3], strings[3]);
-                            return true;
-                        }
-                        default -> {
-                            return true;
-                        }
-                    }
-                    if(!meta.getDisplayName().isEmpty()) {
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-success", "%item%", meta.getDisplayName()));
-                    } else {
-                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-success", "%item%", item.getType().name()));
-                    }
+                    p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%", strings[3]));
                     return true;
                 }
             }
@@ -345,7 +337,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             }
         } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.blacklist"))) {
             List<String> summonTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.add"),
-                    Messages.getFormatted("commands.remove")}));
+                    Messages.getFormatted("commands.undo")}));
             for (String p : summonTypes) {
                 if (p.indexOf(strings[1]) == 0) {
                     params.add(p);
@@ -375,8 +367,6 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     params.add(p);
                 }
             }
-        } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.blacklist")) && strings[1].equals(Messages.getFormatted("commands.remove"))) {
-            params.addAll(ConfigManager.blacklist.get().getKeys(false));
         } else if (strings.length == 4 && strings[0].equals(Messages.getFormatted("commands.summon")) && strings[1].equals(Messages.getFormatted("commands.npc"))) {
             List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.north"), Messages.getFormatted("commands.east"),
                     Messages.getFormatted("commands.south"), Messages.getFormatted("commands.west")}));
