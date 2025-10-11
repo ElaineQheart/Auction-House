@@ -113,7 +113,8 @@ items:
       &n§7/ah sell 1000
       &n§7while holding the item to sell in your hand
       &n§7The number will be the price of the item
-      &n§7Current tax is %tax%"
+      &n§7Current tax is %tax%
+      &n§8 - auction house made by ElaineQheart"
   my-auctions:
     name: "§aMy Auctions"
     lore: "§7Click to view your auctions!"

@@ -17,7 +17,6 @@ public class Blacklist {
 
     // <name> = id
 
-    @SuppressWarnings("unchecked")
     public static boolean isBlacklisted(ItemStack item) {
         boolean blacklisted = false;
         for(Map<?, ?> entry : getData()) {
