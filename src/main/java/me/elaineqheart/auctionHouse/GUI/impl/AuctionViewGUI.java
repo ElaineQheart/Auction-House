@@ -82,7 +82,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
     }
     private InventoryButton buyingItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player))
+                .creator(player -> ItemManager.createItemFromNote(note, player, false))
                 .consumer(event -> {});
     }
     private InventoryButton back() {

@@ -78,7 +78,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
     }
     private InventoryButton item() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player))
+                .creator(player -> ItemManager.createItemFromNote(note, player, false))
                 .consumer(event -> {});
     }
     private InventoryButton back() {

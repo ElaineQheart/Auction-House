@@ -99,7 +99,7 @@ public class ItemNoteStorageUtil {
         //these lists of the auction items are sorted by price, creation data and the alphabet
         Map<ItemNote,Integer> map = new HashMap<>();
         for (ItemNote note : itemNotes){
-            if(!note.isSold() && !note.isExpired())
+            if(note.isOnAuction() && !note.isExpired())
                 map.put(note,note.getPrice());
         }
         sortedHighestPrice = map.entrySet()
@@ -111,7 +111,7 @@ public class ItemNoteStorageUtil {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         Map<ItemNote,Long> map2 = new HashMap<>();
         for (ItemNote note : itemNotes){
-            if(!note.isSold() && !note.isExpired())
+            if(note.isOnAuction() && !note.isExpired())
                 map2.put(note,note.getDateCreated().getTime());
         }
         sortedDateCreated = map2.entrySet()
@@ -123,7 +123,7 @@ public class ItemNoteStorageUtil {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         Map<ItemNote,String> map3 = new HashMap<>();
         for (ItemNote note : itemNotes){
-            if(!note.isSold() && !note.isExpired())
+            if(note.isOnAuction() && !note.isExpired())
                 map3.put(note,note.getItem().getType().toString());
         }
         sortedAlphabetical = map3.entrySet()
@@ -138,7 +138,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Integer> sortedHighestPrice(){
         LinkedHashMap<ItemNote, Integer> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedHighestPrice.keySet()) {
-            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
+            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getPrice());
             }
         }
@@ -147,7 +147,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, Long> sortedDateCreated(){
         LinkedHashMap<ItemNote, Long> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedDateCreated.keySet()) {
-            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
+            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getDateCreated().getTime());
             }
         }
@@ -156,7 +156,7 @@ public class ItemNoteStorageUtil {
     public static LinkedHashMap<ItemNote, String> sortedAlphabetical(){
         LinkedHashMap<ItemNote, String> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedAlphabetical.keySet()) {
-            if(!note.isSold() && !note.isExpired() && !note.isOnWaitingList()) {
+            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
                 returnList.put(note, note.getItem().getType().toString());
             }
         }

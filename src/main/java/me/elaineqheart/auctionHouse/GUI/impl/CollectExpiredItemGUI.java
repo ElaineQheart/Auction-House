@@ -63,7 +63,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
     }
     private InventoryButton Item() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player))
+                .creator(player -> ItemManager.createItemFromNote(note, player, true))
                 .consumer(Sounds::click);
     }
     private InventoryButton back() {

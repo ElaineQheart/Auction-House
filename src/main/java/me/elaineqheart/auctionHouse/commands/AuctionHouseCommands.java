@@ -36,6 +36,8 @@ import java.util.Objects;
 
 // https://github.com/VelixDevelopments/Imperat
 
+// #don't try to fix what's not broken
+
 public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {

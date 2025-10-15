@@ -298,7 +298,7 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createItemFromNote(ItemNote note, Player p){
+    public static ItemStack createItemFromNote(ItemNote note, Player p, boolean ownAuction){
         ItemStack item = note.getItem();
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -325,7 +325,15 @@ public class ItemManager {
             }else {
                 lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
             }
-        }else if(note.isSold()){
+        }else if(note.isSold() && note.isOnAuction()) {
+            if(ownAuction) {
+                lore.addAll(Messages.getLoreList("items.auction.lore.partially-sold",
+                        "%sold%", String.valueOf(note.getPartiallySoldAmountLeft()),
+                        "total", String.valueOf(note.getItem().getAmount())));
+            } else {
+                item.setAmount(note.getPartiallySoldAmountLeft());
+            }
+        }else if(note.isSold()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.sold",
                     "%buyer%", note.getBuyerName()));
         }else if(note.isOnWaitingList()){

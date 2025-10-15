@@ -159,7 +159,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         }
     }
     private InventoryButton auctionItem(ItemNote note){
-        ItemStack item = ItemManager.createItemFromNote(note, currentPlayer);
+        ItemStack item = ItemManager.createItemFromNote(note, currentPlayer, false);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {

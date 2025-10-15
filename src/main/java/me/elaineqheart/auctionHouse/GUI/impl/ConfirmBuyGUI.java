@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI.impl;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
@@ -78,7 +79,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    if (note.isSold()) {
+                    if (!note.isOnAuction()) {
                         p.sendMessage(Messages.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;
@@ -123,8 +124,9 @@ public class ConfirmBuyGUI extends InventoryGUI{
         return new InventoryButton()
                 .creator(player -> ItemManager.cancel)
                 .consumer(event -> {
+                    Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    event.getWhoClicked().closeInventory();
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
                 });
     }
 

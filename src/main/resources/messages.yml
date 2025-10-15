@@ -240,6 +240,7 @@ items:
       expired: "§cExpired!"
       sold: "§6Sold!
         &n§7Buyer: %buyer%"
+      partially-sold: "§6Sold: §e%sold%/%total%"
       waiting-list: "Auction starting in: %time%"
       active: "Ends in: %time%"
       buying-item: "§8------------------

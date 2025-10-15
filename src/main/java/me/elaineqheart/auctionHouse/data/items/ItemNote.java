@@ -23,6 +23,7 @@ public class ItemNote {
     private Date dateCreated;
     private String itemData;
     private boolean isSold;
+    private int partiallySoldAmountLeft;
     private final UUID noteID = UUID.randomUUID();
     private String adminMessage;
     private long auctionTime;
@@ -87,6 +88,8 @@ public class ItemNote {
         }
     }
     public boolean isSold() {return isSold;}
+    public boolean isOnAuction() {return !isSold || partiallySoldAmountLeft != 0;} //NOT INCLUDING EXPIRED
+    public int getPartiallySoldAmountLeft() {return partiallySoldAmountLeft;}
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}
 
@@ -95,4 +98,5 @@ public class ItemNote {
     public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
     public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}
     public void setDateCreated(Date dateCreated) {this.dateCreated = dateCreated;}
+    public void setPartiallySoldAmountLeft(int bought) {this.partiallySoldAmountLeft = getItem().getAmount() - bought;}
 }

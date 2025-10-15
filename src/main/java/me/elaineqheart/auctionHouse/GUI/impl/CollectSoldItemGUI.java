@@ -67,7 +67,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     }
     private InventoryButton buyingItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player))
+                .creator(player -> ItemManager.createItemFromNote(note, player, true))
                 .consumer(Sounds::click);
     }
     private InventoryButton back() {

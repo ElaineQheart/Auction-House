@@ -8,4 +8,5 @@ format-numbers: "#,###.##" # this is used to format numbers. Here you can learn 
 format-time-characters: "dhms" # these characters are used to format time, e.g. 1d 2h 3m 4s
 default-max-auctions: 10
 sold-message: true # send a message to the player when one of their auctions is sold
+partial-selling: false # allows players to select the amount of items they want to buy of an auction
 admin-permission: "auctionhouse.moderator"

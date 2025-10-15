@@ -18,6 +18,7 @@ public class SettingManager {
     public static String formatTimeCharacters;
     public static String permissionModerate;
     public static boolean currencyBeforeNumber;
+    public static boolean partialSelling;
 
     static {
         loadData();
@@ -37,6 +38,7 @@ public class SettingManager {
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         currencyBeforeNumber = c.getBoolean("currency-before-number", false);
+        partialSelling = c.getBoolean("partial-selling", false);
     }
 
 }

@@ -85,7 +85,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.confirm)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    if (note.isSold()) {
+                    if (!note.isOnAuction()) {
                         p.sendMessage(Messages.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;
@@ -121,7 +121,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    if (note.isSold()) {
+                    if (!note.isOnAuction()) {
                         p.sendMessage(Messages.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;
