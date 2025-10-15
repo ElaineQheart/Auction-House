@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -18,11 +19,12 @@ public class CollectExpiredItemGUI extends InventoryGUI {
 
     private final ItemNote note;
     private final MyAuctionsGUI.MySort currentSort;
-
-    public CollectExpiredItemGUI(ItemNote note, MyAuctionsGUI.MySort sort) {
+    private final AhConfiguration c;
+    public CollectExpiredItemGUI(ItemNote note, MyAuctionsGUI.MySort sort,  AhConfiguration configuration) {
         super();
         this.note = note;
         this.currentSort = sort;
+        c = configuration;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -102,7 +104,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                         p.getInventory().addItem(note.getItem());
                         ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!
                         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
-                                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p)
+                                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p)
                         ,1);
                     }
 

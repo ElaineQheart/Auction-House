@@ -6,6 +6,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.Permissions;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -26,12 +27,12 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     private final int currentPage;
     private final MySort currentSort;
-    private final Player currentPlayer;
     private final UUID invID = UUID.randomUUID();
+    private AhConfiguration c;
 
     @Override
     public void run() {
-        decorate(currentPlayer);
+        decorate(c.currentPlayer);
     }
 
     public enum MySort{
@@ -40,18 +41,18 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         EXPIRED_ITEMS,
         ACTIVE_AUCTIONS
     }
-    public MyAuctionsGUI(int page, MySort sort, Player p) {
+    public MyAuctionsGUI(int page, MySort sort, AhConfiguration configuration) {
         super();
         this.currentPage = page;
         currentSort = sort;
-        currentPlayer = p;
+        c = configuration;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
-    public MyAuctionsGUI(Player p) {
+    public MyAuctionsGUI(AhConfiguration configuration) {
         super();
         this.currentPage = 0;
         currentSort = MySort.ALL_AUCTIONS;
-        currentPlayer = p;
+        c = configuration;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -153,17 +154,17 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private InventoryButton auctionItem(ItemNote note){
-        ItemStack item = ItemManager.createItemFromNote(note, currentPlayer, true);
+        ItemStack item = ItemManager.createItemFromNote(note, c.currentPlayer, true);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
                     Sounds.click(event);
                     if(note.isSold()) {
-                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note,currentSort), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note,currentSort, c), c.currentPlayer);
                     } else if (note.isExpired()) {
-                        AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note,currentSort), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note,currentSort, c), c.currentPlayer);
                     } else {
-                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note,currentSort), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note,currentSort, c), c.currentPlayer);
                     }
                 });
     }
@@ -204,7 +205,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.refresh)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,currentSort,currentPlayer), currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,currentSort,c), c.currentPlayer);
                 });
     }
     private InventoryButton sortButton(ItemStack item){
@@ -214,9 +215,9 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     if(event.isRightClick()){
                         //go backwards
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,previousSort(currentSort),currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,previousSort(currentSort),c), c.currentPlayer);
                     }else {
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,nextSort(currentSort),currentPlayer), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,nextSort(currentSort),c), c.currentPlayer);
                     }
                 });
     }
@@ -225,7 +226,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.backToMainMenu)
                 .consumer(event -> {
                     Sounds.closeEnderChest(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPlayer), currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                 });
     }
     private InventoryButton info(){
@@ -262,11 +263,11 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != auctionItemsAmount/21){
-                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(auctionItemsAmount/21,currentSort,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(auctionItemsAmount/21,currentSort,c), c.currentPlayer);
                         }
                     }else {
                         if(currentPage < auctionItemsAmount/21){
-                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage+1,currentSort,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage+1,currentSort,c), c.currentPlayer);
                         }
                     }
                 });
@@ -286,11 +287,11 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != 0){
-                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), c.currentPlayer);
                         }
                     }else {
                         if(currentPage > 0){
-                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage-1,currentSort,currentPlayer),currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage-1,currentSort,c),c.currentPlayer);
                         }
                     }
                 });

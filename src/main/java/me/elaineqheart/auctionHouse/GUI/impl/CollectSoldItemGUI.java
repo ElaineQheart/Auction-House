@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -22,11 +23,13 @@ public class CollectSoldItemGUI extends InventoryGUI {
 
     private final ItemNote note;
     private final MyAuctionsGUI.MySort currentSort;
+    private final AhConfiguration c;
 
-    public CollectSoldItemGUI(ItemNote note, MyAuctionsGUI.MySort sort) {
+    public CollectSoldItemGUI(ItemNote note, MyAuctionsGUI.MySort sort,  AhConfiguration configuration) {
         super();
         this.note = note;
         this.currentSort = sort;
+        c = configuration;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -94,7 +97,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,p), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                     p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
                             "%price%", StringUtils.formatPrice(price)));
                 });

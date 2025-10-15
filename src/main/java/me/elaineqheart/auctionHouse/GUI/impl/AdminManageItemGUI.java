@@ -6,6 +6,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
@@ -19,18 +20,18 @@ import java.util.UUID;
 public class AdminManageItemGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
-    private final Player currentPlayer;
+    private final AhConfiguration c;
     private final UUID invID = UUID.randomUUID();
 
     @Override
     public void run() {
-        decorate(currentPlayer);
+        decorate(c.currentPlayer);
     }
 
-    public AdminManageItemGUI(ItemNote note, Player p) {
+    public AdminManageItemGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
-        this.currentPlayer = p;
+        c = configuration;
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -87,7 +88,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE,"",currentPlayer,true), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                 });
     }
     private InventoryButton deleteAuction() {
@@ -95,7 +96,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminCancelAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    new AnvilSearchGUI(currentPlayer, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE, note);
+                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE, note);
                 });
     }
     private InventoryButton expireAuction() {
@@ -103,7 +104,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminExpireAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    new AnvilSearchGUI(currentPlayer, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE, note);
+                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE, note);
                 });
     }
 

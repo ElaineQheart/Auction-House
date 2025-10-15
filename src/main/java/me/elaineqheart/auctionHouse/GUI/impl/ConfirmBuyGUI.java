@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
@@ -23,16 +24,12 @@ import java.io.IOException;
 public class ConfirmBuyGUI extends InventoryGUI{
 
     private final ItemNote note;
-    private final int currentPage;
-    private final AuctionHouseGUI.Sort currentSort;
-    private final String currentSearch;
+    private final AhConfiguration c;
 
-    public ConfirmBuyGUI(ItemNote note, int page, AuctionHouseGUI.Sort sort, String search) {
+    public ConfirmBuyGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
-        this.currentPage = page;
-        this.currentSort = sort;
-        this.currentSearch = search;
+        c = configuration;
     }
 
     @Override
@@ -132,7 +129,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage, currentSort, currentSearch, p, false), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                 });
     }
 

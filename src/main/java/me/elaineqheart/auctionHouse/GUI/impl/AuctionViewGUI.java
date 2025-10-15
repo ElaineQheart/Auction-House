@@ -6,6 +6,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
@@ -20,24 +21,18 @@ import java.util.UUID;
 public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
-    private final Player currentPlayer;
     private final UUID invID = UUID.randomUUID();
-    private final int currentPage;
-    private final AuctionHouseGUI.Sort currentSort;
-    private final String currentSearch;
+    private final AhConfiguration c;
 
     @Override
     public void run() {
-        decorate(currentPlayer);
+        decorate(c.currentPlayer);
     }
 
-    public AuctionViewGUI(ItemNote note, Player player, int page, AuctionHouseGUI.Sort sort, String search) {
+    public AuctionViewGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
-        this.currentPlayer = player;
-        this.currentPage = page;
-        this.currentSort = sort;
-        this.currentSearch = search;
+        c = configuration;
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -97,7 +92,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage, currentSort, currentSearch, p, false), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                 });
     }
     private InventoryButton armadilloScute() {
@@ -114,7 +109,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
                     return;
                 }
-                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, currentPage, currentSort, currentSearch), (Player) event.getWhoClicked());
+                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c), (Player) event.getWhoClicked());
                 });
     }
 

@@ -9,6 +9,7 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -21,16 +22,12 @@ import java.util.*;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
-    private final int currentPage;
-    private final Sort currentSort;
-    private final String currentSearch;
-    private final Player currentPlayer;
+    public final AhConfiguration c;
     private final UUID invID = UUID.randomUUID();
-    private final boolean isAdmin;
 
     @Override
     public void run() {
-        decorate(currentPlayer);
+        decorate(c.currentPlayer);
     }
 
     public enum Sort{
@@ -42,20 +39,17 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     public AuctionHouseGUI(int page, Sort sort, String search, Player p, boolean isAdmin) {
         super();
-        this.currentPage = page;
-        this.currentSort = sort;
-        this.currentSearch = search;
-        this.currentPlayer = p;
-        this.isAdmin = isAdmin;
+        this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public AuctionHouseGUI(Player p) {
         super();
-        this.currentPage = 0;
-        this.currentSort = Sort.HIGHEST_PRICE;
-        this.currentSearch = "";
-        this.currentPlayer = p;
-        this.isAdmin = false;
+        this.c = new AhConfiguration(0, Sort.HIGHEST_PRICE, "", p ,false);
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+    }
+    public AuctionHouseGUI(AhConfiguration configuration) {
+        super();
+        this.c = configuration;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -74,13 +68,13 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 "# # # # # # # # #",
                 ". . # . . . # # .",
         });
-        fillOutItems(currentPage,currentSort);
+        fillOutItems(c.currentPage,c.currentSort);
         this.addButton(45,searchOption());
-        this.addButton(46,sortButton(ItemManager.getSort(currentSort)));
+        this.addButton(46,sortButton(ItemManager.getSort(c.currentSort)));
         this.addButton(48,previousPage());
         this.addButton(49,refresh());
         this.addButton(50,nextPage());
-        if (!isAdmin) {this.addButton(53, myAuctions());} else {this.addButton(53, commandBlockInfo());}
+        if (!c.isAdmin) {this.addButton(53, myAuctions());} else {this.addButton(53, commandBlockInfo());}
         super.decorate(player);
     }
 
@@ -101,8 +95,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private void fillOutAuctionItemsHighestPrice(int page){
         int startPage = page*21;
         Map<ItemNote, Integer> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
-        if(!currentSearch.isEmpty()){
-            sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(currentSearch);
+        if(!c.currentSearch.isEmpty()){
+            sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(c.currentSearch);
         }
         int size = sortedHighestPrice.size();
         for(int i = startPage; i < startPage+21; i++){
@@ -116,8 +110,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private void fillOutAuctionItemsLowestPrice(int page){
         int startPage = page*21;
         Map<ItemNote, Integer> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
-        if(!currentSearch.isEmpty()){
-            sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(currentSearch);
+        if(!c.currentSearch.isEmpty()){
+            sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(c.currentSearch);
         }
         int size = sortedHighestPrice.size();
         for(int i = startPage; i < startPage+21; ++i){
@@ -131,8 +125,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private void fillOutAuctionItemsEndingSoon(int page){
         int startPage = page*21;
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.sortedDateCreated();
-        if(!currentSearch.isEmpty()){
-            sortedDateCreated = ItemNoteStorageUtil.dateSearch(currentSearch);
+        if(!c.currentSearch.isEmpty()){
+            sortedDateCreated = ItemNoteStorageUtil.dateSearch(c.currentSearch);
         }
         int size = sortedDateCreated.size();
         for(int i = startPage; i < startPage+21; ++i){
@@ -146,8 +140,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private void fillOutAuctionItemsAlphabetical(int page){
         int startPage = page*21;
         Map<ItemNote, String> sortedAlphabetical = ItemNoteStorageUtil.sortedAlphabetical();
-        if(!currentSearch.isEmpty()){
-            sortedAlphabetical = ItemNoteStorageUtil.alphaSearch(currentSearch);
+        if(!c.currentSearch.isEmpty()){
+            sortedAlphabetical = ItemNoteStorageUtil.alphaSearch(c.currentSearch);
         }
         int size = sortedAlphabetical.size();
         for(int i = startPage; i < startPage+21; ++i){
@@ -159,21 +153,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         }
     }
     private InventoryButton auctionItem(ItemNote note){
-        ItemStack item = ItemManager.createItemFromNote(note, currentPlayer, false);
+        ItemStack item = ItemManager.createItemFromNote(note, c.currentPlayer, false);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
                         Sounds.openShulker(event);
-                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,currentPage,currentSort, currentSearch,isAdmin), currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c), c.currentPlayer);
                         return;
                     }
                     Sounds.click(event);
-                    if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),currentPlayer)) {
-                        if(isAdmin) {
-                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, currentPlayer), currentPlayer);
+                    if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer)) {
+                        if(c.isAdmin) {
+                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, c), c.currentPlayer);
                         }else {
-                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, currentPlayer, currentPage, currentSort, currentSearch), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), c.currentPlayer);
                         }
                     }
                 });
@@ -204,7 +198,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         return new InventoryButton()
                 .creator(player -> ItemManager.refresh)
                 .consumer(event -> {
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                     Sounds.click(event);
                 });
     }
@@ -214,7 +208,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
-        meta.setLore(Messages.getLoreList("items.next-page.lore", "%page%", String.valueOf(currentPage), "%pages%", String.valueOf(notes.size()/21)));
+        meta.setLore(Messages.getLoreList("items.next-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf(notes.size()/21)));
 
         item.setItemMeta(meta);
         return new InventoryButton()
@@ -222,12 +216,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.click(event);
                     if(event.isRightClick()){
-                        if(currentPage != notes.size()/21){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(notes.size()/21,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
+                        if(c.currentPage != notes.size()/21){
+                            c.currentPage = notes.size()/21;
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                         }
                     }else {
-                        if(currentPage < notes.size()/21){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage+1,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
+                        if(c.currentPage < notes.size()/21){
+                            c.currentPage++;
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                         }
                     }
                 });
@@ -238,19 +234,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));
-        meta.setLore(Messages.getLoreList("items.previous-page.lore", "%page%", String.valueOf(currentPage), "%pages%", String.valueOf(notes.size()/21)));
+        meta.setLore(Messages.getLoreList("items.previous-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf(notes.size()/21)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
                     Sounds.click(event);
                     if(event.isRightClick()){
-                        if(currentPage != 0){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,currentSort,currentSearch,currentPlayer,isAdmin), currentPlayer);
+                        if(c.currentPage != 0){
+                            c.currentPage = 0;
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                         }
                     }else {
-                        if(currentPage > 0){
-                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage-1,currentSort,currentSearch,currentPlayer,isAdmin),currentPlayer);
+                        if(c.currentPage > 0){
+                            c.currentPage--;
+                            AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                         }
                     }
                 });
@@ -260,7 +258,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.search.name"));
-        meta.setLore(Messages.getLoreList("items.search.lore", "%filter%", currentSearch));
+        meta.setLore(Messages.getLoreList("items.search.lore", "%filter%", c.currentSearch));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
@@ -268,10 +266,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     if(event.isRightClick()){
                         //clear filter
                         Sounds.breakWood(event);
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,currentSort,"",currentPlayer,isAdmin), currentPlayer);
+                        c.currentSearch = "";
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                     }else {
                         Sounds.click(event);
-                        if(isAdmin){
+                        if(c.isAdmin){
                             new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.ADMIN_AH, null);
                         }else {
                             new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.AH, null);
@@ -285,9 +284,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.click(event);
                     if(event.isRightClick()){
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,previousSort(currentSort),currentSearch,currentPlayer,isAdmin), currentPlayer);
+                        c.currentSort = previousSort(c.currentSort);
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                     }else {
-                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage,nextSort(currentSort),currentSearch,currentPlayer,isAdmin), currentPlayer);
+                        c.currentSort = nextSort(c.currentSort);
+                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                     }
                 });
     }
@@ -296,7 +297,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .creator(player -> ItemManager.myAuction)
                 .consumer(event -> {
                     Sounds.openEnderChest(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPlayer), (Player) event.getWhoClicked());
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), (Player) event.getWhoClicked());
                 });
     }
 
