@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
@@ -70,7 +71,7 @@ public class DisplayListener implements Listener {
             ItemNote note = UpdateDisplay.getNote(type,rank);
             if(note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
-                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p), p);
+                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, p, 0, AuctionHouseGUI.Sort.HIGHEST_PRICE, ""), p);
             }
         }
     }

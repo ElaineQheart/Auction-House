@@ -22,16 +22,22 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
     private final ItemNote note;
     private final Player currentPlayer;
     private final UUID invID = UUID.randomUUID();
+    private final int currentPage;
+    private final AuctionHouseGUI.Sort currentSort;
+    private final String currentSearch;
 
     @Override
     public void run() {
         decorate(currentPlayer);
     }
 
-    public AuctionViewGUI(ItemNote note, Player player) {
+    public AuctionViewGUI(ItemNote note, Player player, int page, AuctionHouseGUI.Sort sort, String search) {
         super();
         this.note = note;
         this.currentPlayer = player;
+        this.currentPage = page;
+        this.currentSort = sort;
+        this.currentSearch = search;
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -91,7 +97,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage, currentSort, currentSearch, p, false), p);
                 });
     }
     private InventoryButton armadilloScute() {
@@ -108,7 +114,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
                     return;
                 }
-                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note), (Player) event.getWhoClicked());
+                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, currentPage, currentSort, currentSearch), (Player) event.getWhoClicked());
                 });
     }
 

@@ -23,10 +23,16 @@ import java.io.IOException;
 public class ConfirmBuyGUI extends InventoryGUI{
 
     private final ItemNote note;
+    private final int currentPage;
+    private final AuctionHouseGUI.Sort currentSort;
+    private final String currentSearch;
 
-    public ConfirmBuyGUI(ItemNote note) {
+    public ConfirmBuyGUI(ItemNote note, int page, AuctionHouseGUI.Sort sort, String search) {
         super();
         this.note = note;
+        this.currentPage = page;
+        this.currentSort = sort;
+        this.currentSearch = search;
     }
 
     @Override
@@ -126,7 +132,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(currentPage, currentSort, currentSearch, p, false), p);
                 });
     }
 

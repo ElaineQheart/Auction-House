@@ -173,7 +173,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         if(isAdmin) {
                             AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, currentPlayer), currentPlayer);
                         }else {
-                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, currentPlayer), currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, currentPlayer, currentPage, currentSort, currentSearch), currentPlayer);
                         }
                     }
                 });
