@@ -29,8 +29,8 @@ public class AnvilSearchGUI implements Listener {
         switch (type) {
             case AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-search"));
             case ADMIN_AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-search"));
-            case ITEM_EXPIRE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("anvil-admin-expire-message"));
-            case ITEM_DELETE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("anvil-admin-delete-message"));
+            case ITEM_EXPIRE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-expire-message"));
+            case ITEM_DELETE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-delete-message"));
         }
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);
