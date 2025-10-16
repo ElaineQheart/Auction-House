@@ -22,100 +22,75 @@ import java.util.Objects;
 
 public class ItemManager {
 
-    public static ItemStack fillerItem;
-    public static ItemStack lockedSlot;
-    public static ItemStack refresh;
-    public static ItemStack backToMainMenu;
-    public static ItemStack backToMyAuctions;
-    public static ItemStack info;
-    public static ItemStack myAuction;
-    public static ItemStack sortHighestPrice;
-    public static ItemStack sortLowestPrice;
-    public static ItemStack sortEndingSoon;
-    public static ItemStack sortAlphabetical;
-    public static ItemStack mySortAllAuctions;
-    public static ItemStack mySortSoldItems;
-    public static ItemStack mySortExpiredItems;
-    public static ItemStack mySortActiveAuctions;
-    public static ItemStack emptyPaper;
-    public static ItemStack cancel;
-    public static ItemStack collectExpiredItem;
-    public static ItemStack cancelAuction;
-    public static ItemStack commandBlockInfo;
-    public static ItemStack adminCancelAuction;
-    public static ItemStack adminExpireAuction;
-    public static ItemStack confirm;
+    public final static ItemStack fillerItem = createFillerItem();
+    public final static ItemStack lockedSlot = createLockedSlot();
+    public final static ItemStack refresh = createRefresh();
+    public final static ItemStack backToMainMenu = createBackToMainMenu();
+    public final static ItemStack backToMyAuctions = createBackToMyAuctions();
+    public final static ItemStack info = createInfo();
+    public final static ItemStack myAuction = createMyAuction();
+    public final static ItemStack sortHighestPrice = createSortHighestPrice();
+    public final static ItemStack sortLowestPrice = createSortLowestPrice();
+    public final static ItemStack sortEndingSoon = createSortEndingSoon();
+    public final static ItemStack sortAlphabetical = createSortAlphabetical();
+    public final static ItemStack mySortAllAuctions = createMySortAllAuctions();
+    public final static ItemStack mySortSoldItems = createMySortSoldItems();
+    public final static ItemStack mySortExpiredItems = createMySortExpiredItems();
+    public final static ItemStack mySortActiveAuctions =createMySortActiveAuctions();
+    public final static ItemStack emptyPaper = createEmptyPaper();
+    public final static ItemStack cancel = createCancel();
+    public final static ItemStack collectExpiredItem = createCollectExpiredItem();
+    public final static ItemStack cancelAuction = createCancelAuction();
+    public final static ItemStack commandBlockInfo = createCommandBlockInfo();
+    public final static ItemStack adminCancelAuction = createAdminCancelAuction();
+    public final static ItemStack adminExpireAuction = createAdminExpireAuction();
+    public final static ItemStack confirm = createConfirmItem();
+    public final static ItemStack chooseItemBuyAmount = createChooseItemBuyAmount();
 
-    static {
-        createFillerItem();
-        createLockedSlot();
-        createRefresh();
-        createBackToMainMenu();
-        createBackToMyAuctions();
-        createInfo();
-        createMyAuction();
-        createSortHighestPrice();
-        createSortLowestPrice();
-        createSortEndingSoon();
-        createSortAlphabetical();
-        createMySortAllAuctions();
-        createMySortSoldItems();
-        createMySortExpiredItems();
-        createMySortActiveAuctions();
-        createEmptyPaper();
-        createCancel();
-        createCollectExpiredItem();
-        createCancelAuction();
-        createCommandBlockInfo();
-        createAdminCancelAuction();
-        createAdminExpireAuction();
-        createConfirmItem();
-    }
-
-    private static void createFillerItem(){
+    private static ItemStack createFillerItem(){
         ItemStack item = new ItemStack(Material.matchMaterial(SettingManager.fillerItem));
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setHideTooltip(true);
         item.setItemMeta(meta);
-        fillerItem = item;
+        return item;
     }
-    private static void createLockedSlot(){
+    private static ItemStack createLockedSlot(){
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.locked-slot.name"));
         item.setItemMeta(meta);
-        lockedSlot = item;
+        return item;
     }
-    private static void createRefresh(){
+    private static ItemStack createRefresh(){
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.refresh.name"));
         meta.setLore(Messages.getLoreList("items.refresh.lore"));
         item.setItemMeta(meta);
-        refresh = item;
+        return item;
     }
-    private static void createBackToMainMenu(){
+    private static ItemStack createBackToMainMenu(){
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.back-main-menu.name"));
         meta.setLore(Messages.getLoreList("items.back-main-menu.lore"));
         item.setItemMeta(meta);
-        backToMainMenu = item;
+        return item;
     }
-    private static void createBackToMyAuctions(){
+    private static ItemStack createBackToMyAuctions(){
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.back-my-auctions.name"));
         meta.setLore(Messages.getLoreList("items.back-my-auctions.lore"));
         item.setItemMeta(meta);
-        backToMyAuctions = item;
+        return item;
     }
-    private static void createInfo(){
+    private static ItemStack createInfo(){
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -124,52 +99,52 @@ public class ItemManager {
         String tax = ChatColor.GOLD + "" + (double)(int)(AuctionHouse.getPlugin().getConfig().getDouble("tax") * 1000) / 10 + "%";
         meta.setLore(Messages.getLoreList("items.info.lore", "%tax%", tax));
         item.setItemMeta(meta);
-        info = item;
+        return item;
     }
-    private static void createMyAuction(){
+    private static ItemStack createMyAuction(){
         ItemStack item = new ItemStack(Material.ENDER_CHEST);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-auctions.name"));
         meta.setLore(Messages.getLoreList("items.my-auctions.lore"));
         item.setItemMeta(meta);
-        myAuction = item;
+        return item;
     }
-    private static void createSortHighestPrice(){
+    private static ItemStack createSortHighestPrice(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-highest-price.name"));
         meta.setLore(Messages.getLoreList("items.sort-highest-price.lore"));
         item.setItemMeta(meta);
-        sortHighestPrice = item;
+        return item;
     }
-    private static void createSortLowestPrice(){
+    private static ItemStack createSortLowestPrice(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-lowest-price.name"));
         meta.setLore(Messages.getLoreList("items.sort-lowest-price.lore"));
         item.setItemMeta(meta);
-        sortLowestPrice = item;
+        return item;
     }
-    private static void createSortEndingSoon(){
+    private static ItemStack createSortEndingSoon(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-ending-soon.name"));
         meta.setLore(Messages.getLoreList("items.sort-ending-soon.lore"));
         item.setItemMeta(meta);
-        sortEndingSoon = item;
+        return item;
     }
-    private static void createSortAlphabetical(){
+    private static ItemStack createSortAlphabetical(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-alphabetical.name"));
         meta.setLore(Messages.getLoreList("items.sort-alphabetical.lore"));
         item.setItemMeta(meta);
-        sortAlphabetical = item;
+        return item;
     }
     public static ItemStack getSort(AuctionHouseGUI.Sort sort){
         if(sort.equals(AuctionHouseGUI.Sort.LOWEST_PRICE)) return sortLowestPrice;
@@ -183,111 +158,120 @@ public class ItemManager {
         if(sort.equals(MyAuctionsGUI.MySort.EXPIRED_ITEMS)) return mySortExpiredItems;
         return mySortActiveAuctions;
     }
-    private static void createMySortAllAuctions(){
+    private static ItemStack createMySortAllAuctions(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-all.name"));
         meta.setLore(Messages.getLoreList("items.my-sort-all.lore"));
         item.setItemMeta(meta);
-        mySortAllAuctions = item;
+        return item;
     }
-    private static void createMySortSoldItems(){
+    private static ItemStack createMySortSoldItems(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-sold.name"));
         meta.setLore(Messages.getLoreList("items.my-sort-sold.lore"));
         item.setItemMeta(meta);
-        mySortSoldItems = item;
+        return item;
     }
-    private static void createMySortExpiredItems(){
+    private static ItemStack createMySortExpiredItems(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-expired.name"));
         meta.setLore(Messages.getLoreList("items.my-sort-expired.lore"));
         item.setItemMeta(meta);
-        mySortExpiredItems = item;
+        return item;
     }
-    private static void createMySortActiveAuctions(){
+    private static ItemStack createMySortActiveAuctions(){
         ItemStack item = new ItemStack(Material.HOPPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-active.name"));
         meta.setLore(Messages.getLoreList("items.my-sort-active.lore"));
         item.setItemMeta(meta);
-        mySortActiveAuctions = item;
+        return item;
     }
-    private static void createEmptyPaper() {
+    private static ItemStack createEmptyPaper() {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GRAY + "");
         meta.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(),"AuctionHouseSearch"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
-        emptyPaper = item;
+        return item;
     }
-    private static void createCancel() {
+    private static ItemStack createCancel() {
         ItemStack item = new ItemStack(Material.RED_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.cancel.name"));
         item.setItemMeta(meta);
-        cancel = item;
+        return item;
     }
-    private static void createCollectExpiredItem() {
+    private static ItemStack createCollectExpiredItem() {
         ItemStack item = new ItemStack(Material.RED_DYE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.collect-expired.name"));
         meta.setLore(Messages.getLoreList("items.collect-expired.lore"));
         item.setItemMeta(meta);
-        collectExpiredItem = item;
+        return item;
     }
-    private static void createCancelAuction() {
+    private static ItemStack createCancelAuction() {
         ItemStack item = new ItemStack(Material.RED_CONCRETE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.cancel-auction.name"));
         meta.setLore(Messages.getLoreList("items.cancel-auction.lore"));
         item.setItemMeta(meta);
-        cancelAuction = item;
+        return item;
     }
-    private static void createCommandBlockInfo() {
+    private static ItemStack createCommandBlockInfo() {
         ItemStack item = new ItemStack(Material.STRUCTURE_BLOCK);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-info.name"));
         meta.setLore(Messages.getLoreList("items.admin-info.lore"));
         item.setItemMeta(meta);
-        commandBlockInfo = item;
+        return item;
     }
-    private static void createAdminCancelAuction() {
+    private static ItemStack createAdminCancelAuction() {
         ItemStack item = new ItemStack(Material.RED_CONCRETE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-cancel-auction.name"));
         meta.setLore(Messages.getLoreList("items.admin-cancel-auction.lore"));
         item.setItemMeta(meta);
-        adminCancelAuction = item;
+        return item;
     }
-    private static void createAdminExpireAuction() {
+    private static ItemStack createAdminExpireAuction() {
         ItemStack item = new ItemStack(Material.RED_DYE);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-expire-auction.name"));
         meta.setLore(Messages.getLoreList("items.admin-expire-auction.lore"));
         item.setItemMeta(meta);
-        adminExpireAuction = item;
+        return item;
     }
-    private static void createConfirmItem() {
+    private static ItemStack createConfirmItem() {
         ItemStack item = new ItemStack(Material.GREEN_BANNER);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.confirm.name"));
         item.setItemMeta(meta);
-        confirm = item;
+        return item;
+    }
+    private static ItemStack createChooseItemBuyAmount() {
+        ItemStack item = new ItemStack(Material.SPRUCE_HANGING_SIGN);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.choose-item-buy-amount.name"));
+        meta.setLore(Messages.getLoreList("items.choose-item-buy-amount.lore"));
+        item.setItemMeta(meta);
+        return item;
     }
 
     public static ItemStack createDirt() {

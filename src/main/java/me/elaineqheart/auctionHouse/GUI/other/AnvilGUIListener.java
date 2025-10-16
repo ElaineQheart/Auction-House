@@ -42,10 +42,10 @@ public class AnvilGUIListener implements Listener {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-search"))) {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
-            } else if (view.getTitle().equals(Messages.getFormatted("anvil-admin-expire-message"))) {
+            } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-expire-message"))) {
                 AuctionHouse.getGuiManager().openGUI
                         (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
-            } else if (view.getTitle().equals(Messages.getFormatted("anvil-admin-delete-message"))) {
+            } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-delete-message"))) {
                 AuctionHouse.getGuiManager().openGUI
                         (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
             }

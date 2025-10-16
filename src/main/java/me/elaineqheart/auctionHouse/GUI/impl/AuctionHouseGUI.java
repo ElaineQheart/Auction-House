@@ -163,7 +163,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         return;
                     }
                     Sounds.click(event);
-                    if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer)) {
+                    if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer) || c.isAdmin) {
                         if(c.isAdmin) {
                             AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, c), c.currentPlayer);
                         }else {

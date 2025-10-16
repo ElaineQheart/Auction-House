@@ -93,13 +93,12 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     if(note.getAdminMessage() != null) {
                         if(note.getItem().equals(ItemManager.createDirt())) {
                             p.sendMessage(Messages.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
-                            p.closeInventory();
                         }else {
                             p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.getInventory().addItem(note.getItem());
-                            ItemNoteStorageUtil.deleteNote(note);
-                            p.closeInventory();
                         }
+                        ItemNoteStorageUtil.deleteNote(note);
+                        p.closeInventory();
                     } else {
                         p.getInventory().addItem(note.getItem());
                         ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!

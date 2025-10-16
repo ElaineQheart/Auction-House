@@ -10,6 +10,7 @@ import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -47,15 +48,19 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 "# # # # # # # # #",
                 "# # # # . # # # #",
                 "# # # # # # # # #",
-                "# # # # . # # # #",
+                "# # # # # # # # #",
                 "# # # # # # # # #",
                 "# # # # . # # # #"
         },fillerItem());
         this.addButton(13, buyingItem());
+        int slot = SettingManager.partialSelling && note.getItem().getAmount() > 1 ? 30 : 31;
         if(note.canAfford(VaultHook.getEconomy().getBalance(player))) {
-            this.addButton(31,turtleScute());
+            this.addButton(slot,turtleScute());
         }else{
-            this.addButton(31,armadilloScute());
+            this.addButton(slot,armadilloScute());
+        }
+        if(slot == 30) {
+            this.addButton(32,sign());
         }
         this.addButton(49, back());
         super.decorate(player);
@@ -110,6 +115,19 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     return;
                 }
                 AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c), (Player) event.getWhoClicked());
+                });
+    }
+    private InventoryButton sign() {
+        return new InventoryButton()
+                .creator(player -> ItemManager.chooseItemBuyAmount)
+                .consumer(event -> {
+                    Sounds.click(event);
+                    if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
+                        event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
+                        return;
+                    }
+                    //TODO: open anvil
+                    //AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c), (Player) event.getWhoClicked());
                 });
     }
 

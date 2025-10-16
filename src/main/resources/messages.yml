@@ -75,6 +75,7 @@ inventory-titles:
   anvil-admin-search: "Admin Search Item"
   anvil-admin-expire-message: "Expire Item Reason"
   anvil-admin-delete-message: "Delete Item Reason"
+  anvil-set-amount: "Set Amount"
 items:
   next-page:
     name: "§aNext Page"
@@ -281,6 +282,12 @@ items:
       &n§7Value with taxes: %price%
       &n
       &n§eClick to collect!"
+  choose-item-buy-amount:
+    name: "§fChoose amount to buy!"
+    lore: "§7You can choose to buy only a few items
+      &n§7with the price being reduced accordingly
+      &n
+      &n§eClick to set!"
 
 
 world:
