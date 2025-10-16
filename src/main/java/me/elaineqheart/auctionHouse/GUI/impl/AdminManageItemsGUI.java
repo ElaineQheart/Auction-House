@@ -17,7 +17,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
 
-public class AdminManageItemGUI extends InventoryGUI implements Runnable{
+public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
     private final AhConfiguration c;
@@ -28,7 +28,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
         decorate(c.currentPlayer);
     }
 
-    public AdminManageItemGUI(ItemNote note, AhConfiguration configuration) {
+    public AdminManageItemsGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
         c = configuration;
@@ -96,7 +96,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminCancelAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE, note);
+                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE, note, c);
                 });
     }
     private InventoryButton expireAuction() {
@@ -104,7 +104,7 @@ public class AdminManageItemGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminExpireAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE, note);
+                    new AnvilSearchGUI(c.currentPlayer, AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE, note, c);
                 });
     }
 

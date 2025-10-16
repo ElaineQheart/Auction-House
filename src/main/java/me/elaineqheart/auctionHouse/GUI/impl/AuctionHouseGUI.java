@@ -165,7 +165,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     Sounds.click(event);
                     if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer) || c.isAdmin) {
                         if(c.isAdmin) {
-                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemGUI(note, c), c.currentPlayer);
+                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.currentPlayer);
                         }else {
                             AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), c.currentPlayer);
                         }
@@ -271,9 +271,9 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     }else {
                         Sounds.click(event);
                         if(c.isAdmin){
-                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.ADMIN_AH, null);
+                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.ADMIN_AH, null, c);
                         }else {
-                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.AH, null);
+                            new AnvilSearchGUI((Player) event.getWhoClicked(), AnvilSearchGUI.SearchType.AH, null, c);
                         }
                     }
                 });

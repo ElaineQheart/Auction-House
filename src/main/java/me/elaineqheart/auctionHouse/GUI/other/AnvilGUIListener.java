@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.GUI.other;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import org.bukkit.Bukkit;
@@ -22,10 +23,11 @@ public class AnvilGUIListener implements Listener {
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL) return;
-        ItemStack paperItem = event.getInventory().getItem(0);
-        if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return; // emptyPaper has a custom persistent data value
-        event.setCancelled(true);
+        //ItemStack paperItem = event.getInventory().getItem(0);
+        //if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return; // emptyPaper has a custom persistent data value
         AnvilView view = (AnvilView) event.getView();
+        if(!AnvilSearchGUI.activeAnvils.containsKey(view)) return; // safe method
+        event.setCancelled(true);
         view.setRepairCost(0);
 
         Player player = (Player) event.getWhoClicked();
@@ -38,16 +40,20 @@ public class AnvilGUIListener implements Listener {
             player.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
             String typedText = meta.getDisplayName();
             Sounds.click(event);
+            AhConfiguration c = AnvilSearchGUI.activeAnvils.get(view);
+            AnvilSearchGUI.activeAnvils.remove(view);
             if(view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-search"))) {
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,false),player);
+                c.currentSearch = typedText;
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-search"))) {
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0,AuctionHouseGUI.Sort.HIGHEST_PRICE,typedText,player,true),player);
+                c.currentSearch = typedText;
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-expire-message"))) {
                 AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE,c),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-delete-message"))) {
                 AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE,c),player);
             }
 
         }
@@ -65,20 +71,13 @@ public class AnvilGUIListener implements Listener {
     @EventHandler
     public void onAnvilClose(InventoryCloseEvent event) {
         if (event.getInventory().getType() != InventoryType.ANVIL) return;
-        ItemStack paperItem = event.getInventory().getItem(0);
-        if (paperItem == null || !paperItem.equals(ItemManager.emptyPaper)) return;
-        Player p = (Player) event.getPlayer();
-        //remove the paper, else it will end up in the players inventory
-        p.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
-        if(event.getInventory().getItem(2) != null) return;
         AnvilView view = (AnvilView) event.getView();
-        if(view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-search"))) {
-            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,false), p),1);
-        } else {
-            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "",p,true), p),1);
-        }
+        if(!AnvilSearchGUI.activeAnvils.containsKey(view)) return; // safe method
+        //remove the paper, else it will end up in the players inventory
+        AhConfiguration c = AnvilSearchGUI.activeAnvils.get(view);
+        c.currentPlayer.getOpenInventory().getTopInventory().remove(ItemManager.emptyPaper);
+        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer),1);
 
     }
 

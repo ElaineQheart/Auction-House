@@ -1,9 +1,11 @@
 package me.elaineqheart.auctionHouse.GUI.impl;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
@@ -22,10 +24,12 @@ public class AdminConfirmGUI extends InventoryGUI{
     private final ItemNote note;
     private final String reason;
     private final AnvilSearchGUI.SearchType type;
+    private final AhConfiguration c;
 
-    public AdminConfirmGUI(String reason, ItemNote note, AnvilSearchGUI.SearchType type) {
+    public AdminConfirmGUI(String reason, ItemNote note, AnvilSearchGUI.SearchType type, AhConfiguration configuration) {
         super();
         this.note = note;
+        this.c = configuration;
         this.reason = reason;
         this.type = type;
     }
@@ -152,7 +156,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.cancel)
                 .consumer(event -> {
                     Sounds.click(event);
-                    event.getWhoClicked().closeInventory();
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
                 });
     }
 

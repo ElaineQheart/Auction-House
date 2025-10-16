@@ -1,10 +1,12 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
+import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.view.AnvilView;
 
@@ -15,6 +17,7 @@ public class AnvilSearchGUI implements Listener {
     // This is used to pass the note to the next GUI (AnvilGUIListener)
     // an item Note linked to the player
     public static HashMap<Player, ItemNote> currentAdminNoteMap = new HashMap<>();
+    public static HashMap<AnvilView, AhConfiguration> activeAnvils = new HashMap<>();
 
     public enum SearchType {
         AH,
@@ -23,7 +26,7 @@ public class AnvilSearchGUI implements Listener {
         ITEM_DELETE_MESSAGE
     }
 
-    public AnvilSearchGUI(Player player, SearchType type, ItemNote note) {
+    public AnvilSearchGUI(Player player, SearchType type, ItemNote note, AhConfiguration configuration) {
         currentAdminNoteMap.put(player, note);
         AnvilView view = null;
         switch (type) {
@@ -34,6 +37,7 @@ public class AnvilSearchGUI implements Listener {
         }
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);
+        activeAnvils.put(view, configuration);
         player.openInventory(view);
     }
 
