@@ -6,7 +6,6 @@ import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.MenuType;
 import org.bukkit.inventory.view.AnvilView;
 
@@ -16,24 +15,26 @@ public class AnvilSearchGUI implements Listener {
 
     // This is used to pass the note to the next GUI (AnvilGUIListener)
     // an item Note linked to the player
-    public static HashMap<Player, ItemNote> currentAdminNoteMap = new HashMap<>();
+    public static HashMap<Player, ItemNote> activeNoteMap = new HashMap<>();
     public static HashMap<AnvilView, AhConfiguration> activeAnvils = new HashMap<>();
 
     public enum SearchType {
         AH,
         ADMIN_AH,
         ITEM_EXPIRE_MESSAGE,
-        ITEM_DELETE_MESSAGE
+        ITEM_DELETE_MESSAGE,
+        SET_AMOUNT
     }
 
     public AnvilSearchGUI(Player player, SearchType type, ItemNote note, AhConfiguration configuration) {
-        currentAdminNoteMap.put(player, note);
+        activeNoteMap.put(player, note);
         AnvilView view = null;
         switch (type) {
             case AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-search"));
             case ADMIN_AH -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-search"));
             case ITEM_EXPIRE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-expire-message"));
             case ITEM_DELETE_MESSAGE -> view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-admin-delete-message"));
+            case SET_AMOUNT ->  view = MenuType.ANVIL.create(player, Messages.getFormatted("inventory-titles.anvil-set-amount"));
         }
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);

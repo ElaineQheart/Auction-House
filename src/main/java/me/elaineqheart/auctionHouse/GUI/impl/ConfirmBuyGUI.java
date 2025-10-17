@@ -18,18 +18,24 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
 public class ConfirmBuyGUI extends InventoryGUI{
 
     private final ItemNote note;
+    private final ItemStack item;
     private final AhConfiguration c;
+    private final double price;
 
-    public ConfirmBuyGUI(ItemNote note, AhConfiguration configuration) {
+    public ConfirmBuyGUI(ItemNote note, AhConfiguration configuration, ItemStack item) {
         super();
         this.note = note;
+        this.item = item;
         c = configuration;
+        price = (double) note.getPrice() / note.getItem().getAmount() * item.getAmount();
+
     }
 
     @Override
@@ -67,12 +73,12 @@ public class ConfirmBuyGUI extends InventoryGUI{
     }
     private InventoryButton buyingItem(){
         return new InventoryButton()
-                .creator(player -> ItemManager.createBuyingItemDisplay(note))
+                .creator(player -> ItemManager.createBuyingItemDisplay(item.clone()))
                 .consumer(event -> {});
     }
     private InventoryButton confirm(){
         return new InventoryButton()
-                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(note.getPrice())))
+                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
@@ -93,18 +99,24 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     Economy eco = VaultHook.getEconomy();
-                    double price = note.getPrice();
                     p.closeInventory();
-                    if(!note.canAfford(eco.getBalance(p))) { //extra check to make sure that they have enough coins
+                    if(eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
                         p.sendMessage(Messages.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     eco.withdrawPlayer(p, price);
                     Sounds.experience(event);
-                    p.getInventory().addItem(note.getItem());
+                    p.getInventory().addItem(item);
                     note.setSold(true);
                     note.setBuyerName(p.getName());
+                    if(price != note.getPrice()) {
+                        if(note.getPartiallySoldAmountLeft() == 0) {
+                            note.setPartiallySoldAmountLeft(note.getItem().getAmount() - item.getAmount());
+                        } else {
+                            note.setPartiallySoldAmountLeft(note.getPartiallySoldAmountLeft() - item.getAmount());
+                        }
+                    }
                     try {
                         ItemNoteStorageUtil.saveNotes();
                     } catch (IOException e) {

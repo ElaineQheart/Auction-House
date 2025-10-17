@@ -62,6 +62,7 @@ chat:
   sold-message:
     prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
     interaction: "§f§l[CLICK]"
+  invalid-amount: "§cThat is not a valid amount!"
 
 inventory-titles:
   admin-confirm-gui: "Confirm Action"
@@ -241,7 +242,8 @@ items:
       expired: "§cExpired!"
       sold: "§6Sold!
         &n§7Buyer: %buyer%"
-      partially-sold: "§6Sold: §e%sold%/%total%"
+      partially-sold: "§6Sold: §e%sold%/%total%
+        &n§7Buyer: %buyer%&n "
       waiting-list: "Auction starting in: %time%"
       active: "Ends in: %time%"
       buying-item: "§8------------------

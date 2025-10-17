@@ -16,6 +16,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
@@ -70,7 +71,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     }
     private InventoryButton buyingItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player, true))
+                .creator(player -> ItemManager.createCollectingItemFromNote(note, player))
                 .consumer(Sounds::click);
     }
     private InventoryButton back() {
@@ -83,7 +84,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
     private InventoryButton collectItem() {
-        double price = (double) ((int) (note.getPrice() * 100 * (1 - SettingManager.taxRate))) /100;
+        double price = (double) ((int) (note.getSoldPrice() * 100 * (1 - SettingManager.taxRate))) /100;
         return new InventoryButton()
                 .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price)))
                 .consumer(event -> {
@@ -91,7 +92,17 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     Economy eco = VaultHook.getEconomy();
                     eco.depositPlayer(p, price);
                     Sounds.experience(event);
-                    ItemNoteStorageUtil.deleteNote(note);
+                    if(note.getPartiallySoldAmountLeft() != 0) {
+                        note.setPrice(note.getPrice()-note.getSoldPrice());
+                        note.setSold(false);
+                        ItemStack item = note.getItem();
+                        item.setAmount(note.getPartiallySoldAmountLeft());
+                        note.setItem(item);
+                        note.setPartiallySoldAmountLeft(0);
+                        note.setBuyerName(null);
+                    } else {
+                        ItemNoteStorageUtil.deleteNote(note);
+                    }
                     try {
                         ItemNoteStorageUtil.saveNotes();
                     } catch (IOException e) {

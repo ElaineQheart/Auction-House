@@ -16,7 +16,7 @@ public class ItemNoteStorageUtil {
     //gson is used to convert the Note objects into json Strings and backwards
 
     private static ArrayList<ItemNote> itemNotes = new ArrayList<>();
-    private static LinkedHashMap<ItemNote, Integer> sortedHighestPrice = new LinkedHashMap<>();
+    private static LinkedHashMap<ItemNote, Double> sortedHighestPrice = new LinkedHashMap<>();
     private static LinkedHashMap<ItemNote, Long> sortedDateCreated = new LinkedHashMap<>();
     private static LinkedHashMap<ItemNote, String> sortedAlphabetical = new LinkedHashMap<>();
 
@@ -97,10 +97,10 @@ public class ItemNoteStorageUtil {
 
     private static void updateSortedLists(){
         //these lists of the auction items are sorted by price, creation data and the alphabet
-        Map<ItemNote,Integer> map = new HashMap<>();
+        Map<ItemNote,Double> map = new HashMap<>();
         for (ItemNote note : itemNotes){
             if(note.isOnAuction() && !note.isExpired())
-                map.put(note,note.getPrice());
+                map.put(note,note.getCurrentPrice());
         }
         sortedHighestPrice = map.entrySet()
                 .stream()
@@ -135,11 +135,11 @@ public class ItemNoteStorageUtil {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public static LinkedHashMap<ItemNote, Integer> sortedHighestPrice(){
-        LinkedHashMap<ItemNote, Integer> returnList = new LinkedHashMap<>();
+    public static LinkedHashMap<ItemNote, Double> sortedHighestPrice(){
+        LinkedHashMap<ItemNote, Double> returnList = new LinkedHashMap<>();
         for(ItemNote note : sortedHighestPrice.keySet()) {
             if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
-                returnList.put(note, note.getPrice());
+                returnList.put(note, note.getCurrentPrice());
             }
         }
         return returnList;
@@ -177,12 +177,12 @@ public class ItemNoteStorageUtil {
         return newSortedDateCreated;
     }
 
-    public static LinkedHashMap<ItemNote, Integer> hiPrSearch(String search){
-        LinkedHashMap<ItemNote, Integer> newSortedMap = new LinkedHashMap<>();
+    public static LinkedHashMap<ItemNote, Double> hiPrSearch(String search){
+        LinkedHashMap<ItemNote, Double> newSortedMap = new LinkedHashMap<>();
         for(ItemNote note : sortedHighestPrice().keySet()){
             for(String s : note.getSearchIndex()){
                 if(s.contains(search.toLowerCase())){
-                    newSortedMap.put(note,note.getPrice());
+                    newSortedMap.put(note,note.getCurrentPrice());
                     break;
                 }
             }

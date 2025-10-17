@@ -19,7 +19,7 @@ public class ItemNote {
     private final String playerName;
     private String buyerName;
     private final UUID playerUUID;
-    private final int price;
+    private double price;
     private Date dateCreated;
     private String itemData;
     private boolean isSold;
@@ -56,8 +56,15 @@ public class ItemNote {
         return timeLeft() > auctionTime;
     }
 
-    public boolean canAfford(double coins){
-        return coins >= price;
+    public double getCurrentPrice() {
+        if(getPartiallySoldAmountLeft() == 0) return price;
+        return price / getItem().getAmount() * getPartiallySoldAmountLeft();
+    }
+    public double getSoldPrice() {
+        return partiallySoldAmountLeft == 0 ? price : price - getCurrentPrice();
+    }
+    public int getCurrentAmount() {
+        return partiallySoldAmountLeft == 0 ? getItem().getAmount() : partiallySoldAmountLeft;
     }
 
     public String[] getSearchIndex() {
@@ -77,7 +84,7 @@ public class ItemNote {
     public String getBuyerName() {return buyerName;}
     public UUID getPlayerUUID() {return playerUUID;}
     public Date getDateCreated() {return dateCreated;}
-    public int getPrice() {return price;}
+    public double getPrice() {return price;}
     public String getPriceTrimmed() {
         if(price < 1000) {
             return String.valueOf(price);
@@ -98,5 +105,6 @@ public class ItemNote {
     public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
     public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}
     public void setDateCreated(Date dateCreated) {this.dateCreated = dateCreated;}
-    public void setPartiallySoldAmountLeft(int bought) {this.partiallySoldAmountLeft = getItem().getAmount() - bought;}
+    public void setPartiallySoldAmountLeft(int amount) {this.partiallySoldAmountLeft = amount;}
+    public void setPrice(double amount) {this.price = amount;}
 }

@@ -92,7 +92,7 @@ public class UpdateDisplay implements Runnable{
             World world = loc.getWorld();
             assert world != null;
             if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()
-                    || !Objects.equals(data.itemStack.getItemMeta(), item.getItemMeta())) {
+                    || data.itemStack.getAmount() != item.getAmount() || !Objects.equals(data.itemStack.getItemMeta(), item.getItemMeta())) {
                 //if the item entity is null or the item is different, create a new item entity
                 if(data.itemEntity != null) {
                     data.itemEntity.remove(); //remove the old item entity
@@ -240,7 +240,7 @@ public class UpdateDisplay implements Runnable{
         if(type.equals("highest_price")) {
             int size = ItemNoteStorageUtil.sortedHighestPrice().size();
             if(rank > size) return null;
-            Map.Entry<ItemNote, Integer> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
+            Map.Entry<ItemNote, Double> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
             if(entry == null) return null;
             return entry.getKey();
         } else if (type.equals("ending_soon")) {

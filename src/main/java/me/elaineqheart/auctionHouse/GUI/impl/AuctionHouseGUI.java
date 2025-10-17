@@ -94,14 +94,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     private void fillOutAuctionItemsHighestPrice(int page){
         int startPage = page*21;
-        Map<ItemNote, Integer> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
+        Map<ItemNote, Double> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
         if(!c.currentSearch.isEmpty()){
             sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(c.currentSearch);
         }
         int size = sortedHighestPrice.size();
         for(int i = startPage; i < startPage+21; i++){
             if(size-1<i)break;
-            Map.Entry<ItemNote,Integer> entry = sortedHighestPrice.entrySet().stream().skip(size-i-1).findFirst().orElse(null);
+            Map.Entry<ItemNote,Double> entry = sortedHighestPrice.entrySet().stream().skip(size-i-1).findFirst().orElse(null);
             if(entry == null) continue;
             int j = i%21+10 + i%21/7 + i%21/7;
             this.addButton(j,auctionItem(entry.getKey()));
@@ -109,14 +109,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
     private void fillOutAuctionItemsLowestPrice(int page){
         int startPage = page*21;
-        Map<ItemNote, Integer> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
+        Map<ItemNote, Double> sortedHighestPrice = ItemNoteStorageUtil.sortedHighestPrice();
         if(!c.currentSearch.isEmpty()){
             sortedHighestPrice = ItemNoteStorageUtil.hiPrSearch(c.currentSearch);
         }
         int size = sortedHighestPrice.size();
         for(int i = startPage; i < startPage+21; ++i){
             if(size-1<i)break;
-            Map.Entry<ItemNote,Integer> entry = sortedHighestPrice.entrySet().stream().skip(i).findFirst().orElse(null);
+            Map.Entry<ItemNote,Double> entry = sortedHighestPrice.entrySet().stream().skip(i).findFirst().orElse(null);
             if(entry == null) continue;
             int j = i%21+10 + i%21/7 + i%21/7;
             this.addButton(j,auctionItem(entry.getKey()));

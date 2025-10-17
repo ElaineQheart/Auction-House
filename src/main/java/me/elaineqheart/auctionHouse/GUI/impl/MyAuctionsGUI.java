@@ -135,7 +135,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         LinkedHashMap<ItemNote, Long> myAuctions = new LinkedHashMap<>();
         Map<ItemNote, Long> sortedDateCreated = ItemNoteStorageUtil.mySortedDateCreated();
         for(ItemNote key : sortedDateCreated.keySet()) {
-            if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id) && !key.isExpired() && !key.isSold())
+            if (Bukkit.getPlayer(key.getPlayerUUID()) == Bukkit.getPlayer(id) && !key.isExpired() && key.isOnAuction())
                 myAuctions.put(key, sortedDateCreated.get(key));
         }
         createButtonsForAuctionItems(myAuctions,page);

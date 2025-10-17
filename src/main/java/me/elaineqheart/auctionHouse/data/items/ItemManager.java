@@ -293,31 +293,37 @@ public class ItemManager {
         }
         lore.addAll(Messages.getLoreList("items.auction.lore.default",
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice())));
+                "%price%", StringUtils.formatNumber(ownAuction ? note.getPrice() : note.getCurrentPrice())));
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
-        if(note.isExpired() && !note.isSold()){
-            if(note.getAdminMessage()!=null){
-                if(note.getItem().equals(createDirt())){
-                    lore.addAll(Messages.getLoreList("items.auction.lore.admin-deleted"));
-                }else {
-                    lore.addAll(Messages.getLoreList("items.auction.lore.admin-expired"));
-                }
-                lore.addAll(Messages.getLoreList("items.auction.lore.admin-message",
-                        "%reason%", note.getAdminMessage()));
-            }else {
-                lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
+        if(note.isExpired() && note.getAdminMessage()!=null) {
+            if (note.getItem().equals(createDirt())) {
+                lore.addAll(Messages.getLoreList("items.auction.lore.admin-deleted"));
+            } else {
+                lore.addAll(Messages.getLoreList("items.auction.lore.admin-expired"));
             }
+            lore.addAll(Messages.getLoreList("items.auction.lore.admin-message",
+                    "%reason%", note.getAdminMessage()));
+            lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
         }else if(note.isSold() && note.isOnAuction()) {
             if(ownAuction) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.partially-sold",
-                        "%sold%", String.valueOf(note.getPartiallySoldAmountLeft()),
-                        "total", String.valueOf(note.getItem().getAmount())));
+                        "%sold%", String.valueOf(note.getItem().getAmount() - note.getPartiallySoldAmountLeft()),
+                        "%total%", String.valueOf(note.getItem().getAmount()),
+                        "%buyer%", note.getBuyerName()));
             } else {
                 item.setAmount(note.getPartiallySoldAmountLeft());
             }
-        }else if(note.isSold()) {
+            if(!note.isExpired()) {
+                lore.addAll(Messages.getLoreList("items.auction.lore.active",
+                        "%time%", StringUtils.getTime(note.timeLeft(), false)));
+            } else {
+                lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
+            }
+        }else if(note.isExpired() && !note.isSold()) {
+            lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
+        }else if(note.isSold() && !note.isOnAuction()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.sold",
                     "%buyer%", note.getBuyerName()));
         }else if(note.isOnWaitingList()){
@@ -331,8 +337,25 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createBuyingItemDisplay(ItemNote note) {
+    public static ItemStack createCollectingItemFromNote(ItemNote note, Player p) {
         ItemStack item = note.getItem();
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        List<String> lore = meta.getLore();
+        if (lore == null) lore = new ArrayList<>();
+        lore.addAll(Messages.getLoreList("items.auction.lore.default",
+                "%player%", note.getPlayerName(),
+                "%price%", StringUtils.formatNumber(note.getSoldPrice())));
+        lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
+        lore.addAll(Messages.getLoreList("items.auction.lore.sold",
+                "%buyer%", note.getBuyerName()));
+        item.setAmount(item.getAmount() - note.getPartiallySoldAmountLeft());
+
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createBuyingItemDisplay(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         List<String> lore = meta.getLore();

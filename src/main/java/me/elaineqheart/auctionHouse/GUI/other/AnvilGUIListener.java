@@ -3,9 +3,14 @@ package me.elaineqheart.auctionHouse.GUI.other;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AdminConfirmGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.ConfirmBuyGUI;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.items.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.vault.VaultHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,10 +55,30 @@ public class AnvilGUIListener implements Listener {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-expire-message"))) {
                 AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE,c),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.activeNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE,c),player);
             } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-admin-delete-message"))) {
                 AuctionHouse.getGuiManager().openGUI
-                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.currentAdminNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE,c),player);
+                        (new AdminConfirmGUI(typedText, AnvilSearchGUI.activeNoteMap.get(player), AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE,c),player);
+            } else if (view.getTitle().equals(Messages.getFormatted("inventory-titles.anvil-set-amount"))) {
+                ItemNote note = AnvilSearchGUI.activeNoteMap.get(player);
+                AnvilSearchGUI.activeNoteMap.remove(player);
+                try {
+                    int amount = Integer.parseInt(typedText);
+                    if (amount <= 0 || amount > note.getCurrentAmount()) throw new RuntimeException();
+                    if (note.getPrice() / note.getItem().getAmount() * amount > VaultHook.getEconomy().getBalance(player)) {
+                        AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), player);
+                        player.sendMessage(Messages.getFormatted("chat.not-enough-money"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    ItemStack item = note.getItem();
+                    item.setAmount(amount);
+                    AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c, item), player);
+                } catch (Exception e) {
+                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), player);
+                    player.sendMessage(Messages.getFormatted("chat.invalid-amount"));
+                    Sounds.villagerDeny(event);
+                }
             }
 
         }

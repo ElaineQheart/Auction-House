@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
@@ -16,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -53,11 +55,11 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 "# # # # . # # # #"
         },fillerItem());
         this.addButton(13, buyingItem());
-        int slot = SettingManager.partialSelling && note.getItem().getAmount() > 1 ? 30 : 31;
-        if(note.canAfford(VaultHook.getEconomy().getBalance(player))) {
-            this.addButton(slot,turtleScute());
-        }else{
+        int slot = SettingManager.partialSelling && note.getCurrentAmount() > 1 ? 30 : 31;
+        if(VaultHook.getEconomy().getBalance(player) < note.getPrice()) {
             this.addButton(slot,armadilloScute());
+        }else{
+            this.addButton(slot,turtleScute());
         }
         if(slot == 30) {
             this.addButton(32,sign());
@@ -107,27 +109,29 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
     }
     private InventoryButton turtleScute() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createTurtleScute(StringUtils.formatNumber(note.getPrice())))
-                .consumer(event -> {
-                    Sounds.click(event);
-                if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
-                    event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
-                    return;
-                }
-                AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c), (Player) event.getWhoClicked());
-                });
-    }
-    private InventoryButton sign() {
-        return new InventoryButton()
-                .creator(player -> ItemManager.chooseItemBuyAmount)
+                .creator(player -> ItemManager.createTurtleScute(StringUtils.formatNumber(note.getCurrentPrice())))
                 .consumer(event -> {
                     Sounds.click(event);
                     if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
                         event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
                         return;
                     }
-                    //TODO: open anvil
-                    //AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c), (Player) event.getWhoClicked());
+                    ItemStack item = note.getItem();
+                    item.setAmount(note.getCurrentAmount());
+                    AuctionHouse.getGuiManager().openGUI(new ConfirmBuyGUI(note, c, item), (Player) event.getWhoClicked());
+                });
+    }
+    private InventoryButton sign() {
+        return new InventoryButton()
+                .creator(player -> ItemManager.chooseItemBuyAmount)
+                .consumer(event -> {
+                    Player p = (Player) event.getWhoClicked();
+                    Sounds.click(event);
+                    if(note.getPlayerName().equals(p.getName())) {
+                        p.sendMessage(Messages.getFormatted("chat.own-auction"));
+                        return;
+                    }
+                    new AnvilSearchGUI(p, AnvilSearchGUI.SearchType.SET_AMOUNT, note, c);
                 });
     }
 
