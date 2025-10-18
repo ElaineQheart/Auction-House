@@ -88,7 +88,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    if (!note.isOnAuction()) {
+                    if (!note.isOnAuction() || note.getCurrentAmount() < item.getAmount()) {
                         p.sendMessage(Messages.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;
