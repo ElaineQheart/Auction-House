@@ -22,9 +22,7 @@ public class ItemNoteStorageUtil {
 
     public static void createNote(Player p, ItemStack item, int price){
 
-        String data = ItemStackConverter.encode(item);
-
-        ItemNote itemNote = new ItemNote(p, data, price);
+        ItemNote itemNote = new ItemNote(p, item, price);
         itemNotes.add(itemNote);
         updateSortedLists();
 

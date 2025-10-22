@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.redis.RedisManager;
 import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
@@ -44,6 +45,7 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
 
+        RedisManager.connect();
         //Setup config.yml
         reloadConfig();
         getConfig().options().copyDefaults(true);
@@ -69,6 +71,7 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         guiManager.forceCloseAll();
+        RedisManager.disconnect();
     }
 
 }

@@ -24,19 +24,39 @@ public class ItemNote {
     private String itemData;
     private boolean isSold;
     private int partiallySoldAmountLeft;
-    private final UUID noteID = UUID.randomUUID();
+    private final UUID noteID;
     private String adminMessage;
     private long auctionTime;
+    private final String itemName;
 
-    public ItemNote(Player player, String itemData, int price) {
+    public ItemNote(Player player, ItemStack item, int price) {
+        this.noteID = UUID.randomUUID();
         this.playerName = player.getDisplayName();
         this.buyerName = null;
         this.playerUUID = player.getUniqueId();
         this.dateCreated = new Date();
-        this.itemData = itemData;
+        this.itemData = ItemStackConverter.encode(item);
         this.price = price;
         this.isSold = false;
         this.auctionTime = Permissions.getAuctionDuration(player);
+        itemName = item.getItemMeta() != null ? (item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getItemMeta().getItemName()) :
+                item.getType().toString();
+    }
+
+    public ItemNote(String playerName, UUID playerUUID, String buyerName, double price, String itemData, Date dateCreated, boolean isSold, 
+                    String adminMessage, int partiallySoldAmountLeft, long auctionTime, String itemName, UUID noteID) {
+        this.noteID = noteID;
+        this.playerName = playerName;
+        this.playerUUID = playerUUID;
+        this.buyerName = buyerName;
+        this.price = price;
+        this.itemData = itemData;
+        this.dateCreated = dateCreated;
+        this.isSold = isSold;
+        this.adminMessage = adminMessage;
+        this.partiallySoldAmountLeft = partiallySoldAmountLeft;
+        this.auctionTime = auctionTime;
+        this.itemName = itemName;
     }
 
     public ItemStack getItem(){
@@ -99,6 +119,9 @@ public class ItemNote {
     public int getPartiallySoldAmountLeft() {return partiallySoldAmountLeft;}
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}
+    public String getItemData() {return itemData;}
+    public long getAuctionTime() {return auctionTime;}
+    public String getItemName() {return itemName;}
 
     public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
     public void setSold(boolean isSold) {this.isSold = isSold;}
