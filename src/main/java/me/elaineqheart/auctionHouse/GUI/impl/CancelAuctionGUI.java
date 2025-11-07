@@ -6,12 +6,14 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 
@@ -89,15 +91,16 @@ public class CancelAuctionGUI extends InventoryGUI {
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Sounds.experience(event);
                     Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
-                    ItemNoteStorageUtil.deleteNote(note);
-                    try {
-                        ItemNoteStorageUtil.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                    NoteStorage.deleteNote(note);
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                     p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                 });
