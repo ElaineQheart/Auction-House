@@ -31,6 +31,9 @@ public class ShulkerViewGUI extends InventoryGUI {
             if(c.isAuctionView) {
                 c.isAuctionView = false;
                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), p);
+            } else if(c.myCurrentSort!=null) {
+                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c.myCurrentPage, c.myCurrentSort, c), p);
+                c.myCurrentSort = null;
             } else {
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
             }
