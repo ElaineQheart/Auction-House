@@ -6,10 +6,10 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
@@ -89,9 +89,16 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {});
     }
     private InventoryButton buyingItem() {
+        ItemStack item = ItemManager.createItemFromNote(note, c.currentPlayer, false);
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player, false))
-                .consumer(event -> {});
+                .creator(player -> item)
+                .consumer(event -> {
+                    if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
+                        Sounds.openShulker(event);
+                        c.isAuctionView = true;
+                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c), c.currentPlayer);
+                    }
+                });
     }
     private InventoryButton back() {
         return new InventoryButton()
