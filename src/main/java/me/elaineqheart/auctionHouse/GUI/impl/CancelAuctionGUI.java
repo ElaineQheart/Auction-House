@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
@@ -12,22 +13,32 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.UUID;
 
-public class CancelAuctionGUI extends InventoryGUI {
+public class CancelAuctionGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
+    private final UUID invID = UUID.randomUUID();
     private final MyAuctionsGUI.MySort currentSort;
     private final AhConfiguration c;
+
+    @Override
+    public void run() {
+        this.addButton(13, Item());
+        super.decorate(c.currentPlayer);
+    }
 
     public CancelAuctionGUI(ItemNote note, MyAuctionsGUI.MySort sort, AhConfiguration configuration) {
         super();
         this.note = note;
         this.currentSort = sort;
         c = configuration;
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
     @Override
@@ -104,6 +115,11 @@ public class CancelAuctionGUI extends InventoryGUI {
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                     p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                 });
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        TaskManager.cancelTask(invID);
     }
 
 }

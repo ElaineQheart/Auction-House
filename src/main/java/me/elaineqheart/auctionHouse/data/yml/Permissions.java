@@ -1,7 +1,5 @@
-package me.elaineqheart.auctionHouse.data;
+package me.elaineqheart.auctionHouse.data.yml;
 
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

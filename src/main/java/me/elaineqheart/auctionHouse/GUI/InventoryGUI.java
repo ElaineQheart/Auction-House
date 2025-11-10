@@ -1,6 +1,8 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -32,10 +34,14 @@ public abstract class InventoryGUI implements InventoryHandler {
     }
 
     public void decorate(Player player) {
-        this.buttonMap.forEach((slot, button) -> {
-            ItemStack icon = button.getIconCreator().apply(player);
-            this.inventory.setItem(slot, icon);
-        });
+        try {
+            this.buttonMap.forEach((slot, button) -> {
+                ItemStack icon = button.getIconCreator().apply(player);
+                this.inventory.setItem(slot, icon);
+            });
+        } catch (Exception e) {
+            return;
+        }
     }
 
     @Override

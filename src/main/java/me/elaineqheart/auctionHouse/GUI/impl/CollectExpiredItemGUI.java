@@ -6,8 +6,9 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -90,25 +91,25 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     }
                     Sounds.experience(event);
                     //expired by a moderator:
-                    if(note.getAdminMessage() != null) {
+                    if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) {
                         if(note.getItem().equals(ItemManager.createDirt())) {
                             p.sendMessage(Messages.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
                         }else {
                             p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.getInventory().addItem(note.getItem());
                         }
-                        ItemNoteStorageUtil.deleteNote(note);
+                        NoteStorage.deleteNote(note);
                         p.closeInventory();
                     } else {
                         p.getInventory().addItem(note.getItem());
-                        ItemNoteStorageUtil.deleteNote(note); //delete it first, before opening the new GUI!!
+                        NoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
                         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
                                 AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p)
                         ,1);
                     }
 
                     try {
-                        ItemNoteStorageUtil.saveNotes();
+                        NoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

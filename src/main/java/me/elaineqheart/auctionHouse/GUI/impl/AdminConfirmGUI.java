@@ -7,12 +7,14 @@ import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -89,28 +91,28 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.confirm)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    if (!note.isOnAuction()) {
-                        p.sendMessage(Messages.getFormatted("chat.already-sold"));
+                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if (test == null) {
+                        p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
-                        p.sendMessage(Messages.getFormatted("chat.non-existent"));
+                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;
                     }
                     Sounds.experience(event);
                     Sounds.breakWood(event);
                     p.closeInventory();
-                    Date expireDate = new GregorianCalendar(2000, Calendar.JANUARY, 1).getTime();
-                    note.setDateCreated(expireDate);
-                    note.setAdminMessage(reason);
+                    NoteStorage.setAuctionTime(note, -1);
+                    NoteStorage.setAdminMessage(note, reason);
                     try {
-                        ItemNoteStorageUtil.saveNotes();
+                        NoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    p.sendMessage(Messages.getFormatted("chat.admin-expire-auction","%reason%", note.getAdminMessage()));
+                    p.sendMessage(Messages.getFormatted("chat.admin-expire-auction","%reason%", reason));
                 });
     }
     private InventoryButton confirmDeleteItem() {
@@ -125,13 +127,14 @@ public class AdminConfirmGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    if (!note.isOnAuction()) {
-                        p.sendMessage(Messages.getFormatted("chat.already-sold"));
+                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if (test == null) {
+                        p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
-                        p.sendMessage(Messages.getFormatted("chat.non-existent"));
+                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getItem().getAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -139,16 +142,15 @@ public class AdminConfirmGUI extends InventoryGUI{
                     p.getInventory().addItem(note.getItem());
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    Date expireDate = new GregorianCalendar(2000, Calendar.JANUARY, 1).getTime();
-                    note.setDateCreated(expireDate);
-                    note.setAdminMessage(reason);
-                    note.setItem(ItemManager.createDirt());
+                    NoteStorage.setAuctionTime(note, -1);
+                    NoteStorage.setAdminMessage(note, reason);
+                    NoteStorage.setItem(note, ItemManager.createDirt());
                     try {
-                        ItemNoteStorageUtil.saveNotes();
+                        NoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    p.sendMessage(Messages.getFormatted("chat.admin-delete-auction","%reason%", note.getAdminMessage()));
+                    p.sendMessage(Messages.getFormatted("chat.admin-delete-auction","%reason%", reason));
                 });
     }
     private InventoryButton cancel(){

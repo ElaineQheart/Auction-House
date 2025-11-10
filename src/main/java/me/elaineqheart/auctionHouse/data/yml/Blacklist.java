@@ -1,6 +1,5 @@
-package me.elaineqheart.auctionHouse.data.items;
+package me.elaineqheart.auctionHouse.data.yml;
 
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

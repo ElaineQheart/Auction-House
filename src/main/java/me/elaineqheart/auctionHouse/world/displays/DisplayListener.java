@@ -5,7 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -118,22 +118,6 @@ public class DisplayListener implements Listener {
             Location loc = block.getLocation();
             return isProtected(loc) != null;
         });
-    }
-
-    @EventHandler
-    public void onKill(EntityRemoveEvent event) { //this event can cause an infinite loop when the display is removed in the code again
-        Entity entity = event.getEntity();
-        if(!entity.isValid()) return;
-        if(entity.isDead()) return;
-        if(UpdateDisplay.isDisplayGlass(entity)) {
-            Location loc = entity.getLocation();
-            UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
-            UpdateDisplay.removeDisplay(loc,false);
-        }
-        if(UpdateDisplay.isDisplayInteraction(entity)) {
-            Location loc = entity.getLocation().add(-0.5,-1,-0.5);
-            UpdateDisplay.removeDisplay(loc,false);
-        }
     }
 
     @EventHandler

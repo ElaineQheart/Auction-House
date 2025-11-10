@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -1,6 +1,8 @@
-package me.elaineqheart.auctionHouse.data.items;
+package me.elaineqheart.auctionHouse.data.persistentStorage;
 
-import me.elaineqheart.auctionHouse.data.Permissions;
+import me.elaineqheart.auctionHouse.data.yml.Permissions;
+import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
@@ -20,7 +22,7 @@ public class ItemNote {
     private String buyerName;
     private final UUID playerUUID;
     private double price;
-    private Date dateCreated;
+    private final Date dateCreated;
     private String itemData;
     private boolean isSold;
     private int partiallySoldAmountLeft;
@@ -39,8 +41,15 @@ public class ItemNote {
         this.price = price;
         this.isSold = false;
         this.auctionTime = Permissions.getAuctionDuration(player);
-        itemName = item.getItemMeta() != null ? (item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getItemMeta().getItemName()) :
-                item.getType().toString();
+        if(item.getItemMeta() == null) {
+            itemName = item.getType().toString();
+        } else if (item.getItemMeta().hasDisplayName()) {
+            itemName = item.getItemMeta().getDisplayName();
+        } else if (item.getItemMeta().getItemName().isEmpty()) {
+            itemName = item.getType().toString();
+        }else {
+            itemName = item.getItemMeta().getItemName();
+        }
     }
 
     public ItemNote(String playerName, UUID playerUUID, String buyerName, double price, String itemData, Date dateCreated, boolean isSold, 
@@ -127,7 +136,7 @@ public class ItemNote {
     public void setSold(boolean isSold) {this.isSold = isSold;}
     public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
     public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}
-    public void setDateCreated(Date dateCreated) {this.dateCreated = dateCreated;}
+    public void setAuctionTime(long time) {this.auctionTime = time;}
     public void setPartiallySoldAmountLeft(int amount) {this.partiallySoldAmountLeft = amount;}
     public void setPrice(double amount) {this.price = amount;}
 }

@@ -2,9 +2,9 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.StringUtils;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
@@ -37,109 +37,116 @@ public class UpdateDisplay implements Runnable{
             }
             int rank = data.glassBlock.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
-            ItemNote note = getNote(data.type, rank); //need to check if note == null
-
             if(!loc.getBlock().getType().equals(Material.CHISELED_TUFF_BRICKS)) CreateDisplay.placeBlocks(loc);
+            Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> {
+                ItemNote note = getNote(data.type, rank);
 
-            //Signs
-            Location signLoc = loc.clone();
-            Sign east, west, north, south;
-            try {
-                east = (Sign) signLoc.add(1,0,0).getBlock().getState();
-                west = (Sign) signLoc.add(-2,0,0).getBlock().getState();
-                north = (Sign) signLoc.add(1,0,-1).getBlock().getState();
-                south = (Sign) signLoc.add(0,0,2).getBlock().getState();
-            } catch (ClassCastException e) {
-                CreateDisplay.placeBlocks(loc);
-                continue; //skip if signs are not signs
-            }
-            Sign[] signs = {east, west, north, south};
+                Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> {
+                    Sign[] signs = getSigns(loc);
+                    if(signs == null) return;
 
-            if(note == null) {
-                for(Sign sign : signs) {
-                    sign.getSide(Side.FRONT).setLine(0, "");
-                    sign.getSide(Side.FRONT).setLine(1, "");
-                    sign.getSide(Side.FRONT).setLine(3, "");
-                    sign.update(true, false); //force = set block type to sign if it's not; applyPhysics = make a block update to surrounding blocks
-                }
-                if(data.text != null) data.text.remove();
-                if(data.itemEntity != null) {
-                    data.itemEntity.remove();
-                    data.itemStack = null;
-                }
-                continue;
-            }
-
-            String price = note.getPriceTrimmed();
-            String time = StringUtils.getTimeTrimmed(note.timeLeft());
-            String playerName = note.getPlayerName();
-            ItemStack item = note.getItem();
-
-            //update the signs
-
-            for(Sign sign : signs) {
-                if(SettingManager.currencyBeforeNumber) {
-                    sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + SettingManager.currencySymbol + price);
-                } else {
-                    sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
-                }
-                sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
-                sign.getSide(Side.FRONT).setLine(3, Messages.getFormatted("world.displays.sign-interaction"));
-                sign.update(true, false);
-            }
-
-            //update the item
-            World world = loc.getWorld();
-            assert world != null;
-            if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()
-                    || data.itemStack.getAmount() != item.getAmount() || !Objects.equals(data.itemStack.getItemMeta(), item.getItemMeta())) {
-                //if the item entity is null or the item is different, create a new item entity
-                if(data.itemEntity != null) {
-                    data.itemEntity.remove(); //remove the old item entity
-                }
-                data.itemEntity = (Item) world.spawnEntity(loc.clone().add(0.5,1,0.5), EntityType.ITEM);
-                data.itemEntity.setItemStack(item);
-                data.itemEntity.setPickupDelay(32767); //will never decay
-                data.itemEntity.setUnlimitedLifetime(true);
-                data.itemEntity.setInvulnerable(true);
-                data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
-                data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN,true);
-                data.itemStack = item; //update the item stack in the display data
-            } else if (data.itemEntity.getLocation().distance(loc.clone().add(0.5,1,0.5)) > 0.1) {
-                //if the item entity is too far away, teleport it to the correct location
-                data.itemEntity.teleport(loc.clone().add(0.5,1,0.5));
-            }
-
-            //get the item name
-            String name = data.itemEntity.getName();
-            if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
-            //update the text display
-            if(!data.reloaded) {
-                if (data.text == null || !data.itemName.equals(name) || !data.playerName.equals(playerName)) {
-                    if(data.text != null) {
-                        data.text.remove(); //remove the old text display
-                    }
-                    data.text = (TextDisplay) world.spawnEntity(loc.clone().add(0.5, 1.9, 0.5), EntityType.TEXT_DISPLAY);
-                    data.text.setVisibleByDefault(true);
-                    if(data.type.equals("highest_price")) {
-                        data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
-                                Messages.getFormatted("world.displays.by-player") + playerName);
-                    } else if(data.type.equals("ending_soon")) {
-                        data.text.setText(ChatColor.GREEN + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
-                                Messages.getFormatted("world.displays.by-player")+ playerName);
+                    if(note == null) {
+                        for(Sign sign : signs) {
+                            sign.getSide(Side.FRONT).setLine(0, "");
+                            sign.getSide(Side.FRONT).setLine(1, "");
+                            sign.getSide(Side.FRONT).setLine(3, "");
+                            sign.update(true, false); //force = set block type to sign if it's not; applyPhysics = make a block update to surrounding blocks
+                        }
+                        if(data.text != null) data.text.remove();
+                        if(data.itemEntity != null) {
+                            data.itemEntity.remove();
+                            data.itemStack = null;
+                        }
+                        return;
                     }
 
-                    data.text.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);
-                    data.text.setAlignment(TextDisplay.TextAlignment.CENTER);
-                    data.text.setBillboard(Display.Billboard.CENTER);
-                }
-            } else {
-                data.reloaded = false; //reset the reloaded flag
-            }
-            data.itemName = name; //update
-            data.playerName = playerName; //update
+                    String price = note.getPriceTrimmed();
+                    String time = StringUtils.getTimeTrimmed(note.timeLeft());
+                    String playerName = note.getPlayerName();
+                    ItemStack item = note.getItem();
+
+                    //update the signs
+                    for (Sign sign : signs) {
+                        if (SettingManager.currencyBeforeNumber) {
+                            sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + SettingManager.currencySymbol + price);
+                        } else {
+                            sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
+                        }
+                        sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
+                        sign.getSide(Side.FRONT).setLine(3, Messages.getFormatted("world.displays.sign-interaction"));
+                        sign.update(true, false);
+                    }
+
+                    //update the item
+                    World world = loc.getWorld();
+                    assert world != null;
+                    if(data.itemEntity == null || data.itemEntity.isDead() || data.itemStack == null || data.itemStack.getType() != item.getType()
+                            || data.itemStack.getAmount() != item.getAmount() || !Objects.equals(data.itemStack.getItemMeta(), item.getItemMeta())) {
+                        //if the item entity is null or the item is different, create a new item entity
+                        if(data.itemEntity != null) {
+                            data.itemEntity.remove(); //remove the old item entity
+                        }
+                        data.itemEntity = (Item) world.spawnEntity(loc.clone().add(0.5,1,0.5), EntityType.ITEM);
+                        data.itemEntity.setItemStack(item);
+                        data.itemEntity.setPickupDelay(32767); //will never decay
+                        data.itemEntity.setUnlimitedLifetime(true);
+                        data.itemEntity.setInvulnerable(true);
+                        data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
+                        data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN,true);
+                        data.itemStack = item; //update the item stack in the display data
+                    } else if (data.itemEntity.getLocation().distance(loc.clone().add(0.5,1,0.5)) > 0.1) {
+                        //if the item entity is too far away, teleport it to the correct location
+                        data.itemEntity.teleport(loc.clone().add(0.5,1,0.5));
+                    }
+
+                    //get the item name
+                    String name = data.itemEntity.getName();
+                    if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
+                    //update the text display
+                    if(!data.reloaded) {
+                        if (data.text == null || !data.itemName.equals(name) || !data.playerName.equals(playerName)) {
+                            if(data.text != null) {
+                                data.text.remove(); //remove the old text display
+                            }
+                            data.text = (TextDisplay) world.spawnEntity(loc.clone().add(0.5, 1.9, 0.5), EntityType.TEXT_DISPLAY);
+                            data.text.setVisibleByDefault(true);
+                            if(data.type.equals("highest_price")) {
+                                data.text.setText(ChatColor.YELLOW + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
+                                        Messages.getFormatted("world.displays.by-player") + playerName);
+                            } else if(data.type.equals("ending_soon")) {
+                                data.text.setText(ChatColor.GREEN + "#" + rank + " " + ChatColor.RESET + name + ChatColor.GRAY + "\n" +
+                                        Messages.getFormatted("world.displays.by-player")+ playerName);
+                            }
+
+                            data.text.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);
+                            data.text.setAlignment(TextDisplay.TextAlignment.CENTER);
+                            data.text.setBillboard(Display.Billboard.CENTER);
+                        }
+                    } else {
+                        data.reloaded = false; //reset the reloaded flag
+                    }
+                    data.itemName = name; //update
+                    data.playerName = playerName; //update
+                });
+            });
+
 
         }
+    }
+
+    private static Sign[] getSigns(Location loc) {
+        Location signLoc = loc.clone();
+        Sign east, west, north, south;
+        try {
+            east = (Sign) signLoc.add(1,0,0).getBlock().getState();
+            west = (Sign) signLoc.add(-2,0,0).getBlock().getState();
+            north = (Sign) signLoc.add(1,0,-1).getBlock().getState();
+            south = (Sign) signLoc.add(0,0,2).getBlock().getState();
+        } catch (ClassCastException e) {
+            CreateDisplay.placeBlocks(loc);
+            return null;
+        }
+        return new Sign[]{east, west, north, south};
     }
 
     public static final HashMap<Integer, DisplayNote> displays = new HashMap<>();
@@ -155,7 +162,8 @@ public class UpdateDisplay implements Runnable{
 
     public static void init() {
         reload();
-        TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), new UpdateDisplay(), 0, 20).getTaskId());
+        TaskManager.addTaskID(UUID.randomUUID(),Bukkit.getScheduler().runTaskTimer
+                (AuctionHouse.getPlugin(), new UpdateDisplay(), 0, SettingManager.displayUpdateTicks).getTaskId());
     }
     public static void reload() {
         for(String key : getYmlData().getKeys(false)) { //find the data for each display
@@ -238,15 +246,9 @@ public class UpdateDisplay implements Runnable{
 
     public static ItemNote getNote(String type, int rank) {
         if(type.equals("highest_price")) {
-            int size = ItemNoteStorageUtil.sortedHighestPrice().size();
-            if(rank > size) return null;
-            Map.Entry<ItemNote, Double> entry = ItemNoteStorageUtil.sortedHighestPrice().entrySet().stream().skip(size-rank).findFirst().orElse(null);
-            if(entry == null) return null;
-            return entry.getKey();
+            return NoteStorage.getSortedList(NoteStorage.SortMode.PRICE_DESC, rank-1, rank, "").stream().findFirst().orElse(null);
         } else if (type.equals("ending_soon")) {
-            Map.Entry<ItemNote, Long> entry = ItemNoteStorageUtil.sortedDateCreated().entrySet().stream().skip(rank-1).findFirst().orElse(null);
-            if(entry == null) return null;
-            return entry.getKey();
+            return NoteStorage.getSortedList(NoteStorage.SortMode.DATE, rank-1, rank, "").stream().findFirst().orElse(null);
         }
         return null;
     }

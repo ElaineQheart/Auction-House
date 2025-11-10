@@ -3,10 +3,10 @@ package me.elaineqheart.auctionHouse.data.items;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
-import me.elaineqheart.auctionHouse.data.Permissions;
+import me.elaineqheart.auctionHouse.data.yml.Permissions;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
-import me.elaineqheart.auctionHouse.data.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -46,6 +46,7 @@ public class ItemManager {
     public final static ItemStack adminExpireAuction = createAdminExpireAuction();
     public final static ItemStack confirm = createConfirmItem();
     public final static ItemStack chooseItemBuyAmount = createChooseItemBuyAmount();
+    public final static ItemStack loading = createLoadingItem();
 
     private static ItemStack createFillerItem(){
         ItemStack item = new ItemStack(Material.matchMaterial(SettingManager.fillerItem));
@@ -273,6 +274,14 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
+    private static ItemStack createLoadingItem() {
+        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.loading.name"));
+        item.setItemMeta(meta);
+        return item;
+    }
 
     public static ItemStack createDirt() {
         ItemStack item = new ItemStack(Material.DIRT);
@@ -297,7 +306,7 @@ public class ItemManager {
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
-        if(note.isExpired() && note.getAdminMessage()!=null) {
+        if(note.isExpired() && note.getAdminMessage()!=null && !note.getAdminMessage().isEmpty()) {
             if (note.getItem().equals(createDirt())) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.admin-deleted"));
             } else {

@@ -290,6 +290,8 @@ items:
       &n§7with the price being reduced accordingly
       &n
       &n§eClick to set!"
+  loading:
+    name: "loading..."
 
 
 world:

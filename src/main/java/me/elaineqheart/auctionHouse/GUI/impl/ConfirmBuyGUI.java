@@ -5,11 +5,12 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
-import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -88,13 +89,14 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    if (!note.isOnAuction() || note.getCurrentAmount() < item.getAmount()) {
-                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
+                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if (test == null) {
+                        p.sendMessage(Messages.getFormatted("chat.non-existent2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (ItemNoteStorageUtil.noteDoesNotExist(note)) {
-                        p.sendMessage(Messages.getFormatted("chat.non-existent2"));
+                    if (!test.isOnAuction() || test.getCurrentAmount() < item.getAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -108,17 +110,17 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     eco.withdrawPlayer(p, price);
                     Sounds.experience(event);
                     p.getInventory().addItem(item);
-                    note.setSold(true);
-                    note.setBuyerName(p.getName());
+                    NoteStorage.setSold(note, true);
+                    NoteStorage.setBuyerName(note, p.getName());
                     if(price != note.getPrice()) {
                         if(note.getPartiallySoldAmountLeft() == 0) {
-                            note.setPartiallySoldAmountLeft(note.getItem().getAmount() - item.getAmount());
+                            NoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
                         } else {
-                            note.setPartiallySoldAmountLeft(note.getPartiallySoldAmountLeft() - item.getAmount());
+                            NoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
                         }
                     }
                     try {
-                        ItemNoteStorageUtil.saveNotes();
+                        NoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

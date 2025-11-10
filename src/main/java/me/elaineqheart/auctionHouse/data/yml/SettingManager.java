@@ -12,6 +12,7 @@ public class SettingManager {
     public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
     public static String fillerItem;
+    public static String formatNumbers;
     public static DecimalFormat formatter;
     public static int defaultMaxAuctions;
     public static boolean soldMessageEnabled;
@@ -19,6 +20,12 @@ public class SettingManager {
     public static String permissionModerate;
     public static boolean currencyBeforeNumber;
     public static boolean partialSelling;
+    public static boolean useRedis;
+    public static String redisHost;
+    public static String redisUsername;
+    public static String redisPassword;
+    public static int redisPort;
+    public static int displayUpdateTicks;
 
     static {
         loadData();
@@ -33,12 +40,18 @@ public class SettingManager {
         fillerItem = c.getString("filler-item", "BLACK_STAINED_GLASS_PANE");
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
-        String formatNumbers = c.getString("format-numbers", "#,###.##");
+        formatNumbers = c.getString("format-numbers", "#,###.##");
         formatter = new DecimalFormat(formatNumbers);
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         currencyBeforeNumber = c.getBoolean("currency-before-number", false);
         partialSelling = c.getBoolean("partial-selling", false);
+        useRedis = c.getBoolean("redis", false);
+        redisHost = c.getString("redis-host", "");
+        redisUsername = c.getString("redis-username", "default");
+        redisPassword = c.getString("redis-password", "");
+        redisPort = c.getInt("redis-port", 0);
+        displayUpdateTicks = c.getInt("display-update", 80);
     }
 
 }

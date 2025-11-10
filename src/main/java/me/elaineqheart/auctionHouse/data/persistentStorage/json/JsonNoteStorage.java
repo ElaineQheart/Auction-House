@@ -1,7 +1,9 @@
-package me.elaineqheart.auctionHouse.data.items;
+package me.elaineqheart.auctionHouse.data.persistentStorage.json;
 
 import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +12,7 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemNoteStorageUtil {
+public class JsonNoteStorage {
 
     //This class is where the Note objects are managed
     //gson is used to convert the Note objects into json Strings and backwards
@@ -80,7 +82,7 @@ public class ItemNoteStorageUtil {
         }
     }
 
-    public static ItemNote findNoteByID(String noteID) {
+    public static ItemNote getNote(String noteID) {
         for (ItemNote note : itemNotes) {
             if (note.getNoteID().toString().equals(noteID)) {
                 return note;
@@ -122,7 +124,7 @@ public class ItemNoteStorageUtil {
         Map<ItemNote,String> map3 = new HashMap<>();
         for (ItemNote note : itemNotes){
             if(note.isOnAuction() && !note.isExpired())
-                map3.put(note,note.getItem().getType().toString());
+                map3.put(note, note.getItemName());
         }
         sortedAlphabetical = map3.entrySet()
                 .stream()
@@ -133,104 +135,43 @@ public class ItemNoteStorageUtil {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public static LinkedHashMap<ItemNote, Double> sortedHighestPrice(){
-        LinkedHashMap<ItemNote, Double> returnList = new LinkedHashMap<>();
-        for(ItemNote note : sortedHighestPrice.keySet()) {
-            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
-                returnList.put(note, note.getCurrentPrice());
+    public static List<ItemNote> getSortedList(NoteStorage.SortMode mode, int start, int stop, String search){
+        Set<ItemNote> set = new HashSet<>();
+        switch (mode) {
+            case DATE -> set = sortedDateCreated.keySet();
+            case NAME -> set = sortedAlphabetical.keySet();
+            case PRICE_ASC -> set = sortedHighestPrice.keySet();
+            case PRICE_DESC -> {
+                List<ItemNote> temp = new ArrayList<>(sortedHighestPrice.keySet());
+                Collections.reverse(temp);
+                set = new LinkedHashSet<>(temp);
             }
         }
-        return returnList;
-    }
-    public static LinkedHashMap<ItemNote, Long> sortedDateCreated(){
-        LinkedHashMap<ItemNote, Long> returnList = new LinkedHashMap<>();
-        for(ItemNote note : sortedDateCreated.keySet()) {
+        List<ItemNote> itemList = new ArrayList<>();
+        for(ItemNote note : set) {
             if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
-                returnList.put(note, note.getDateCreated().getTime());
+                if(search.isEmpty() || Arrays.stream(note.getSearchIndex()).anyMatch(s -> s.contains(search.toLowerCase()))) {
+                    itemList.add(note);
+                }
             }
         }
-        return returnList;
-    }
-    public static LinkedHashMap<ItemNote, String> sortedAlphabetical(){
-        LinkedHashMap<ItemNote, String> returnList = new LinkedHashMap<>();
-        for(ItemNote note : sortedAlphabetical.keySet()) {
-            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
-                returnList.put(note, note.getItem().getType().toString());
-            }
-        }
-        return returnList;
-    }
-    public static LinkedHashMap<ItemNote, Long> mySortedDateCreated(){
-        LinkedHashMap<ItemNote, Long> newSortedDateCreated = new LinkedHashMap<>();
-        for(ItemNote note : itemNotes){
-            newSortedDateCreated.put(note,note.getDateCreated().getTime());
-        }
-        newSortedDateCreated = newSortedDateCreated.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        return newSortedDateCreated;
+
+        if (start < 0) start = 0;
+        if (stop <= start) return Collections.emptyList();
+        if (start >= itemList.size()) return Collections.emptyList();
+
+        int end = Math.min(itemList.size(), stop);
+        return new ArrayList<>(itemList.subList(start, end));
     }
 
-    public static LinkedHashMap<ItemNote, Double> hiPrSearch(String search){
-        LinkedHashMap<ItemNote, Double> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedHighestPrice().keySet()){
-            for(String s : note.getSearchIndex()){
-                if(s.contains(search.toLowerCase())){
-                    newSortedMap.put(note,note.getCurrentPrice());
-                    break;
-                }
+    public static List<ItemNote> mySortedDateCreated(UUID playerID){
+        List<ItemNote> newSortedDateCreated = new ArrayList<>();
+        for(ItemNote note : itemNotes){
+            if (Bukkit.getPlayer(note.getPlayerUUID()) == Bukkit.getPlayer(playerID)) {
+                newSortedDateCreated.add(note);
             }
         }
-        newSortedMap = newSortedMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        return newSortedMap;
-    }
-    public static LinkedHashMap<ItemNote, Long> dateSearch(String search){
-        LinkedHashMap<ItemNote, Long> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedDateCreated().keySet()){
-            for(String s : note.getSearchIndex()){
-                if(s.contains(search.toLowerCase())){
-                    newSortedMap.put(note,note.getDateCreated().getTime());
-                    break;
-                }
-            }
-        }
-        newSortedMap = newSortedMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        return newSortedMap;
-    }
-    public static LinkedHashMap<ItemNote, String> alphaSearch(String search){
-        LinkedHashMap<ItemNote, String> newSortedMap = new LinkedHashMap<>();
-        for(ItemNote note : sortedAlphabetical().keySet()){
-            for(String s : note.getSearchIndex()){
-                if(s.contains(search.toLowerCase())){
-                    newSortedMap.put(note,note.getItem().getType().toString());
-                    break;
-                }
-            }
-        }
-        newSortedMap = newSortedMap.entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue())
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-        return newSortedMap;
+        return newSortedDateCreated;
     }
 
     public static int numberOfAuctions(Player p) {
@@ -243,5 +184,12 @@ public class ItemNoteStorageUtil {
         return count;
     }
 
+    public static int numberOfAuctions() {
+        int count = 0;
+        for (ItemNote note : itemNotes){
+            if(note.isOnAuction() && !note.isExpired()) count++;
+        }
+        return count;
+    }
 
 }

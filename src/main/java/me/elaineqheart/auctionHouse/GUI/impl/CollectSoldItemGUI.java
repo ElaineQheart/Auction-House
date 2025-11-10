@@ -4,11 +4,12 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.ItemNote;
-import me.elaineqheart.auctionHouse.data.items.ItemNoteStorageUtil;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
@@ -93,18 +94,18 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     eco.depositPlayer(p, price);
                     Sounds.experience(event);
                     if(note.getPartiallySoldAmountLeft() != 0) {
-                        note.setPrice(note.getPrice()-note.getSoldPrice());
-                        note.setSold(false);
+                        NoteStorage.setPrice(note, note.getPrice()-note.getSoldPrice());
+                        NoteStorage.setSold(note, false);
                         ItemStack item = note.getItem();
                         item.setAmount(note.getPartiallySoldAmountLeft());
-                        note.setItem(item);
-                        note.setPartiallySoldAmountLeft(0);
-                        note.setBuyerName(null);
+                        NoteStorage.setItem(note, item);
+                        NoteStorage.setPartiallySoldAmountLeft(note, 0);
+                        NoteStorage.setBuyerName(note, null);
                     } else {
-                        ItemNoteStorageUtil.deleteNote(note);
+                        NoteStorage.deleteNote(note);
                     }
                     try {
-                        ItemNoteStorageUtil.saveNotes();
+                        NoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

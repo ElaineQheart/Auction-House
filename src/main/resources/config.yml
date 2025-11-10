@@ -1,7 +1,7 @@
 currency: " coins"
 currency-before-number: false               # i.e.: $5 instead of 5$
 tax: 0.01                                   # 1% tax
-auction-duration: 60*60*48                  # the time an auction lasts in seconds
+auction-duration: 172800                    # the time an auction lasts in seconds
 auction-setup-time: 30                      # the time it takes to put an item on auction
 filler-item: "BLACK_STAINED_GLASS_PANE"
 format-numbers: "#,###.##"                  # this is used to format numbers. Here you can learn how to do it: https://www.gooddata.com/docs/cloud/create-metrics/format-numbers/
@@ -10,3 +10,9 @@ default-max-auctions: 10
 sold-message: true                          # send a message to the player when one of their auctions is sold
 partial-selling: false                      # allows players to select the amount of items they want to buy of an auction
 admin-permission: "auctionhouse.moderator"
+redis: false                                # if Redis as a database should be used. Needed for multiserver support
+redis-host: ""                              # this is the host/link that points to your database, something like "redis-xxxxx.cXXX.eu-central-1-1.ec2.redns.redis-cloud.com"
+redis-username: "default"                   # usually it's just "default"
+redis-password: ""
+redis-port:                                 # the port is the last thing in your public endpoint
+display-update: 80                          # in ticks

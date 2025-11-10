@@ -9,7 +9,6 @@ public class RedisManager {
     private static JedisPool pool;
 
     public static void connect() {
-        // Configuration
         String host = SettingManager.redisHost;
         int port = SettingManager.redisPort;
         String username = SettingManager.redisUsername;
