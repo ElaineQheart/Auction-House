@@ -26,6 +26,7 @@ public class SettingManager {
     public static String redisPassword;
     public static int redisPort;
     public static int displayUpdateTicks;
+    public static boolean autoCollect;
 
     static {
         loadData();
@@ -46,12 +47,13 @@ public class SettingManager {
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         currencyBeforeNumber = c.getBoolean("currency-before-number", false);
         partialSelling = c.getBoolean("partial-selling", false);
-        useRedis = c.getBoolean("redis", false);
-        redisHost = c.getString("redis-host", "");
-        redisUsername = c.getString("redis-username", "default");
-        redisPassword = c.getString("redis-password", "");
-        redisPort = c.getInt("redis-port", 0);
+        useRedis = c.getBoolean("multi-server-database.redis", false);
+        redisHost = c.getString("multi-server-database.redis-host", "");
+        redisUsername = c.getString("multi-server-database.redis-username", "default");
+        redisPassword = c.getString("multi-server-database.redis-password", "");
+        redisPort = c.getInt("multi-server-database.redis-port", 0);
         displayUpdateTicks = c.getInt("display-update", 80);
+        autoCollect = c.getBoolean("auto-collect", false);
     }
 
 }

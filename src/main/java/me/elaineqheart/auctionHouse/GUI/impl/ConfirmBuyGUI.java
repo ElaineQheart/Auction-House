@@ -135,6 +135,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
                         seller.spigot().sendMessage(component,click);
                     }
+                    if(SettingManager.autoCollect) CollectSoldItemGUI.collect(Bukkit.getOfflinePlayer(note.getPlayerUUID()), note);
                 });
     }
     private InventoryButton cancel(){

@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.commands;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.CancelAuctionGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
@@ -133,7 +134,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     || note.getBuyerName() == null || note.getBuyerName().isEmpty()) return true;
                 Sounds.click(p);
                 AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
-                AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS, configuration), p);
+                if(!note.isSold()) {
+                    AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS, configuration), p);
+                } else {
+                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS, configuration), p);
+                }
             }
             // /ah admin
             if(p.hasPermission(SettingManager.permissionModerate) && strings.length > 0) {

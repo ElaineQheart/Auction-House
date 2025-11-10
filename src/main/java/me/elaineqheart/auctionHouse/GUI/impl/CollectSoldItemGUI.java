@@ -15,6 +15,7 @@ import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -90,29 +91,34 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    Economy eco = VaultHook.getEconomy();
-                    eco.depositPlayer(p, price);
+                    collect(p, note);
                     Sounds.experience(event);
-                    if(note.getPartiallySoldAmountLeft() != 0) {
-                        NoteStorage.setPrice(note, note.getPrice()-note.getSoldPrice());
-                        NoteStorage.setSold(note, false);
-                        ItemStack item = note.getItem();
-                        item.setAmount(note.getPartiallySoldAmountLeft());
-                        NoteStorage.setItem(note, item);
-                        NoteStorage.setPartiallySoldAmountLeft(note, 0);
-                        NoteStorage.setBuyerName(note, null);
-                    } else {
-                        NoteStorage.deleteNote(note);
-                    }
-                    try {
-                        NoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
                     p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
                             "%price%", StringUtils.formatPrice(price)));
                 });
+    }
+
+    public static void collect(OfflinePlayer p, ItemNote note) {
+        Economy eco = VaultHook.getEconomy();
+        double price = (double) ((int) (note.getSoldPrice() * 100 * (1 - SettingManager.taxRate))) /100;
+        eco.depositPlayer(p, price);
+        if(note.getPartiallySoldAmountLeft() != 0) {
+            NoteStorage.setPrice(note, note.getPrice()-note.getSoldPrice());
+            NoteStorage.setSold(note, false);
+            ItemStack item = note.getItem();
+            item.setAmount(note.getPartiallySoldAmountLeft());
+            NoteStorage.setItem(note, item);
+            NoteStorage.setPartiallySoldAmountLeft(note, 0);
+            NoteStorage.setBuyerName(note, null);
+        } else {
+            NoteStorage.deleteNote(note);
+        }
+        try {
+            NoteStorage.saveNotes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

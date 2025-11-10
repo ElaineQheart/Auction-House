@@ -54,31 +54,31 @@ public class NoteStorage {
 
     public static void setBuyerName(ItemNote note, String buyerName) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "buyerName", buyerName);
-        else note.setBuyerName(buyerName);
+        note.setBuyerName(buyerName);
     }
     public static void setSold(ItemNote note, boolean isSold) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "isSold", isSold);
-        else note.setSold(isSold);
+        note.setSold(isSold);
     }
     public static void setAdminMessage(ItemNote note, String adminMessage) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "adminMessage", adminMessage);
-        else note.setAdminMessage(adminMessage);
+        note.setAdminMessage(adminMessage);
     }
     public static void setItem(ItemNote note, ItemStack item) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "itemData", ItemStackConverter.encode(item));
-        else note.setItem(item);
+        note.setItem(item);
     }
     public static void setAuctionTime(ItemNote note, long time) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "auctionTime", time);
-        else note.setAuctionTime(time);
+        note.setAuctionTime(time);
     }
     public static void setPartiallySoldAmountLeft(ItemNote note, int amount) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "partiallySoldAmountLeft", amount);
-        else note.setPartiallySoldAmountLeft(amount);
+        note.setPartiallySoldAmountLeft(amount);
     }
     public static void setPrice(ItemNote note, double amount) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "price", amount);
-        else note.setPrice(amount);
+        note.setPrice(amount);
     }
 
     private static boolean r() {return SettingManager.useRedis;}
