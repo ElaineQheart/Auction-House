@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +50,7 @@ public abstract class InventoryGUI implements InventoryHandler {
         event.setCancelled(true);
         int slot = event.getSlot();
         InventoryButton button = this.buttonMap.get(slot);
-        if (button != null) {
+        if (button != null && !(event.getClickedInventory() instanceof PlayerInventory)) {
             button.getEventConsumer().accept(event);
         }
     }
