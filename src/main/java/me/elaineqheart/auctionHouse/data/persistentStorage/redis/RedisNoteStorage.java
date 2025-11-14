@@ -27,7 +27,6 @@ public class RedisNoteStorage {
     }
 
     public static void updateField(UUID noteID, String field, Object value) {
-        System.out.println("update");
         try (Jedis jedis = RedisManager.getResource()) {
             String key = "auction:note:" + noteID;
             jedis.hset(key, field, String.valueOf(value));
@@ -71,10 +70,6 @@ public class RedisNoteStorage {
             jedis.zrem("auction:byDate", noteID.toString());
             jedis.zrem("auction:byName", itemName.toLowerCase() + ":" + noteID);
         }
-    }
-
-    public static boolean noteDoesNotExist(UUID noteID) {
-        return getNote(noteID) == null;
     }
 
     private static Map<String, String> getNoteMap(ItemNote note) {
@@ -180,6 +175,12 @@ public class RedisNoteStorage {
                     .filter(Objects::nonNull)
                     .sorted(Comparator.comparing(ItemNote::getDateCreated))
                     .toList();
+        }
+    }
+
+    public static void purge() {
+        try(Jedis jedis = RedisManager.getResource()) {
+            jedis.flushDB();
         }
     }
 

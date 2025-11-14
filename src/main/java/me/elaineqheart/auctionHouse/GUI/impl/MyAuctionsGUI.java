@@ -5,12 +5,12 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.yml.Permissions;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
+import me.elaineqheart.auctionHouse.data.yml.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,7 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MyAuctionsGUI extends InventoryGUI implements Runnable{
@@ -46,14 +47,14 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         this.currentPage = page;
         currentSort = sort;
         c = configuration;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
     public MyAuctionsGUI(AhConfiguration configuration) {
         super();
         this.currentPage = 0;
         currentSort = MySort.ALL_AUCTIONS;
         c = configuration;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
     @Override
@@ -75,13 +76,8 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         this.addButton(45,back());
         this.addButton(46,sortButton(ItemManager.getMySort(currentSort)));
         this.addButton(49,loading());
-        if(Permissions.getAuctionSlots(player) > 21) {
-            this.addButton(48,previousPage(noteSize));
-            this.addButton(50,nextPage(noteSize));
-        }
         this.addButton(53,info());
-        super.decorate(player);
-        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> decorateItems(player));
+        decorateItems(player);
     }
     private void decorateItems(Player player) {
         fillOutItems(player.getUniqueId());
@@ -99,10 +95,10 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private void update() {
-        TaskManager.cancelTask(invID);
         decorate(c.currentPlayer);
+        TaskManager.cancelTask(invID);
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 
     private void fillOutItems(UUID playerID){
@@ -130,6 +126,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         for(int i = startPage; i < startPage+21; ++i){
             int j = i%21+10 + i%21/7 + i%21/7;
             if(size-1<i) {
+                if (Permissions.getAuctionSlots(c.currentPlayer) <= startPage + i) continue;
                 this.addButton(j, new InventoryButton()
                         .creator(player -> null)
                         .consumer(event -> {}));

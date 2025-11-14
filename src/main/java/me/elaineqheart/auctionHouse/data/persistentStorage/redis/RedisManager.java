@@ -2,7 +2,8 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.redis;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
-import redis.clients.jedis.*;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
 public class RedisManager {
 

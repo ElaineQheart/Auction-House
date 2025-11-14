@@ -5,11 +5,11 @@ import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
 import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisManager;
 import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.KillListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
@@ -47,6 +47,7 @@ public final class AuctionHouse extends JavaPlugin {
         getCommand("ah").setTabCompleter(new AuctionHouseCommands());
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
         KillListener.register();
 
         if(SettingManager.useRedis) RedisManager.connect();
@@ -68,6 +69,7 @@ public final class AuctionHouse extends JavaPlugin {
         }
 
         UpdateDisplay.init();
+        //NoteStorage.purge();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }

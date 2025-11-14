@@ -1,8 +1,9 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage;
 
-import me.elaineqheart.auctionHouse.data.yml.Permissions;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
+import me.elaineqheart.auctionHouse.data.yml.Permissions;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
@@ -41,15 +42,7 @@ public class ItemNote {
         this.price = price;
         this.isSold = false;
         this.auctionTime = Permissions.getAuctionDuration(player);
-        if(item.getItemMeta() == null) {
-            itemName = item.getType().toString();
-        } else if (item.getItemMeta().hasDisplayName()) {
-            itemName = item.getItemMeta().getDisplayName();
-        } else if (item.getItemMeta().getItemName().isEmpty()) {
-            itemName = item.getType().toString();
-        }else {
-            itemName = item.getItemMeta().getItemName();
-        }
+        itemName = StringUtils.getItemName(item, player.getWorld());
     }
 
     public ItemNote(String playerName, UUID playerUUID, String buyerName, double price, String itemData, Date dateCreated, boolean isSold, 

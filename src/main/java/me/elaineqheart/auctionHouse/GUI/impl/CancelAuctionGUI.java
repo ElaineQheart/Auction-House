@@ -9,7 +9,6 @@ import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class CancelAuctionGUI extends InventoryGUI implements Runnable{
@@ -26,6 +24,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
     private final UUID invID = UUID.randomUUID();
     private final MyAuctionsGUI.MySort currentSort;
     private final AhConfiguration c;
+    private final ItemStack item;
 
     @Override
     public void run() {
@@ -38,6 +37,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         this.note = note;
         this.currentSort = sort;
         c = configuration;
+        this.item = ItemManager.createItemFromNote(note, c.currentPlayer, true);
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -79,7 +79,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
     }
     private InventoryButton Item() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createItemFromNote(note, player, true))
+                .creator(player -> item)
                 .consumer(Sounds::click);
     }
     private InventoryButton back() {
@@ -102,18 +102,22 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
-                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
-                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
-                        Sounds.villagerDeny(event);
-                        return;
+                    if(!NoteStorage.r()) {
+                        //ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                        if (!note.isOnAuction()) {
+                            p.sendMessage(Messages.getFormatted("chat.already-sold2"));
+                            Sounds.villagerDeny(event);
+                            return;
+                        }
+                        Sounds.experience(event);
+                        Sounds.breakWood(event);
+                        p.getInventory().addItem(note.getItem());
+                        NoteStorage.deleteNote(note);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
+                        p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
+                    } else {
+
                     }
-                    Sounds.experience(event);
-                    Sounds.breakWood(event);
-                    p.getInventory().addItem(note.getItem());
-                    NoteStorage.deleteNote(note);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
-                    p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                 });
     }
 

@@ -4,14 +4,13 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -25,13 +24,17 @@ import java.io.IOException;
 public class CollectSoldItemGUI extends InventoryGUI {
 
     private final ItemNote note;
+    private final ItemStack item;
     private final MyAuctionsGUI.MySort currentSort;
     private final AhConfiguration c;
+    private final double price;
 
     public CollectSoldItemGUI(ItemNote note, MyAuctionsGUI.MySort sort,  AhConfiguration configuration) {
         super();
         this.note = note;
         this.currentSort = sort;
+        price = note.getSoldPrice();
+        item =  ItemManager.createCollectingItemFromNote(note, configuration.currentPlayer);
         c = configuration;
     }
 
@@ -73,7 +76,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     }
     private InventoryButton buyingItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.createCollectingItemFromNote(note, player))
+                .creator(player -> item)
                 .consumer(Sounds::click);
     }
     private InventoryButton back() {
@@ -86,31 +89,37 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
     private InventoryButton collectItem() {
-        double price = (double) ((int) (note.getSoldPrice() * 100 * (1 - SettingManager.taxRate))) /100;
         return new InventoryButton()
                 .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    collect(p, note);
-                    Sounds.experience(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
-                    p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
-                            "%price%", StringUtils.formatPrice(price)));
+                    if(!NoteStorage.r()) {
+                        collect(p, note.getNoteID().toString(), item.getAmount(), price);
+                        Sounds.experience(event);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0, currentSort, c), p);
+                        p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
+                                "%price%", StringUtils.formatPrice(getProfit(price)),
+                                "%amount%", String.valueOf(item.getAmount())));
+                    } else {
+
+                    }
                 });
     }
 
-    public static void collect(OfflinePlayer p, ItemNote note) {
+    public static void collect(OfflinePlayer p, String noteID, int itemAmount, double price) {
         Economy eco = VaultHook.getEconomy();
-        double price = (double) ((int) (note.getSoldPrice() * 100 * (1 - SettingManager.taxRate))) /100;
-        eco.depositPlayer(p, price);
-        if(note.getPartiallySoldAmountLeft() != 0) {
-            NoteStorage.setPrice(note, note.getPrice()-note.getSoldPrice());
-            NoteStorage.setSold(note, false);
-            ItemStack item = note.getItem();
-            item.setAmount(note.getPartiallySoldAmountLeft());
-            NoteStorage.setItem(note, item);
-            NoteStorage.setPartiallySoldAmountLeft(note, 0);
-            NoteStorage.setBuyerName(note, null);
+        eco.depositPlayer(p, getProfit(price));
+        ItemNote note = NoteStorage.getNote(noteID);
+        if (note.getPartiallySoldAmountLeft() != 0) {
+            NoteStorage.setPrice(note, note.getPrice() - price);
+            ItemStack temp = note.getItem().clone();
+            temp.setAmount(note.getItem().getAmount() - itemAmount);
+            NoteStorage.setItem(note, temp);
+            if (note.getPartiallySoldAmountLeft() == note.getItem().getAmount()) {
+                NoteStorage.setPartiallySoldAmountLeft(note, 0);
+                NoteStorage.setSold(note, false);
+                NoteStorage.setBuyerName(note, null);
+            }
         } else {
             NoteStorage.deleteNote(note);
         }
@@ -119,6 +128,10 @@ public class CollectSoldItemGUI extends InventoryGUI {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static double getProfit(double price) {
+        return (double) ((int) (price * 100 * (1 - SettingManager.taxRate))) /100;
     }
 
 }

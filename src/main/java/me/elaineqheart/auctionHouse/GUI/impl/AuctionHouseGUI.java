@@ -52,17 +52,17 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     public AuctionHouseGUI(int page, Sort sort, String search, Player p, boolean isAdmin) {
         super();
         this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
     public AuctionHouseGUI(Player p) {
         super();
         this.c = new AhConfiguration(0, Sort.HIGHEST_PRICE, "", p ,false);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
     public AuctionHouseGUI(AhConfiguration configuration) {
         super();
         this.c = configuration;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 
     @Override
@@ -72,15 +72,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void decorate(Player player) {
-        fillOutPlaces(pattern, false);
+        fillOutPlaces(pattern);
         this.addButton(45,searchOption());
         this.addButton(48,previousPage(noteSize));
         this.addButton(50,nextPage(noteSize));
         this.addButton(46,sortButton(ItemManager.getSort(c.currentSort)));
         this.addButton(49,loading());
         if (!c.isAdmin) {this.addButton(53, myAuctions());} else {this.addButton(53, commandBlockInfo());}
-        super.decorate(player);
-        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> decorateItems(player));
+        decorateItems(player);
     }
     private void decorateItems(Player player) {
         this.addButton(49,refresh());
@@ -99,28 +98,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         TaskManager.cancelTask(invID);
         Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> decorate(c.currentPlayer));
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimerAsynchronously(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 
     private void fillOutItems(int page, Sort sort){
         switch (sort){
-            case HIGHEST_PRICE -> fillOutAuctionItems(page, NoteStorage.SortMode.PRICE_DESC);
-            case LOWEST_PRICE -> fillOutAuctionItems(page, NoteStorage.SortMode.PRICE_ASC);
-            case ENDING_SOON -> fillOutAuctionItems(page, NoteStorage.SortMode.DATE);
-            case ALPHABETICAL -> fillOutAuctionItems(page, NoteStorage.SortMode.NAME);
+            case HIGHEST_PRICE -> createButtonsForAuctionItems(page, NoteStorage.SortMode.PRICE_DESC);
+            case LOWEST_PRICE -> createButtonsForAuctionItems(page, NoteStorage.SortMode.PRICE_ASC);
+            case ENDING_SOON -> createButtonsForAuctionItems(page, NoteStorage.SortMode.DATE);
+            case ALPHABETICAL -> createButtonsForAuctionItems(page, NoteStorage.SortMode.NAME);
         }
     }
 
-    private void fillOutAuctionItems(int page, NoteStorage.SortMode mode){
-        List<ItemNote> sortedAlphabetical = NoteStorage.getSortedList(mode, page*21, page*21+21, c.currentSearch);
+    private void createButtonsForAuctionItems(int page, NoteStorage.SortMode mode){
+        List<ItemNote> auctions = NoteStorage.getSortedList(mode, page*21, page*21+21, c.currentSearch);
         noteSize = NoteStorage.numberOfAuctions();
-//        if(c.currentPage*21 > noteSize) {
-//            c.currentPage = noteSize/21;
-//        }
-        createButtonsForAuctionItems(sortedAlphabetical);
-    }
-
-    private void createButtonsForAuctionItems(List<ItemNote> auctions){
         int size = auctions.size();
         for(int i = 0; i < 21; ++i){
             int j = i%21+10 + i%21/7 + i%21/7;
@@ -158,11 +150,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
 
 
-    private void fillOutPlaces(String[] places, boolean empty){
+    private void fillOutPlaces(String[] places){
         for(int i = 0; i < places.length; i++){
             for(int j = 0; j < places[i].length(); j+=2){
                 if(places[i].charAt(j)=='#') {
-                    if(!empty) this.addButton(i*9+j/2, this.fillerItem());
+                    this.addButton(i*9+j/2, this.fillerItem());
                 }
             }
         }

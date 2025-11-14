@@ -46,15 +46,6 @@ public class JsonNoteStorage {
         }
     }
 
-    public static boolean noteDoesNotExist(ItemNote note) {
-        for (ItemNote n : itemNotes) {
-            if(n.getNoteID().equals(note.getNoteID())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static void saveNotes() throws IOException {
 
         Gson gson = new Gson();
@@ -190,6 +181,16 @@ public class JsonNoteStorage {
             if(note.isOnAuction() && !note.isExpired()) count++;
         }
         return count;
+    }
+
+    public static void purge() {
+        itemNotes = new ArrayList<>();
+        try {
+            saveNotes();
+            loadNotes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

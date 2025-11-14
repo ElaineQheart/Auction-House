@@ -47,13 +47,20 @@ public class SettingManager {
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         currencyBeforeNumber = c.getBoolean("currency-before-number", false);
         partialSelling = c.getBoolean("partial-selling", false);
-        useRedis = c.getBoolean("multi-server-database.redis", false);
-        redisHost = c.getString("multi-server-database.redis-host", "");
-        redisUsername = c.getString("multi-server-database.redis-username", "default");
-        redisPassword = c.getString("multi-server-database.redis-password", "");
-        redisPort = c.getInt("multi-server-database.redis-port", 0);
+//        useRedis = c.getBoolean("multi-server-database.redis", false);
+//        redisHost = c.getString("multi-server-database.redis-host", "");
+//        redisUsername = c.getString("multi-server-database.redis-username", "default");
+//        redisPassword = c.getString("multi-server-database.redis-password", "");
+//        redisPort = c.getInt("multi-server-database.redis-port", 0);
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
     }
+
+//    multi-server-database:
+//    redis: false                              # if Redis as a database should be used. Needed for multiserver support
+//    redis-host: ""                            # this is the host/link that points to your database, something like "redis-xxxxx.cXXX.eu-central-1-1.ec2.redns.redis-cloud.com"
+//    redis-username: "default"                 # usually it's just "default"
+//    redis-password: ""
+//    redis-port:                               # the port is the last thing in your public endpoint
 
 }

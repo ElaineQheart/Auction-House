@@ -18,11 +18,6 @@ public class NoteStorage {
         else JsonNoteStorage.createNote(p, item, price);
     }
 
-    public static boolean noteDoesNotExist(ItemNote note) {
-        if(r()) return RedisNoteStorage.noteDoesNotExist(note.getNoteID());
-        else return JsonNoteStorage.noteDoesNotExist(note);
-    }
-
     public static void saveNotes() throws IOException {
         if(!r()) JsonNoteStorage.saveNotes();
     }
@@ -81,7 +76,7 @@ public class NoteStorage {
         note.setPrice(amount);
     }
 
-    private static boolean r() {return SettingManager.useRedis;}
+    public static boolean r() {return SettingManager.useRedis;}
 
     public enum SortMode {
         NAME,
@@ -95,10 +90,14 @@ public class NoteStorage {
         else return JsonNoteStorage.getSortedList(mode, start, stop, search);
     }
 
-
     public static List<ItemNote> mySortedDateCreated(UUID playerID){
         if(r()) return RedisNoteStorage.mySortedDateCreated(playerID);
         else return JsonNoteStorage.mySortedDateCreated(playerID);
+    }
+
+    public static void purge() {
+        if(r()) RedisNoteStorage.purge();
+        else JsonNoteStorage.purge();
     }
 
 }
