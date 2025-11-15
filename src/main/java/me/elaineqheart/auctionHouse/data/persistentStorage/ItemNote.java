@@ -30,7 +30,7 @@ public class ItemNote {
     private final UUID noteID;
     private String adminMessage;
     private long auctionTime;
-    private final String itemName;
+    private String itemName;
 
     public ItemNote(Player player, ItemStack item, int price) {
         this.noteID = UUID.randomUUID();
@@ -123,7 +123,10 @@ public class ItemNote {
     public UUID getNoteID() {return noteID;}
     public String getItemData() {return itemData;}
     public long getAuctionTime() {return auctionTime;}
-    public String getItemName() {return itemName;}
+    public String getItemName() {
+        if (itemName == null) itemName = StringUtils.getItemName(getItem(), Bukkit.getWorlds().getFirst());
+        return itemName;
+    }
 
     public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
     public void setSold(boolean isSold) {this.isSold = isSold;}
