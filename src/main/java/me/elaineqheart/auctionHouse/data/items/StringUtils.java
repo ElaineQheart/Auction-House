@@ -68,14 +68,14 @@ public class StringUtils {
     public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
         DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(SettingManager.formatNumbers)); // fallback for async threads
-        return ChatColor.GOLD + fmt.format(number) + ChatColor.RESET;
+        return fmt.format(number);
     }
 
     public static String formatPrice(double price) {
         if(SettingManager.currencyBeforeNumber) {
-            return ChatColor.YELLOW + SettingManager.currencySymbol + formatNumber(price);
+            return SettingManager.currencySymbol + formatNumber(price);
         } else {
-            return formatNumber(price) + ChatColor.YELLOW + SettingManager.currencySymbol;
+            return formatNumber(price) + SettingManager.currencySymbol;
         }
     }
 
