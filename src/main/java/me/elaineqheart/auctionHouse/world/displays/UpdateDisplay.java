@@ -18,6 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -245,37 +246,49 @@ public class UpdateDisplay implements Runnable{
 
     public static ItemNote getNote(String type, int rank) {
         if(type.equals("highest_price")) {
-            return NoteStorage.getSortedList(NoteStorage.SortMode.PRICE_DESC, rank-1, rank, "").stream().findFirst().orElse(null);
+            return NoteStorage.getSortedList(NoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
         } else if (type.equals("ending_soon")) {
-            return NoteStorage.getSortedList(NoteStorage.SortMode.DATE, rank-1, rank, "").stream().findFirst().orElse(null);
+            return NoteStorage.getSortedList(NoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
         }
         return null;
     }
 
     public static void removeDisplay(Location loc, boolean removeBlocks) {
         Integer displayID = locations.get(loc);
-        if(removeBlocks) {
-            loc.add(1, 0, 0).getBlock().setType(Material.AIR);
-            loc.add(-2, 0, 0).getBlock().setType(Material.AIR);
-            loc.add(1, 0, -1).getBlock().setType(Material.AIR);
-            loc.add(0, 0, 2).getBlock().setType(Material.AIR);
-            loc.add(0, 0, -1).getBlock().setType(Material.AIR);
-        }
-        if(displayID != null) {
-            DisplayNote data = displays.get(displayID);
-            retrieveData(loc,data);
-            safeRemoveGlass(data.glassBlock);
-            if(data.itemEntity != null) data.itemEntity.remove();
-            if(data.text != null) data.text.remove();
-            safeRemoveInteraction(loc);
-            locations.remove(loc);
-            displays.remove(displayID);
-            getYmlData().set(String.valueOf(displayID), null);
-            ConfigManager.displays.save();
-            reload();
-        } else {
+        if (displayID == null) {
             AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
+            return;
         }
+        DisplayNote data = displays.remove(displayID);
+        locations.remove(loc);
+
+        if (data == null) {
+            data = new DisplayNote();
+            data.location = loc;
+            retrieveData(loc, data);
+        } else if (data.glassBlock == null) {
+            retrieveData(loc, data);
+        }
+        if(removeBlocks) removeBlocks(loc);
+        Item itemEntity = data.itemEntity;
+        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+            if(removeBlocks) removeBlocks(loc);
+            if(itemEntity != null) itemEntity.remove();
+        }, 5);
+
+        safeRemoveGlass(data.glassBlock);
+        if(data.text != null) data.text.remove();
+        safeRemoveInteraction(loc);
+        getYmlData().set(String.valueOf(displayID), null);
+        ConfigManager.displays.save();
+    }
+
+    private static void removeBlocks(Location loc) {
+        loc.add(1, 0, 0).getBlock().setType(Material.AIR);
+        loc.add(-2, 0, 0).getBlock().setType(Material.AIR);
+        loc.add(1, 0, -1).getBlock().setType(Material.AIR);
+        loc.add(0, 0, 2).getBlock().setType(Material.AIR);
+        loc.add(0, 0, -1).getBlock().setType(Material.AIR);
     }
 
     public static void safeRemoveInteraction(Location loc) {

@@ -19,9 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
@@ -111,8 +109,12 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
 
     private void createButtonsForAuctionItems(int page, NoteStorage.SortMode mode){
-        List<ItemNote> auctions = NoteStorage.getSortedList(mode, page*21, page*21+21, c.currentSearch);
-        noteSize = NoteStorage.numberOfAuctions();
+        List<ItemNote> auctions = NoteStorage.getSortedList(mode, c.currentSearch);
+        noteSize = auctions.size();
+        int start = page*21;
+        int stop = page*21+21;
+        int end = Math.min(noteSize, stop);
+        auctions = auctions.subList(start, end);
         int size = auctions.size();
         for(int i = 0; i < 21; ++i){
             int j = i%21+10 + i%21/7 + i%21/7;
@@ -190,21 +192,22 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
-        meta.setLore(Messages.getLoreList("items.next-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf(noteSize/21)));
+        meta.setLore(Messages.getLoreList("items.next-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf((noteSize-1)/21)));
 
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Sounds.click(event);
                     if(event.isRightClick()){
-                        if(c.currentPage != noteSize/21){
-                            c.currentPage = noteSize/21;
+                        if(c.currentPage != (noteSize-1)/21){
+                            c.currentPage = (noteSize-1)/21;
+                            Sounds.click(event);
                             update();
                         }
                     }else {
-                        if(c.currentPage < noteSize/21){
+                        if(c.currentPage < (noteSize-1)/21){
                             c.currentPage++;
+                            Sounds.click(event);
                             update();
                         }
                     }
@@ -215,20 +218,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));
-        meta.setLore(Messages.getLoreList("items.previous-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf(noteSize/21)));
+        meta.setLore(Messages.getLoreList("items.previous-page.lore", "%page%", String.valueOf(c.currentPage), "%pages%", String.valueOf((noteSize-1)/21)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Sounds.click(event);
                     if(event.isRightClick()){
                         if(c.currentPage != 0){
                             c.currentPage = 0;
+                            Sounds.click(event);
                             update();
                         }
                     }else {
                         if(c.currentPage > 0){
                             c.currentPage--;
+                            Sounds.click(event);
                             update();
                         }
                     }

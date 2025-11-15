@@ -10,6 +10,7 @@ public class TaskManager {
     private static final HashMap<String, Integer> taskID = new HashMap<>();
 
     public static void cancelTask(UUID invID) {
+        if(invID == null) return;
         String key = invID.toString();
         if(taskID.containsKey(key)) {
             Bukkit.getScheduler().cancelTask(taskID.get(key));

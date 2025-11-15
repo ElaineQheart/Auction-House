@@ -255,15 +255,16 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != auctionItemsAmount/21){
                             currentPage = auctionItemsAmount/21;
+                            Sounds.click(event);
                             update();
                         }
                     }else {
                         if(currentPage < auctionItemsAmount/21){
                             currentPage++;
+                            Sounds.click(event);
                             update();
                         }
                     }
@@ -281,15 +282,16 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Sounds.click(event);
                     if(event.isRightClick()){
                         if(currentPage != 0){
                             currentPage = 0;
+                            Sounds.click(event);
                             update();
                         }
                     }else {
                         if(currentPage > 0){
                             currentPage--;
+                            Sounds.click(event);
                             update();
                         }
                     }

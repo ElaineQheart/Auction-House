@@ -62,7 +62,7 @@ chat:
   sold-message:
     prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
     interaction: "§f§l[CLICK]"
-    auto-collect: "§6[Auction] §7%player%§e bought %item%§e. §6+%price%"
+    auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+%price%"
   invalid-amount: "§cThat is not a valid amount!"
 
 inventory-titles:

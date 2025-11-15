@@ -91,22 +91,18 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     Sounds.experience(event);
                     //expired by a moderator:
                     if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) {
-                        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> {
-                            if(note.getItem().equals(ItemManager.createDirt())) {
-                                p.sendMessage(Messages.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
-                            }else {
-                                p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
-                                p.getInventory().addItem(note.getItem());
-                            }
-                            NoteStorage.deleteNote(note);
-                            p.closeInventory();
-                        });
+                        if(note.getItem().equals(ItemManager.createDirt())) {
+                            p.sendMessage(Messages.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
+                        }else {
+                            p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
+                            p.getInventory().addItem(note.getItem());
+                        }
+                        NoteStorage.deleteNote(note);
+                        p.closeInventory();
                     } else {
                         p.getInventory().addItem(note.getItem());
-                        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> {
-                            NoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
-                            AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0, currentSort, c), p);
-                        });
+                        NoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0, currentSort, c), p);
                     }
 
                     try {

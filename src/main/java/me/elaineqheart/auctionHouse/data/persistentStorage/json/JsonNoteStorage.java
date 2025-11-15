@@ -126,7 +126,7 @@ public class JsonNoteStorage {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public static List<ItemNote> getSortedList(NoteStorage.SortMode mode, int start, int stop, String search){
+    public static List<ItemNote> getSortedList(NoteStorage.SortMode mode, String search){
         Set<ItemNote> set = new HashSet<>();
         switch (mode) {
             case DATE -> set = sortedDateCreated.keySet();
@@ -146,13 +146,7 @@ public class JsonNoteStorage {
                 }
             }
         }
-
-        if (start < 0) start = 0;
-        if (stop <= start) return Collections.emptyList();
-        if (start >= itemList.size()) return Collections.emptyList();
-
-        int end = Math.min(itemList.size(), stop);
-        return new ArrayList<>(itemList.subList(start, end));
+        return itemList;
     }
 
     public static List<ItemNote> mySortedDateCreated(UUID playerID){
