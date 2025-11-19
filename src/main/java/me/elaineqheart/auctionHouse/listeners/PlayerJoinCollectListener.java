@@ -25,7 +25,7 @@ public class PlayerJoinCollectListener implements Listener {
                 int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
                 CollectSoldItemGUI.collect(p, note.getNoteID().toString(), amount, note.getSoldPrice());
                 if(SettingManager.soldMessageEnabled) p.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect",
-                        "%player%", p.getName(),
+                        "%player%", note.getBuyerName(),
                         "%item%", note.getItemName(),
                         "%price%", StringUtils.formatPrice(note.getSoldPrice()),
                         "%amount%", String.valueOf(amount)));
