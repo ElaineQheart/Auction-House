@@ -18,7 +18,7 @@ public class PlayerJoinCollectListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if(!SettingManager.autoCollect) return;
-        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> {
+        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Player p = event.getPlayer();
             for(ItemNote note : NoteStorage.mySortedDateCreated(p.getUniqueId())) {
                 if (!note.isSold()) continue;
@@ -30,7 +30,7 @@ public class PlayerJoinCollectListener implements Listener {
                         "%price%", StringUtils.formatPrice(note.getSoldPrice()),
                         "%amount%", String.valueOf(amount)));
             }
-        });
+        }, 1);
 
     }
 
