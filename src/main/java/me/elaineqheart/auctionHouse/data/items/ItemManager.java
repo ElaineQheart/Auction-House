@@ -326,7 +326,7 @@ public class ItemManager {
             }
             if(!note.isExpired()) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.active",
-                        "%time%", StringUtils.getTime(note.timeLeft(), false)));
+                        "%time%", StringUtils.getTime(note.timeLeft(), true)));
             } else {
                 lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
             }
@@ -337,10 +337,10 @@ public class ItemManager {
                     "%buyer%", note.getBuyerName()));
         }else if(note.isOnWaitingList()){
             lore.addAll(Messages.getLoreList("items.auction.lore.waiting-list",
-                    "%time%", StringUtils.getTime(note.timeLeft() - Permissions.getAuctionDuration(p), false)));
+                    "%time%", StringUtils.getTime(note.timeLeft() - Permissions.getAuctionDuration(p), true)));
         }else{
             lore.addAll(Messages.getLoreList("items.auction.lore.active",
-                    "%time%", StringUtils.getTime(note.timeLeft(), false)));
+                    "%time%", StringUtils.getTime(note.timeLeft(), true)));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);
