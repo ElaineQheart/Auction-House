@@ -27,6 +27,7 @@ public class SettingManager {
     public static int redisPort;
     public static int displayUpdateTicks;
     public static boolean autoCollect;
+    public static boolean auctionAnnouncementsEnabled;
 
     static {
         loadData();
@@ -54,6 +55,7 @@ public class SettingManager {
 //        redisPort = c.getInt("multi-server-database.redis-port", 0);
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
+        auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
     }
 
 //    multi-server-database:

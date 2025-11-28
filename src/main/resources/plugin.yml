@@ -5,6 +5,7 @@ api-version: '1.21'
 authors: [ ElaineQheart ]
 website: https://www.youtube.com/@elaineqheart
 depend: [ Vault ]
+softdepend: [ PlaceholderAPI ]
 commands:
   ah:
     description: opens the auction house GUI
