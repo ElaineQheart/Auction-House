@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 
 public class ConfigManager {
 
-    public static Configs displays = new Configs();
-    public static Configs bannedPlayers = new Configs();
-    public static Configs permissions = new Configs();
-    public static Configs blacklist = new Configs();
+    public static Config displays = new Config();
+    public static Config bannedPlayers = new Config();
+    public static Config permissions = new Config();
+    public static Config blacklist = new Config();
 
     public static void setupConfigs() {
         displays.setup("displays", false);

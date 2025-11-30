@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class Configs {
+public class Config {
 
     private File file;
     private FileConfiguration customFile;
@@ -27,7 +27,10 @@ public class Configs {
         }
         customFile = YamlConfiguration.loadConfiguration(file);
 
-        if(!copyDefaults) return;
+        if(!copyDefaults) {
+            save();
+            return;
+        }
         final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(fileName + ".yml");
         if (defConfigStream == null) return;
         customFile.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));

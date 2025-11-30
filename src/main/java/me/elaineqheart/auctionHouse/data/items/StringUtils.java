@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.data.items;
 
+import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -68,14 +69,14 @@ public class StringUtils {
     public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
         DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(SettingManager.formatNumbers)); // fallback for async threads
-        return fmt.format(number);
+        return Messages.getFormatted("replacements.price", "%number%", fmt.format(number));
     }
 
     public static String formatPrice(double price) {
         if(SettingManager.currencyBeforeNumber) {
-            return SettingManager.currencySymbol + formatNumber(price);
+            return Messages.getFormatted("replacements.currency-symbol-prefix") + SettingManager.currencySymbol + formatNumber(price);
         } else {
-            return formatNumber(price) + SettingManager.currencySymbol;
+            return formatNumber(price) + Messages.getFormatted("replacements.currency-symbol-prefix") + SettingManager.currencySymbol;
         }
     }
 

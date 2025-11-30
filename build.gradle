@@ -36,7 +36,7 @@ tasks.named('shadowJar') {
     archiveClassifier.set('') // no -all classifier
     archiveVersion.set(version)
     // optional: write directly to your plugins folder
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC test servers/1.21.5 paper/plugins"))
+    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     mergeServiceFiles()
 }
 

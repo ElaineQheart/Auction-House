@@ -54,15 +54,15 @@ chat:
     &n§eYour auction was canceled!
     &n§b-------------------------------------------------"
   collect-sold-auction: "§b-------------------------------------------------
-    &n§eYou collected an auction for §6%price%!
+    &n§eYou collected an auction for %price%!
     &n§b-------------------------------------------------"
   purchase-auction: "§b-------------------------------------------------
     &n§eYou purchased an item from §7%player%§e's auction
     &n§b-------------------------------------------------"
   sold-message:
-    prefix: "§6[Auction] §7%player%§e bought %item%§e for §6%price% "
+    prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
     interaction: "§f§l[CLICK]"
-    auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+§6%price%"
+    auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+%price%"
   invalid-amount: "§cThat is not a valid amount!"
 
 inventory-titles:
@@ -233,7 +233,7 @@ items:
     lore:
       default: "§8------------------
         &n§7Seller: %player%
-        &n§7Price: §6%price%
+        &n§7Price: %price%
         &n "
       own-auction: "§aThis is your own item!
         &n "
@@ -253,36 +253,36 @@ items:
   admin-expire-item:
     lore: "§8------------------
       &n§7Seller: %player%
-      &n§7Price: §6%price%
+      &n§7Price: %price%
       &n
       &n§cExpired by a moderator!
       &n§7Reason: %reason%"
   admin-delete-item:
     lore: "§8------------------
       &n§7Seller: %player%
-      &n§7Price: §6%price%
+      &n§7Price: %price%
       &n
       &n§cDeleted by a moderator!
       &n§7Reason: %reason%"
   buy-item:
     name: "§6Buy Item right now!"
     lore: "
-      &n§7Price: §6%price%
+      &n§7Price: %price%
       &n
       &n§eClick to buy!"
   not-enough-money:
     name: "§6Buy Item right now!"
     lore: "
-      &n§7You need §6%price%§7 to buy this item!
+      &n§7You need %price%§7 to buy this item!
       &n
       &n§cNot enough money!"
   confirm-buy:
     name: "§aConfirm"
-    lore: "§7Cost: §6%price%"
+    lore: "§7Cost: %price%"
   collect-sold:
     name: "§aCollect Sold Item"
     lore: "
-      &n§7Value with taxes: §6%price%
+      &n§7Value with taxes: %price%
       &n
       &n§eClick to collect!"
   choose-item-buy-amount:
@@ -336,7 +336,7 @@ command-feedback:
   invalid-number5: "Item rank number must be greater than 0"
   invalid-number6: "Invalid item rank number. Please enter a valid number"
   invalid-number7: "That is not a valid amount"
-  auction: "§eYou have put up an auction for §6%price%"
+  auction: "§eYou have put up an auction for %price%"
   ban-usage: "$eUsage: /ah ban <player> <time in days> <reason>"
   pardon-usage: "§eUsage: /ah pardon <player>"
   player-not-found: "§eThat player is not online"
@@ -361,3 +361,7 @@ command-feedback:
   blacklist-success: "Successfully added the properties of %item% to the blacklist"
   blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
   item-blacklisted: "§cYou cannot auction this item!"
+
+replacements:
+  price: "§6%number%§r"
+  currency-symbol-prefix: "§e"
