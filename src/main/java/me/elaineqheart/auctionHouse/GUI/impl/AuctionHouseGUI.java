@@ -30,7 +30,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
             "# . . . . . . . #",
             "# . . . . . . . #",
             "# . . . . . . . #",
-            "# . . . . . . . #",
+            "# # # # # # # # #",
             ". . # . . . # # .",
     };
     private int noteSize;
