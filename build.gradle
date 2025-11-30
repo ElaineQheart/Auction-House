@@ -18,12 +18,17 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven { url 'https://jitpack.io' }
+    maven {
+        name = "placeholderapi"
+        url = "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
 }
 
 //alt + ins
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("me.clip:placeholderapi:2.11.6")
     implementation("redis.clients:jedis:6.1.0")
 }
 
@@ -36,7 +41,7 @@ tasks.named('shadowJar') {
     archiveClassifier.set('') // no -all classifier
     archiveVersion.set(version)
     // optional: write directly to your plugins folder
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC test servers/1.21.5 paper/plugins"))
+    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     mergeServiceFiles()
 }
 

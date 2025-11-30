@@ -63,6 +63,7 @@ chat:
     prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
     interaction: "§f§l[CLICK]"
     auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+%price%"
+  auction-announcement: "§6[Auction] §7%player%§e is selling %item%§e x%amount% for %price%"
   invalid-amount: "§cThat is not a valid amount!"
 
 inventory-titles:
@@ -303,6 +304,7 @@ world:
 
 commands:
   sell: "sell"
+  announce: "announce"
   admin: "admin"
   ban: "ban"
   pardon: "pardon"
@@ -337,6 +339,8 @@ command-feedback:
   invalid-number6: "Invalid item rank number. Please enter a valid number"
   invalid-number7: "That is not a valid amount"
   auction: "§eYou have put up an auction for %price%"
+  announcements-enabled: "§aAuction announcements enabled! §7You will now see when players put items on auction."
+  announcements-disabled: "§cAuction announcements disabled! §7You will no longer see when players put items on auction."
   ban-usage: "$eUsage: /ah ban <player> <time in days> <reason>"
   pardon-usage: "§eUsage: /ah pardon <player>"
   player-not-found: "§eThat player is not online"
@@ -362,10 +366,8 @@ command-feedback:
   blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
   item-blacklisted: "§cYou cannot auction this item!"
 
-replacements:
-  price: "§6%number%§r"
-  currency-symbol-prefix: "§e"
-
 placeholders:
   announcements-enabled: "§aEnabled"
   announcements-disabled: "§cDisabled"
+  price: "§6%number%§r"
+  currency-symbol-prefix: "§e"

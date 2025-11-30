@@ -136,7 +136,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
 
             }
             // /ah announce - toggle announcements
-            if(strings.length == 1 && strings[0].equals(Messages.getFormatted("commands.announce"))) {
+            if(strings.length == 1 && SettingManager.auctionAnnouncementsEnabled && strings[0].equals(Messages.getFormatted("commands.announce"))) {
                 boolean newState = PlayerPreferencesManager.toggleAnnouncements(p);
                 if(newState) {
                     p.sendMessage(Messages.getFormatted("command-feedback.announcements-enabled"));
@@ -329,9 +329,9 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         if(strings.length==1) {
             //check for every item if it's half typed out, then add accordingly to the params list
             List<String> assetParams = new ArrayList<>(List.of(new String[]{
-                    Messages.getFormatted("commands.sell"),
-                    Messages.getFormatted("commands.announce")
+                    Messages.getFormatted("commands.sell")
             }));
+            if(SettingManager.auctionAnnouncementsEnabled) assetParams.add(Messages.getFormatted("commands.announce"));
             if(commandSender.hasPermission(SettingManager.permissionModerate)) {
                 assetParams.add(Messages.getFormatted("commands.admin"));
                 assetParams.add(Messages.getFormatted("commands.ban"));
