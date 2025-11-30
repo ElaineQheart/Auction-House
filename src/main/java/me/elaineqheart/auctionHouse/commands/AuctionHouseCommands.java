@@ -128,7 +128,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                             "%amount%", String.valueOf(amount),
                             "%price%", StringUtils.formatPrice(price));
                     for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if(PlayerPreferencesManager.hasAnnouncementsEnabled(onlinePlayer)) {
+                        if(PlayerPreferencesManager.hasAnnouncementsEnabled(onlinePlayer) && !onlinePlayer.equals(p)) {
                             onlinePlayer.sendMessage(announcement);
                         }
                     }
