@@ -1,5 +1,3 @@
-currency: " coins"
-currency-before-number: false               # i.e.: $5 instead of 5$
 tax: 0.01                                   # 1% tax
 auction-duration: 172800                    # the time an auction lasts in seconds
 auction-setup-time: 30                      # the time it takes to put an item on auction

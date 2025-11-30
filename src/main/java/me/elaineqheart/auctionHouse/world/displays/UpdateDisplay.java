@@ -67,11 +67,7 @@ public class UpdateDisplay implements Runnable{
 
                     //update the signs
                     for (Sign sign : signs) {
-                        if (SettingManager.currencyBeforeNumber) {
-                            sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + SettingManager.currencySymbol + price);
-                        } else {
-                            sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + price + SettingManager.currencySymbol);
-                        }
+                        sign.getSide(Side.FRONT).setLine(0, ChatColor.GOLD + ChatColor.stripColor(StringUtils.formatPrice(price)));
                         sign.getSide(Side.FRONT).setLine(1, ChatColor.YELLOW + time);
                         sign.getSide(Side.FRONT).setLine(3, Messages.getFormatted("world.displays.sign-interaction"));
                         sign.update(true, false);

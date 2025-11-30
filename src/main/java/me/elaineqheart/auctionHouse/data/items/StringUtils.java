@@ -69,15 +69,21 @@ public class StringUtils {
     public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
         DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(SettingManager.formatNumbers)); // fallback for async threads
-        return Messages.getFormatted("placeholders.price", "%number%", fmt.format(number));
+        return Messages.getFormatted("placeholders.number", "%input%", fmt.format(number));
+    }
+    public static String formatNumber(String number) {
+        return Messages.getFormatted("placeholders.number", "%input%", number);
     }
 
     public static String formatPrice(double price) {
-        if(SettingManager.currencyBeforeNumber) {
-            return Messages.getFormatted("placeholders.currency-symbol-prefix") + SettingManager.currencySymbol + formatNumber(price);
-        } else {
-            return formatNumber(price) + Messages.getFormatted("placeholders.currency-symbol-prefix") + SettingManager.currencySymbol;
-        }
+        return Messages.getFormatted("placeholders.price",
+                "%number%", formatNumber(price),
+                "%currency-symbol%", Messages.getFormatted("placeholders.currency-symbol"));
+    }
+    public static String formatPrice(String price) {
+        return Messages.getFormatted("placeholders.price",
+                "%number%", formatNumber(price),
+                "%currency-symbol%", Messages.getFormatted("placeholders.currency-symbol"));
     }
 
     public static String getItemName(ItemStack item, World world) {

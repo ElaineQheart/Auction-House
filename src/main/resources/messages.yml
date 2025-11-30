@@ -369,5 +369,6 @@ command-feedback:
 placeholders:
   announcements-enabled: "§aEnabled"
   announcements-disabled: "§cDisabled"
-  price: "§6%number%§r"
-  currency-symbol-prefix: "§e"
+  number: "§6%input%§r"
+  price: "%number%%currency-symbol%"
+  currency-symbol: " §ecoins"

@@ -1,13 +1,13 @@
 package me.elaineqheart.auctionHouse.data.yml;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
 
 public class SettingManager {
 
-    public static String currencySymbol;
     public static double taxRate;
     public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
@@ -18,7 +18,6 @@ public class SettingManager {
     public static boolean soldMessageEnabled;
     public static String formatTimeCharacters;
     public static String permissionModerate;
-    public static boolean currencyBeforeNumber;
     public static boolean partialSelling;
     public static boolean useRedis;
     public static String redisHost;
@@ -35,7 +34,6 @@ public class SettingManager {
 
     public static void loadData() {
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
-        currencySymbol = c.getString("currency", " coins");
         taxRate = c.getDouble("tax", 0.01);
         auctionDuration = c.getLong("auction-duration", 60*60*48);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
@@ -46,7 +44,6 @@ public class SettingManager {
         formatter = new DecimalFormat(formatNumbers);
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
-        currencyBeforeNumber = c.getBoolean("currency-before-number", false);
         partialSelling = c.getBoolean("partial-selling", false);
 //        useRedis = c.getBoolean("multi-server-database.redis", false);
 //        redisHost = c.getString("multi-server-database.redis-host", "");
@@ -64,5 +61,25 @@ public class SettingManager {
 //    redis-username: "default"                 # usually it's just "default"
 //    redis-password: ""
 //    redis-port:                               # the port is the last thing in your public endpoint
+
+    public static void backwardsCompatibility() {
+        FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        if(c.getString("currency") != null) {
+            FileConfiguration messageFile = Messages.get();
+            messageFile.set("placeholders.currency-symbol", c.getString("currency"));
+            Messages.save();
+            Messages.reload();
+            c.set("currency", null);
+            AuctionHouse.getPlugin().saveConfig();
+        }
+        if(c.get("currency-before-number") != null) {
+            FileConfiguration messageFile = Messages.get();
+            messageFile.set("placeholders.price", "%currency-symbol%%number%");
+            Messages.save();
+            Messages.reload();
+            c.set("currency-before-number", null);
+            AuctionHouse.getPlugin().saveConfig();
+        }
+    }
 
 }

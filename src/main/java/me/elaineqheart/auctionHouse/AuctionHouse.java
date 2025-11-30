@@ -72,6 +72,8 @@ public final class AuctionHouse extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
+        SettingManager.backwardsCompatibility();
+
         UpdateDisplay.init();
         //NoteStorage.purge();
 
