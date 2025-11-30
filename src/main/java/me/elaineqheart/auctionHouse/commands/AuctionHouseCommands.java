@@ -118,7 +118,32 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 NoteStorage.createNote(p, inputItem, price);
                 item.setAmount(item.getAmount() - amount);
                 p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
+                
+                // Announce the new auction to all players who have announcements enabled
+                if(SettingManager.auctionAnnouncementsEnabled) {
+                    String itemName = StringUtils.getItemName(inputItem, p.getWorld());
+                    String announcement = Messages.getFormatted("chat.auction-announcement",
+                            "%player%", p.getDisplayName(),
+                            "%item%", itemName,
+                            "%amount%", String.valueOf(amount),
+                            "%price%", StringUtils.formatPrice(price));
+                    for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        if(PlayerPreferencesManager.hasAnnouncementsEnabled(onlinePlayer)) {
+                            onlinePlayer.sendMessage(announcement);
+                        }
+                    }
+                }
 
+            }
+            // /ah announce - toggle announcements
+            if(strings.length == 1 && strings[0].equals(Messages.getFormatted("commands.announce"))) {
+                boolean newState = PlayerPreferencesManager.toggleAnnouncements(p);
+                if(newState) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.announcements-enabled"));
+                } else {
+                    p.sendMessage(Messages.getFormatted("command-feedback.announcements-disabled"));
+                }
+                return true;
             }
             if(strings.length == 2 && strings[0].equals("view")) {
                 String noteId = strings[1];
@@ -303,7 +328,10 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         List<String> params = new ArrayList<>();
         if(strings.length==1) {
             //check for every item if it's half typed out, then add accordingly to the params list
-            List<String> assetParams = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.sell")}));
+            List<String> assetParams = new ArrayList<>(List.of(new String[]{
+                    Messages.getFormatted("commands.sell"),
+                    Messages.getFormatted("commands.announce")
+            }));
             if(commandSender.hasPermission(SettingManager.permissionModerate)) {
                 assetParams.add(Messages.getFormatted("commands.admin"));
                 assetParams.add(Messages.getFormatted("commands.ban"));
@@ -395,5 +423,6 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         ConfigManager.reloadConfigs();
         UpdateDisplay.reload();
         Messages.reload();
+        PlayerPreferencesManager.reload();
     }
 }

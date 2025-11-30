@@ -12,3 +12,5 @@ auto-collect: false                         # automatically gives the money to t
 partial-selling: false                      # allows players to select the amount of items they want to buy of an auction
 admin-permission: "auctionhouse.moderator"
 display-update: 20                          # 20 ticks = 1 second, how frequently the item displays are updated; can be set to 1 for instant updates
+display-update: 80                          # 20 ticks = 1 second, how frequently the item displays are updated; can be set to 1 for instant updates
+auction-announcements: true                 # announce when someone puts an item on auction (players can toggle this with /ah announce)
