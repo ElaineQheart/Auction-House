@@ -12,11 +12,10 @@ public class SettingManager {
     public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
     public static String fillerItem;
-    public static String formatNumbers;
     public static DecimalFormat formatter;
+    public static String formatTimeCharacters;
     public static int defaultMaxAuctions;
     public static boolean soldMessageEnabled;
-    public static String formatTimeCharacters;
     public static String permissionModerate;
     public static boolean partialSelling;
     public static boolean useRedis;
@@ -40,8 +39,7 @@ public class SettingManager {
         fillerItem = c.getString("filler-item", "BLACK_STAINED_GLASS_PANE");
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
-        formatNumbers = c.getString("format-numbers", "#,###.##");
-        formatter = new DecimalFormat(formatNumbers);
+        formatter = new DecimalFormat(Messages.getFormatted("placeholders.format-numbers"));
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         partialSelling = c.getBoolean("partial-selling", false);
@@ -63,22 +61,33 @@ public class SettingManager {
 //    redis-port:                               # the port is the last thing in your public endpoint
 
     public static void backwardsCompatibility() {
+        boolean reload = false;
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        FileConfiguration messageFile = Messages.get();
         if(c.getString("currency") != null) {
-            FileConfiguration messageFile = Messages.get();
             messageFile.set("placeholders.currency-symbol", c.getString("currency"));
-            Messages.save();
-            Messages.reload();
             c.set("currency", null);
             c.set("currency-symbol", "has been moved to messages.yml");
-            AuctionHouse.getPlugin().saveConfig();
+            reload = true;
         }
         if(c.get("currency-before-number") != null) {
-            FileConfiguration messageFile = Messages.get();
             messageFile.set("placeholders.price", "%currency-symbol%%number%");
+            c.set("currency-before-number", null);
+            reload = true;
+        }
+        if(c.get("format-numbers") != null) {
+            messageFile.set("placeholders.format-numbers", c.getString("format-numbers"));
+            c.set("format-numbers", null);
+            reload = true;
+        }
+        if(c.get("format-time-characters") != null) {
+            messageFile.set("placeholders.format-time-characters", c.getString("format-time-characters"));
+            c.set("format-time-characters", null);
+            reload = true;
+        }
+        if(reload) {
             Messages.save();
             Messages.reload();
-            c.set("currency-before-number", null);
             AuctionHouse.getPlugin().saveConfig();
         }
     }

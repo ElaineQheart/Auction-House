@@ -370,3 +370,5 @@ placeholders:
   number: "§6%input%§r"
   price: "%number%%currency-symbol%"
   currency-symbol: " §ecoins"
+  format-numbers: "#,###.##"
+  format-time-characters: "dhms"

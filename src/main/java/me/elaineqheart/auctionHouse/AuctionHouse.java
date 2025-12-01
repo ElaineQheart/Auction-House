@@ -50,7 +50,6 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
         KillListener.register();
 
-        if(SettingManager.useRedis) RedisManager.connect();
         //Setup config.yml
         reloadConfig();
         getConfig().options().copyDefaults(true);
@@ -61,6 +60,8 @@ public final class AuctionHouse extends JavaPlugin {
         Messages.setup();
         Messages.get().options().copyDefaults(true);
         Messages.save();
+
+        if(SettingManager.useRedis) RedisManager.connect();
 
         try {
             NoteStorage.loadNotes();

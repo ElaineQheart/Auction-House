@@ -68,7 +68,8 @@ public class StringUtils {
 
     public static String formatNumber(double number) {
         // if the price is a whole number, format it without decimal places
-        DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(SettingManager.formatNumbers)); // fallback for async threads
+        // fallback for async threads
+        DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(Messages.getFormatted("placeholders.format-numbers")));
         return Messages.getFormatted("placeholders.number", "%input%", fmt.format(number));
     }
     public static String formatNumber(String number) {
