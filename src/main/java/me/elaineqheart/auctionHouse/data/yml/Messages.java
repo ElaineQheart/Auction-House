@@ -2,6 +2,9 @@ package me.elaineqheart.auctionHouse.data.yml;
 
 import com.google.common.base.Charsets;
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +19,8 @@ public class Messages {
 
     private static File file;
     private static FileConfiguration customFile;
+    private static final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
+    private static final MiniMessage mm = MiniMessage.miniMessage();
 
     public static void setup() {
         file = new File(AuctionHouse.getPlugin().getDataFolder(), "messages.yml");
@@ -62,13 +67,15 @@ public class Messages {
     public static String getFormatted(String key, String... replacements) {
         String message = getValue(key,true);
         message = replacePlaceholders(key, message, replacements);
-        return message;
+        return adventureApi(message);
     }
 
     public static List<String> getLoreList(String key, String... replacements) {
         String message = getValue(key,false);
         message = replacePlaceholders(key, message, replacements);
-        return List.of(message.split("&n"));
+        List<String> list = List.of(message.split("&n"));
+        list.forEach(Messages::adventureApi);
+        return list;
     }
 
     private static String replacePlaceholders(String key, String message, String... replacements) {
@@ -79,6 +86,16 @@ public class Messages {
             message = message.replace(replacements[i], replacements[i + 1]);
         }
         return message;
+    }
+
+    private static String adventureApi(String input) {
+        Component comp;
+        try {
+            comp = mm.deserialize(input);
+        } catch (Exception e) {
+            comp = legacy.deserialize(input);
+        }
+        return legacy.serialize(comp);
     }
 
 }
