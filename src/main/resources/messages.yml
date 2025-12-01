@@ -367,8 +367,6 @@ command-feedback:
   item-blacklisted: "§cYou cannot auction this item!"
 
 placeholders:
-  announcements-enabled: "§aEnabled"
-  announcements-disabled: "§cDisabled"
   number: "§6%input%§r"
   price: "%number%%currency-symbol%"
   currency-symbol: " §ecoins"

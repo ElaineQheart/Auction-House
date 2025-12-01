@@ -1,9 +1,11 @@
 package me.elaineqheart.auctionHouse.data.yml;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
@@ -12,6 +14,7 @@ public class ConfigManager {
     public static Config bannedPlayers = new Config();
     public static Config permissions = new Config();
     public static Config blacklist = new Config();
+    public static Config playerPreferences = new Config();
 
     public static void setupConfigs() {
         displays.setup("displays", false);
@@ -19,7 +22,8 @@ public class ConfigManager {
         bannedPlayers.setup("bannedPlayers", false);
         permissions.setup("permissions", true);
         blacklist.setup("blacklist", false);
-        permissions();
+        playerPreferences.setup("playerPreferences", false);
+        permissionsSetup();
     }
 
     public static void reloadConfigs() {
@@ -27,10 +31,11 @@ public class ConfigManager {
         bannedPlayers.reload();
         permissions.reload();
         blacklist.reload();
+        playerPreferences.reload();
     }
 
 
-    private static void permissions() {
+    private static void permissionsSetup() {
         if(permissions.get().getConfigurationSection("auction-slots") == null) {
             permissions.get().createSection("auction-slots");
             permissions.save();

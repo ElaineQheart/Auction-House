@@ -8,10 +8,8 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisManager;
 import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
-import me.elaineqheart.auctionHouse.data.yml.PlayerPreferencesManager;
 import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
-import me.elaineqheart.auctionHouse.placeholders.AuctionHousePlaceholders;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.KillListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
@@ -64,8 +62,6 @@ public final class AuctionHouse extends JavaPlugin {
         Messages.get().options().copyDefaults(true);
         Messages.save();
 
-        PlayerPreferencesManager.setup();
-
         try {
             NoteStorage.loadNotes();
         } catch (IOException e) {
@@ -76,12 +72,6 @@ public final class AuctionHouse extends JavaPlugin {
 
         UpdateDisplay.init();
         //NoteStorage.purge();
-
-        // Register PlaceholderAPI expansion if available
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new AuctionHousePlaceholders(this).register();
-            getLogger().info("PlaceholderAPI found! Placeholders registered.");
-        }
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }

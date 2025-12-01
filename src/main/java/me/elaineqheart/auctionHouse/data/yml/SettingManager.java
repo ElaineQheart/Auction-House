@@ -70,6 +70,7 @@ public class SettingManager {
             Messages.save();
             Messages.reload();
             c.set("currency", null);
+            c.set("currency-symbol", "has been moved to messages.yml");
             AuctionHouse.getPlugin().saveConfig();
         }
         if(c.get("currency-before-number") != null) {
