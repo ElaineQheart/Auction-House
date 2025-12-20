@@ -1,10 +1,12 @@
 package me.elaineqheart.auctionHouse.data.yml;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SettingManager {
 
@@ -26,6 +28,8 @@ public class SettingManager {
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
+    public static List<String> ahLayout;
+    public static List<String> myAhLayout;
 
     static {
         loadData();
@@ -51,6 +55,9 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
+        ahLayout = c.getStringList("ah-layout");
+        myAhLayout = c.getStringList("my-ah-layout");
+        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) updateLayout(c);
     }
 
 //    multi-server-database:
@@ -90,6 +97,26 @@ public class SettingManager {
             Messages.reload();
             AuctionHouse.getPlugin().saveConfig();
         }
+    }
+
+    private static void updateLayout(FileConfiguration c) {
+        c.set("ah-layout", Arrays.asList(
+                "# # # # # # # # #",
+                "# . . . . . . . #",
+                "# . . . . . . . #",
+                "# . . . . . . . #",
+                "# # # # # # # # #",
+                "s o # p r n # # m"));
+        c.set("my-ah-layout", Arrays.asList(
+                "# # # # # # # # #",
+                "# . . . . . . . #",
+                "# . . . . . . . #",
+                "# . . . . . . . #",
+                "# # # # # # # # #",
+                "b o # p r n # # i"));
+        AuctionHouse.getPlugin().saveConfig();
+        ahLayout = c.getStringList("ah-layout");
+        myAhLayout = c.getStringList("my-ah-layout");
     }
 
 }

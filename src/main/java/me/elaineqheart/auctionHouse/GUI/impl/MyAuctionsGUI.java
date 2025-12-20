@@ -11,6 +11,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
 import me.elaineqheart.auctionHouse.data.yml.Messages;
 import me.elaineqheart.auctionHouse.data.yml.Permissions;
+import me.elaineqheart.auctionHouse.data.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,10 +32,11 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     private UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private int noteSize;
+    private int screenSize;
 
     @Override
     public void run() {
-        decorateItems(c.currentPlayer);
+        decorate(c.currentPlayer);
     }
 
     public enum MySort{
@@ -64,28 +67,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void decorate(Player player) {
-        fillOutPlaces(new String[]{
-                "# # # # # # # # #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# # # # # # # # #",
-                ". . # # . # # # .",
-        },fillerItem());
-        fillOutBarriers(currentPage, Permissions.getAuctionSlots(player));
-        this.addButton(45,back());
-        this.addButton(46,sortButton(ItemManager.getMySort(currentSort)));
-        this.addButton(49,loading());
-        this.addButton(53,info());
-        decorateItems(player);
-    }
-    private void decorateItems(Player player) {
-        fillOutItems(player.getUniqueId());
-        if(Permissions.getAuctionSlots(player) > 21) {
-            this.addButton(48,previousPage(noteSize));
-            this.addButton(50,nextPage(noteSize));
-        }
-        this.addButton(49,refresh());
+        fillOutPlaces(SettingManager.myAhLayout, player);
         super.decorate(player);
     }
 
@@ -101,7 +83,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 
-    private void fillOutItems(UUID playerID){
+    private void fillOutItems(UUID playerID, List<Integer> itemSlots){
         List<ItemNote> myAuctions = NoteStorage.mySortedDateCreated(playerID);
         List<ItemNote> returnList;
         switch (currentSort){
@@ -116,23 +98,27 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                         .collect(Collectors.toList());
             default -> returnList = myAuctions;
         }
-        noteSize = returnList.size();
-        createButtonsForAuctionItems(returnList, currentPage);
+        createButtonsForAuctionItems(returnList, itemSlots);
     }
 
-    private void createButtonsForAuctionItems(List<ItemNote> myAuctions, int page){
-        int startPage = page*21;
+    private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {
+        noteSize = myAuctions.size();
+        screenSize = itemSlots.size();
+        int start = currentPage * screenSize;
+        int stop = start + screenSize;
+        int end = Math.min(noteSize, stop);
+        myAuctions = myAuctions.subList(start, end);
         int size = myAuctions.size();
-        for(int i = startPage; i < startPage+21; ++i){
-            int j = i%21+10 + i%21/7 + i%21/7;
+        for(int i = 0; i < screenSize; ++i){
+            int j = itemSlots.get(i);
             if(size-1<i) {
-                if (Permissions.getAuctionSlots(c.currentPlayer) <= startPage + i) continue;
+                if (Permissions.getAuctionSlots(c.currentPlayer) <= i) continue;
                 this.addButton(j, new InventoryButton()
                         .creator(player -> null)
                         .consumer(event -> {}));
                 continue;
             }
-            ItemNote note = myAuctions.stream().skip(size-i-1).findFirst().orElse(null);
+            ItemNote note = myAuctions.stream().skip(i).findFirst().orElse(null);
             if(note == null) continue;
             this.addButton(j,auctionItem(note));
         }
@@ -161,22 +147,39 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 });
     }
 
-    private void fillOutPlaces(String[] places, InventoryButton fillerItem){
-        for(int i = 0; i < places.length; i++){
-            for(int j = 0; j < places[i].length(); j+=2){
-                if(places[i].charAt(j)=='#') {
-                    this.addButton(i*9+j/2, fillerItem);
+    private void fillOutPlaces(List<String> places, Player player){
+        List<Integer> itemSlots = new ArrayList<>();
+        for(int i = 0; i < places.size(); i++) {
+            for (int j = 0; j < places.get(i).length(); j += 2) {
+                if (places.get(i).charAt(j) == '.') itemSlots.add(i*9+j/2);
+            }
+        }
+        fillOutItems(player.getUniqueId(), itemSlots);
+        fillOutBarriers(Permissions.getAuctionSlots(player), itemSlots);
+        for(int i = 0; i < places.size(); i++){
+            for(int j = 0; j < places.get(i).length(); j+=2){
+                int slot = i*9+j/2;
+                switch (places.get(i).charAt(j)) {
+                    case '#' -> this.addButton(slot, fillerItem());
+                    case 'b' -> this.addButton(slot, back());
+                    case 'o' -> this.addButton(slot, sortButton(ItemManager.getMySort(currentSort)));
+                    case 'p' -> {
+                        if(Permissions.getAuctionSlots(player) > screenSize) this.addButton(slot, previousPage()); else this.addButton(slot, fillerItem());
+                    }
+                    case 'n' -> {
+                        if(Permissions.getAuctionSlots(player) > screenSize) this.addButton(slot, nextPage()); else this.addButton(slot, fillerItem());
+                    }
+                    case 'r' -> this.addButton(slot, refresh());
+                    case 'i' -> this.addButton(slot, info());
                 }
             }
         }
     }
-    private void fillOutBarriers(int currentPage, int auctions) {
-        int startPage = currentPage*21 + 21;
+    private void fillOutBarriers(int auctions, List<Integer> itemSlots) {
+        int startPage = currentPage*screenSize + screenSize;
         int barriers = startPage - auctions;
         for(int i = 0; i < barriers; i++){
-            int j = 34 - i;
-            int k = (i/7)*2;
-            this.addButton(j-k, barrier());
+            this.addButton(itemSlots.get(screenSize-i-1), barrier());
         }
     }
     private InventoryButton fillerItem(){
@@ -243,58 +246,41 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         return MySort.ACTIVE_AUCTIONS;
     }
 
-    private InventoryButton nextPage(int auctionItemsAmount){
+    private InventoryButton nextPage(){
+        int pages = (noteSize-1)/screenSize;
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
         meta.setLore(Messages.getLoreList("items.next-page.lore",
-                "%page%", String.valueOf(currentPage),
-                "%pages%", String.valueOf(auctionItemsAmount/21)));
+                "%page%", String.valueOf(currentPage+1),
+                "%pages%", String.valueOf(pages+1)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    if(event.isRightClick()){
-                        if(currentPage != auctionItemsAmount/21){
-                            currentPage = auctionItemsAmount/21;
-                            Sounds.click(event);
-                            update();
-                        }
-                    }else {
-                        if(currentPage < auctionItemsAmount/21){
-                            currentPage++;
-                            Sounds.click(event);
-                            update();
-                        }
-                    }
+                    if(currentPage == pages) return;
+                    if(event.isRightClick()) currentPage = pages; else currentPage++;
+                    Sounds.click(event);
+                    update();
                 });
     }
-    private InventoryButton previousPage(int auctionItemsAmount){
+    private InventoryButton previousPage(){
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));
         meta.setLore(Messages.getLoreList("items.previous-page.lore",
-                "%page%", String.valueOf(currentPage),
-                "%pages%", String.valueOf(auctionItemsAmount/21)));
+                "%page%", String.valueOf(currentPage+1),
+                "%pages%", String.valueOf((noteSize-1)/screenSize+1)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    if(event.isRightClick()){
-                        if(currentPage != 0){
-                            currentPage = 0;
-                            Sounds.click(event);
-                            update();
-                        }
-                    }else {
-                        if(currentPage > 0){
-                            currentPage--;
-                            Sounds.click(event);
-                            update();
-                        }
-                    }
+                    if(currentPage == 0) return;
+                    if(event.isRightClick()) currentPage = 0; else currentPage--;
+                    Sounds.click(event);
+                    update();
                 });
     }
 
