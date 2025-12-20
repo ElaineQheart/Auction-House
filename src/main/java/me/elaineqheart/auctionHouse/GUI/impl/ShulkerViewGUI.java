@@ -10,6 +10,7 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 public class ShulkerViewGUI extends InventoryGUI {
@@ -28,14 +29,14 @@ public class ShulkerViewGUI extends InventoryGUI {
         Player p = (Player) event.getPlayer();
         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Sounds.closeShulker(event);
-            if(c.isAuctionView) {
-                c.isAuctionView = false;
-                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), p);
-            } else if(c.myCurrentSort!=null) {
-                AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c.myCurrentPage, c.myCurrentSort, c), p);
-                c.myCurrentSort = null;
-            } else {
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
+            switch (c.view) {
+                case MY_AUCTIONS -> AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), c.currentPlayer);
+                case AUCTION_HOUSE -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
+                case CANCEL_AUCTION -> AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.currentPlayer);
+                case COLLECT_SOLD_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), c.currentPlayer);
+                case COLLECT_EXPIRED_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), c.currentPlayer);
+                case CONFIRM_BUY, AUCTION_VIEW -> AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), c.currentPlayer);
+                case ADMIN_CONFIRM, ADMIN_MANAGE_ITEMS -> AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.currentPlayer);
             }
         },0);
     }

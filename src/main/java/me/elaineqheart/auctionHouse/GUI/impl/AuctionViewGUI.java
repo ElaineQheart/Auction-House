@@ -36,6 +36,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         super();
         this.note = note;
         c = configuration;
+        c.view = AhConfiguration.View.AUCTION_VIEW;
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -95,7 +96,6 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
                         Sounds.openShulker(event);
-                        c.isAuctionView = true;
                         AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c), c.currentPlayer);
                     }
                 });

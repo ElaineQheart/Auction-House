@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 
 public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
-    private int currentPage;
-    private MySort currentSort;
     private UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private int noteSize;
@@ -45,18 +43,12 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         EXPIRED_ITEMS,
         ACTIVE_AUCTIONS
     }
-    public MyAuctionsGUI(int page, MySort sort, AhConfiguration configuration) {
-        super();
-        this.currentPage = page;
-        currentSort = sort;
-        c = configuration;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
-    }
+
     public MyAuctionsGUI(AhConfiguration configuration) {
         super();
-        this.currentPage = 0;
-        currentSort = MySort.ALL_AUCTIONS;
         c = configuration;
+        c.view = AhConfiguration.View.MY_AUCTIONS;
+        if(c.myCurrentSort == null) c.myCurrentSort = MySort.ALL_AUCTIONS;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 
@@ -86,7 +78,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     private void fillOutItems(UUID playerID, List<Integer> itemSlots){
         List<ItemNote> myAuctions = NoteStorage.mySortedDateCreated(playerID);
         List<ItemNote> returnList;
-        switch (currentSort){
+        switch (c.myCurrentSort){
             case SOLD_ITEMS -> returnList = myAuctions.stream()
                         .filter(ItemNote::isSold)
                         .collect(Collectors.toList());
@@ -104,7 +96,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {
         noteSize = myAuctions.size();
         screenSize = itemSlots.size();
-        int start = currentPage * screenSize;
+        int start = c.myCurrentPage * screenSize;
         int stop = start + screenSize;
         int end = Math.min(noteSize, stop);
         myAuctions = myAuctions.subList(start, end);
@@ -131,18 +123,16 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
                         Sounds.openShulker(event);
-                        c.myCurrentSort = currentSort;
-                        c.myCurrentPage = currentPage;
                         AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c), c.currentPlayer);
                         return;
                     }
                     Sounds.click(event);
                     if(note.isSold()) {
-                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note,currentSort, c), c.currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), c.currentPlayer);
                     } else if (note.isExpired()) {
-                        AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note,currentSort, c), c.currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), c.currentPlayer);
                     } else {
-                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note,currentSort, c), c.currentPlayer);
+                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.currentPlayer);
                     }
                 });
     }
@@ -162,7 +152,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 switch (places.get(i).charAt(j)) {
                     case '#' -> this.addButton(slot, fillerItem());
                     case 'b' -> this.addButton(slot, back());
-                    case 'o' -> this.addButton(slot, sortButton(ItemManager.getMySort(currentSort)));
+                    case 'o' -> this.addButton(slot, sortButton(ItemManager.getMySort(c.myCurrentSort)));
                     case 'p' -> {
                         if(Permissions.getAuctionSlots(player) > screenSize) this.addButton(slot, previousPage()); else this.addButton(slot, fillerItem());
                     }
@@ -176,7 +166,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         }
     }
     private void fillOutBarriers(int auctions, List<Integer> itemSlots) {
-        int startPage = currentPage*screenSize + screenSize;
+        int startPage = c.myCurrentPage*screenSize + screenSize;
         int barriers = startPage - auctions;
         for(int i = 0; i < barriers; i++){
             this.addButton(itemSlots.get(screenSize-i-1), barrier());
@@ -200,7 +190,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.refresh)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(currentPage,currentSort,c), c.currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), c.currentPlayer);
                 });
     }
     private InventoryButton loading(){
@@ -213,9 +203,9 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> item)
                 .consumer(event -> {
                     Sounds.click(event);
-                    if(event.isRightClick()) currentSort = previousSort(currentSort);
-                    else currentSort = nextSort(currentSort);
-                    currentPage = 0;
+                    if(event.isRightClick()) c.myCurrentSort = previousSort(c.myCurrentSort);
+                    else c.myCurrentSort = nextSort(c.myCurrentSort);
+                    c.myCurrentPage = 0;
                     update();
                 });
     }
@@ -253,14 +243,14 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
         meta.setLore(Messages.getLoreList("items.next-page.lore",
-                "%page%", String.valueOf(currentPage+1),
+                "%page%", String.valueOf(c.myCurrentPage+1),
                 "%pages%", String.valueOf(pages+1)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    if(currentPage == pages) return;
-                    if(event.isRightClick()) currentPage = pages; else currentPage++;
+                    if(c.myCurrentPage == pages) return;
+                    if(event.isRightClick()) c.myCurrentPage = pages; else c.myCurrentPage++;
                     Sounds.click(event);
                     update();
                 });
@@ -271,14 +261,14 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));
         meta.setLore(Messages.getLoreList("items.previous-page.lore",
-                "%page%", String.valueOf(currentPage+1),
+                "%page%", String.valueOf(c.myCurrentPage+1),
                 "%pages%", String.valueOf((noteSize-1)/screenSize+1)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    if(currentPage == 0) return;
-                    if(event.isRightClick()) currentPage = 0; else currentPage--;
+                    if(c.myCurrentPage == 0) return;
+                    if(event.isRightClick()) c.myCurrentPage = 0; else c.myCurrentPage--;
                     Sounds.click(event);
                     update();
                 });

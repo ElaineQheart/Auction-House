@@ -44,16 +44,19 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     public AuctionHouseGUI(int page, Sort sort, String search, Player p, boolean isAdmin) {
         super();
         this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
+        c.view = AhConfiguration.View.AUCTION_HOUSE;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
     public AuctionHouseGUI(Player p) {
         super();
         this.c = new AhConfiguration(0, Sort.HIGHEST_PRICE, "", p ,false);
+        c.view = AhConfiguration.View.AUCTION_HOUSE;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
     public AuctionHouseGUI(AhConfiguration configuration) {
         super();
         this.c = configuration;
+        c.view = AhConfiguration.View.AUCTION_HOUSE;
         TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 

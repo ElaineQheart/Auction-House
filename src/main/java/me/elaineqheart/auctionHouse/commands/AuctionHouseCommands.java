@@ -154,9 +154,9 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 Sounds.click(p);
                 AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
                 if(!note.isSold()) {
-                    AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS, configuration), p);
+                    AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, configuration), p);
                 } else {
-                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, MyAuctionsGUI.MySort.ALL_AUCTIONS, configuration), p);
+                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, configuration), p);
                 }
             }
             // /ah admin

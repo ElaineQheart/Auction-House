@@ -11,7 +11,7 @@ public class AhConfiguration {
     public String currentSearch;
     public Player currentPlayer;
     public final boolean isAdmin;
-    public boolean isAuctionView;
+    public View view;
     public MyAuctionsGUI.MySort myCurrentSort;
     public int myCurrentPage;
 
@@ -21,6 +21,18 @@ public class AhConfiguration {
         this.currentSearch = currentSearch;
         this.currentPlayer = currentPlayer;
         this.isAdmin = isAdmin;
+    }
+
+    public enum View {
+        ADMIN_CONFIRM,
+        ADMIN_MANAGE_ITEMS,
+        AUCTION_HOUSE,
+        AUCTION_VIEW,
+        CANCEL_AUCTION,
+        COLLECT_EXPIRED_ITEM,
+        COLLECT_SOLD_ITEM,
+        CONFIRM_BUY,
+        MY_AUCTIONS
     }
 
 }

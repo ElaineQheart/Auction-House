@@ -32,6 +32,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         super();
         this.note = note;
         c = configuration;
+        c.view = AhConfiguration.View.ADMIN_MANAGE_ITEMS;
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
     }
 

@@ -25,17 +25,16 @@ public class CollectSoldItemGUI extends InventoryGUI {
 
     private final ItemNote note;
     private final ItemStack item;
-    private final MyAuctionsGUI.MySort currentSort;
     private final AhConfiguration c;
     private final double price;
 
-    public CollectSoldItemGUI(ItemNote note, MyAuctionsGUI.MySort sort,  AhConfiguration configuration) {
+    public CollectSoldItemGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
-        this.currentSort = sort;
         price = note.getSoldPrice();
         item =  ItemManager.createCollectingItemFromNote(note, configuration.currentPlayer);
         c = configuration;
+        c.view = AhConfiguration.View.COLLECT_SOLD_ITEM;
     }
 
     @Override
@@ -85,7 +84,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -96,7 +95,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                     if(!NoteStorage.r()) {
                         collect(p, note.getNoteID().toString(), item.getAmount(), price);
                         Sounds.experience(event);
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0, currentSort, c), p);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                         p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
                                 "%price%", StringUtils.formatPrice(getProfit(price)),
                                 "%amount%", String.valueOf(item.getAmount())));

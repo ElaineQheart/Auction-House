@@ -18,13 +18,12 @@ import java.io.IOException;
 public class CollectExpiredItemGUI extends InventoryGUI {
 
     private final ItemNote note;
-    private final MyAuctionsGUI.MySort currentSort;
     private final AhConfiguration c;
-    public CollectExpiredItemGUI(ItemNote note, MyAuctionsGUI.MySort sort,  AhConfiguration configuration) {
+    public CollectExpiredItemGUI(ItemNote note, AhConfiguration configuration) {
         super();
         this.note = note;
-        this.currentSort = sort;
         c = configuration;
+        c.view = AhConfiguration.View.COLLECT_EXPIRED_ITEM;
     }
 
     @Override
@@ -74,7 +73,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0,currentSort,c), p);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -102,7 +101,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                     } else {
                         p.getInventory().addItem(note.getItem());
                         NoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(0, currentSort, c), p);
+                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                     }
 
                     try {
