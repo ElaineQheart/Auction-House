@@ -1,7 +1,10 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
 
@@ -10,7 +13,6 @@ public class SettingManager {
     public static double taxRate;
     public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
-    public static String fillerItem;
     public static DecimalFormat formatter;
     public static String formatTimeCharacters;
     public static int defaultMaxAuctions;
@@ -31,11 +33,11 @@ public class SettingManager {
     }
 
     public static void loadData() {
+        AuctionHouse.getPlugin().reloadConfig();
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
         taxRate = c.getDouble("tax", 0.01);
         auctionDuration = c.getLong("auction-duration", 60*60*48);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
-        fillerItem = c.getString("filler-item", "BLACK_STAINED_GLASS_PANE");
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
         formatter = new DecimalFormat(Messages.getFormatted("placeholders.format-numbers"));
@@ -82,6 +84,16 @@ public class SettingManager {
         if(c.get("format-time-characters") != null) {
             messageFile.set("placeholders.format-time-characters", c.getString("format-time-characters"));
             c.set("format-time-characters", null);
+            reload = true;
+        }
+        if (!c.getString("filler-item", "BLACK_STAINED_GLASS_PANE").isEmpty()) {
+            Material material = Material.matchMaterial(c.getString("filler-item", "BLACK_STAINED_GLASS_PANE"));
+            assert material != null;
+            ItemStack fillerItem = new ItemStack(material);
+            ConfigManager.layout.get().set("filler-item", fillerItem);
+            ConfigManager.layout.save();
+            ConfigManager.layout.reload();
+            c.set("filler-item", null);
             reload = true;
         }
         if(reload) {

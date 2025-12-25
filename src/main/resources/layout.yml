@@ -12,3 +12,159 @@ my-ah-layout:
   - '# . . . . . . . #'
   - '# # # # # # # # #'
   - 'b o # p r n # # i'
+filler-item:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:black_stained_glass_pane
+  count: 1
+  schema_version: 1
+locked-slot:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:barrier
+  count: 1
+  schema_version: 1
+refresh:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:nether_star
+  count: 1
+  schema_version: 1
+back-to-main-menu:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+back-to-my-auctions:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+info:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:paper
+  count: 1
+  schema_version: 1
+my-auctions:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:ender_chest
+  count: 1
+  schema_version: 1
+sort:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:hopper
+  count: 1
+  schema_version: 1
+my-sort:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:hopper
+  count: 1
+  schema_version: 1
+anvil-search-paper:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:paper
+  count: 1
+  schema_version: 1
+cancel:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:red_banner
+  count: 1
+  schema_version: 1
+collect-expired-item:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:red_dye
+  count: 1
+  schema_version: 1
+cancel-auction:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:red_concrete
+  count: 1
+  schema_version: 1
+command-block-info:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:structure_block
+  count: 1
+  schema_version: 1
+admin-cancel-auction:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:red_concrete
+  count: 1
+  schema_version: 1
+admin-expire-auction:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:red_dye
+  count: 1
+  schema_version: 1
+confirm:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:green_banner
+  count: 1
+  schema_version: 1
+choose-item-buy-amount:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:spruce_hanging_sign
+  count: 1
+  schema_version: 1
+loading:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:nether_star
+  count: 1
+  schema_version: 1
+dirt:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:dirt
+  count: 1
+  schema_version: 1
+turtle-scute-confirm:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:turtle_scute
+  count: 1
+  schema_version: 1
+armadillo-scute-cancel:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:armadillo_scute
+  count: 1
+  schema_version: 1
+collect-sold-item:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:diamond
+  count: 1
+  schema_version: 1
+next-page:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+previous-page:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+search:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:oak_sign
+  count: 1
+  schema_version: 1

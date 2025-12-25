@@ -436,5 +436,6 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         SettingManager.loadData();
         UpdateDisplay.reload();
         Messages.reload();
+        Layout.reload();
     }
 }

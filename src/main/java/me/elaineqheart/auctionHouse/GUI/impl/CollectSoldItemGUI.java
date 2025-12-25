@@ -32,7 +32,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
         super();
         this.note = note;
         price = note.getSoldPrice();
-        item =  ItemManager.createCollectingItemFromNote(note, configuration.currentPlayer);
+        item =  ItemManager.createCollectingItemFromNote(note);
         c = configuration;
         c.view = AhConfiguration.View.COLLECT_SOLD_ITEM;
     }

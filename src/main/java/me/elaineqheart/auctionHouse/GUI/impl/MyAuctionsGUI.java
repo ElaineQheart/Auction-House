@@ -13,7 +13,6 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Permissions;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -238,7 +237,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     private InventoryButton nextPage(){
         int pages = (noteSize-1)/screenSize;
-        ItemStack item = new ItemStack(Material.ARROW);
+        ItemStack item = Layout.getItem("next-page");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
@@ -256,7 +255,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 });
     }
     private InventoryButton previousPage(){
-        ItemStack item = new ItemStack(Material.ARROW);
+        ItemStack item = Layout.getItem("previous-page");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));

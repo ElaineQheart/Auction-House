@@ -1,12 +1,13 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
-import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
+import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Layout {
 
@@ -44,12 +45,17 @@ public class Layout {
         myAhLayout = l.getStringList("my-ah-layout");
     }
 
-    public static void getItem(String path) {
-
+    public static ItemStack getItem(String path) {
+        return Objects.requireNonNull(ConfigManager.layout.get().getItemStack(path)).clone();
     }
 
     public static void saveItem(ItemStack item) {
-        ConfigManager.layout.get().set("test", item.serialize());
+        ConfigManager.layout.get().set("test", item);
         ConfigManager.layout.save();
+    }
+
+    public static void reload() {
+        loadData();
+        ItemManager.reload();
     }
 }

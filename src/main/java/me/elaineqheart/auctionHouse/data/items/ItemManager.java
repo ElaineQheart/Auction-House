@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Permissions;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
@@ -22,34 +23,66 @@ import java.util.Objects;
 
 public class ItemManager {
 
-    public final static ItemStack fillerItem = createFillerItem();
-    public final static ItemStack lockedSlot = createLockedSlot();
-    public final static ItemStack refresh = createRefresh();
-    public final static ItemStack backToMainMenu = createBackToMainMenu();
-    public final static ItemStack backToMyAuctions = createBackToMyAuctions();
-    public final static ItemStack info = createInfo();
-    public final static ItemStack myAuction = createMyAuction();
-    public final static ItemStack sortHighestPrice = createSortHighestPrice();
-    public final static ItemStack sortLowestPrice = createSortLowestPrice();
-    public final static ItemStack sortEndingSoon = createSortEndingSoon();
-    public final static ItemStack sortAlphabetical = createSortAlphabetical();
-    public final static ItemStack mySortAllAuctions = createMySortAllAuctions();
-    public final static ItemStack mySortSoldItems = createMySortSoldItems();
-    public final static ItemStack mySortExpiredItems = createMySortExpiredItems();
-    public final static ItemStack mySortActiveAuctions =createMySortActiveAuctions();
-    public final static ItemStack emptyPaper = createEmptyPaper();
-    public final static ItemStack cancel = createCancel();
-    public final static ItemStack collectExpiredItem = createCollectExpiredItem();
-    public final static ItemStack cancelAuction = createCancelAuction();
-    public final static ItemStack commandBlockInfo = createCommandBlockInfo();
-    public final static ItemStack adminCancelAuction = createAdminCancelAuction();
-    public final static ItemStack adminExpireAuction = createAdminExpireAuction();
-    public final static ItemStack confirm = createConfirmItem();
-    public final static ItemStack chooseItemBuyAmount = createChooseItemBuyAmount();
-    public final static ItemStack loading = createLoadingItem();
+    public static ItemStack fillerItem;
+    public static ItemStack lockedSlot;
+    public static ItemStack refresh;
+    public static ItemStack backToMainMenu;
+    public static ItemStack backToMyAuctions;
+    public static ItemStack info;
+    public static ItemStack myAuction;
+    public static ItemStack sortHighestPrice;
+    public static ItemStack sortLowestPrice;
+    public static ItemStack sortEndingSoon;
+    public static ItemStack sortAlphabetical;
+    public static ItemStack mySortAllAuctions;
+    public static ItemStack mySortSoldItems;
+    public static ItemStack mySortExpiredItems;
+    public static ItemStack mySortActiveAuctions;
+    public static ItemStack emptyPaper;
+    public static ItemStack cancel;
+    public static ItemStack collectExpiredItem;
+    public static ItemStack cancelAuction;
+    public static ItemStack commandBlockInfo;
+    public static ItemStack adminCancelAuction;
+    public static ItemStack adminExpireAuction;
+    public static ItemStack confirm;
+    public static ItemStack chooseItemBuyAmount;
+    public static ItemStack loading;
+
+    static {
+        reload();
+    }
+
+    public static void reload() {
+        fillerItem = createFillerItem();
+        lockedSlot = createLockedSlot();
+        refresh = createRefresh();
+        backToMainMenu = createBackToMainMenu();
+        backToMyAuctions = createBackToMyAuctions();
+        info = createInfo();
+        myAuction = createMyAuction();
+        sortHighestPrice = createSortHighestPrice();
+        sortLowestPrice = createSortLowestPrice();
+        sortEndingSoon = createSortEndingSoon();
+        sortAlphabetical = createSortAlphabetical();
+        mySortAllAuctions = createMySortAllAuctions();
+        mySortSoldItems = createMySortSoldItems();
+        mySortExpiredItems = createMySortExpiredItems();
+        mySortActiveAuctions =createMySortActiveAuctions();
+        emptyPaper = createEmptyPaper();
+        cancel = createCancel();
+        collectExpiredItem = createCollectExpiredItem();
+        cancelAuction = createCancelAuction();
+        commandBlockInfo = createCommandBlockInfo();
+        adminCancelAuction = createAdminCancelAuction();
+        adminExpireAuction = createAdminExpireAuction();
+        confirm = createConfirmItem();
+        chooseItemBuyAmount = createChooseItemBuyAmount();
+        loading = createLoadingItem();
+    }
 
     private static ItemStack createFillerItem(){
-        ItemStack item = new ItemStack(Material.matchMaterial(SettingManager.fillerItem));
+        ItemStack item = Layout.getItem("filler-item");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setHideTooltip(true);
@@ -57,7 +90,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createLockedSlot(){
-        ItemStack item = new ItemStack(Material.BARRIER);
+        ItemStack item = Layout.getItem("locked-slot");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.locked-slot.name"));
@@ -65,7 +98,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createRefresh(){
-        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemStack item = Layout.getItem("refresh");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.refresh.name"));
@@ -74,7 +107,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createBackToMainMenu(){
-        ItemStack item = new ItemStack(Material.ARROW);
+        ItemStack item = Layout.getItem("back-to-main-menu");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.back-main-menu.name"));
@@ -83,7 +116,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createBackToMyAuctions(){
-        ItemStack item = new ItemStack(Material.ARROW);
+        ItemStack item = Layout.getItem("back-to-my-auctions");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.back-my-auctions.name"));
@@ -92,7 +125,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createInfo(){
-        ItemStack item = new ItemStack(Material.PAPER);
+        ItemStack item = Layout.getItem("info");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.info.name"));
@@ -103,7 +136,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createMyAuction(){
-        ItemStack item = new ItemStack(Material.ENDER_CHEST);
+        ItemStack item = Layout.getItem("my-auctions");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-auctions.name"));
@@ -112,7 +145,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createSortHighestPrice(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-highest-price.name"));
@@ -121,7 +154,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createSortLowestPrice(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-lowest-price.name"));
@@ -130,7 +163,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createSortEndingSoon(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-ending-soon.name"));
@@ -139,7 +172,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createSortAlphabetical(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.sort-alphabetical.name"));
@@ -160,7 +193,7 @@ public class ItemManager {
         return mySortActiveAuctions;
     }
     private static ItemStack createMySortAllAuctions(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("my-sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-all.name"));
@@ -169,7 +202,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createMySortSoldItems(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("my-sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-sold.name"));
@@ -178,7 +211,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createMySortExpiredItems(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("my-sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-expired.name"));
@@ -187,7 +220,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createMySortActiveAuctions(){
-        ItemStack item = new ItemStack(Material.HOPPER);
+        ItemStack item = Layout.getItem("my-sort");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.my-sort-active.name"));
@@ -196,7 +229,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createEmptyPaper() {
-        ItemStack item = new ItemStack(Material.PAPER);
+        ItemStack item = Layout.getItem("anvil-search-paper");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GRAY + "");
@@ -205,7 +238,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createCancel() {
-        ItemStack item = new ItemStack(Material.RED_BANNER);
+        ItemStack item = Layout.getItem("cancel");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.cancel.name"));
@@ -213,7 +246,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createCollectExpiredItem() {
-        ItemStack item = new ItemStack(Material.RED_DYE);
+        ItemStack item = Layout.getItem("collect-expired-item");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.collect-expired.name"));
@@ -222,7 +255,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createCancelAuction() {
-        ItemStack item = new ItemStack(Material.RED_CONCRETE);
+        ItemStack item = Layout.getItem("cancel-auction");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.cancel-auction.name"));
@@ -231,7 +264,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createCommandBlockInfo() {
-        ItemStack item = new ItemStack(Material.STRUCTURE_BLOCK);
+        ItemStack item = Layout.getItem("command-block-info");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-info.name"));
@@ -240,7 +273,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createAdminCancelAuction() {
-        ItemStack item = new ItemStack(Material.RED_CONCRETE);
+        ItemStack item = Layout.getItem("admin-cancel-auction");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-cancel-auction.name"));
@@ -249,7 +282,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createAdminExpireAuction() {
-        ItemStack item = new ItemStack(Material.RED_DYE);
+        ItemStack item = Layout.getItem("admin-expire-auction");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.admin-expire-auction.name"));
@@ -258,7 +291,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createConfirmItem() {
-        ItemStack item = new ItemStack(Material.GREEN_BANNER);
+        ItemStack item = Layout.getItem("confirm");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.confirm.name"));
@@ -266,7 +299,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createChooseItemBuyAmount() {
-        ItemStack item = new ItemStack(Material.SPRUCE_HANGING_SIGN);
+        ItemStack item = Layout.getItem("choose-item-buy-amount");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.choose-item-buy-amount.name"));
@@ -275,7 +308,7 @@ public class ItemManager {
         return item;
     }
     private static ItemStack createLoadingItem() {
-        ItemStack item = new ItemStack(Material.NETHER_STAR);
+        ItemStack item = Layout.getItem("loading");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.loading.name"));
@@ -284,7 +317,7 @@ public class ItemManager {
     }
 
     public static ItemStack createDirt() {
-        ItemStack item = new ItemStack(Material.DIRT);
+        ItemStack item = Layout.getItem("dirt");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.deleted.name"));
@@ -346,7 +379,7 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createCollectingItemFromNote(ItemNote note, Player p) {
+    public static ItemStack createCollectingItemFromNote(ItemNote note) {
         ItemStack item = note.getItem();
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -403,7 +436,7 @@ public class ItemManager {
         return item;
     }
     public static ItemStack createTurtleScute(String price) {
-        ItemStack item = new ItemStack(Material.TURTLE_SCUTE);
+        ItemStack item = Layout.getItem("turtle-scute-confirm");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.buy-item.name"));
@@ -413,7 +446,7 @@ public class ItemManager {
         return item;
     }
     public static ItemStack createArmadilloScute(String price) {
-        ItemStack item = new ItemStack(Material.ARMADILLO_SCUTE);
+        ItemStack item = Layout.getItem("armadillo-scute-cancel");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.not-enough-money.name"));
@@ -423,7 +456,7 @@ public class ItemManager {
         return item;
     }
     public static ItemStack createConfirm(String price) {
-        ItemStack item = new ItemStack(Material.GREEN_BANNER);
+        ItemStack item = Layout.getItem("confirm");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.confirm-buy.name"));
@@ -433,7 +466,7 @@ public class ItemManager {
         return item;
     }
     public static ItemStack collectSoldItem(String price) {
-        ItemStack item = new ItemStack(Material.DIAMOND);
+        ItemStack item = Layout.getItem("collect-sold-item");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.collect-sold.name"));
