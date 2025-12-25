@@ -1,7 +1,9 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
+import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,5 +46,10 @@ public class Layout {
 
     public static void getItem(String path) {
 
+    }
+
+    public static void saveItem(ItemStack item) {
+        ConfigManager.layout.get().set("test", item.serialize());
+        ConfigManager.layout.save();
     }
 }

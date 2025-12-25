@@ -315,6 +315,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     }
                     p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%", strings[3]));
                     return true;
+                } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.test"))
+                        && strings[1].equals(Messages.getFormatted("commands.save-item-to-layout-file"))) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.item-saved-to-layout-file"));
+                    Layout.saveItem(p.getInventory().getItemInMainHand());
+                    return true;
                 }
             }
 
@@ -339,6 +344,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 assetParams.add(Messages.getFormatted("commands.reload"));
                 assetParams.add(Messages.getFormatted("commands.summon"));
                 assetParams.add(Messages.getFormatted("commands.blacklist"));
+                assetParams.add(Messages.getFormatted("commands.test"));
             }
             for (String p : assetParams) {
                 if (p.indexOf(strings[0]) == 0){
@@ -404,6 +410,13 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     Messages.getFormatted("commands.south"), Messages.getFormatted("commands.west")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[3]) == 0) {
+                    params.add(p);
+                }
+            }
+        } else if (strings.length == 2 && strings[0].equals(Messages.getFormatted("commands.test"))) {
+            List<String> summonTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.save-item-to-layout-file")}));
+            for (String p : summonTypes) {
+                if (p.indexOf(strings[1]) == 0) {
                     params.add(p);
                 }
             }

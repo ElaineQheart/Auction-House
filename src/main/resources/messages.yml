@@ -326,6 +326,8 @@ commands:
   material: "material"
   name_contains: "name_contains"
   contains_lore: "contains_lore"
+  test: "test"
+  save-item-to-layout-file: "saveitemtolayout.yml"
 
 command-feedback:
   usage: "§eUsage: /ah sell <price> <amount>"
@@ -365,6 +367,7 @@ command-feedback:
   blacklist-success: "Successfully added the properties of %item% to the blacklist"
   blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
   item-blacklisted: "§cYou cannot auction this item!"
+  item-saved-to-layout-file: "Item from main hand saved in layout.yml under \"test:\""
 
 placeholders:
   number: "§6%input%§r"
