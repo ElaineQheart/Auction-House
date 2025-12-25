@@ -4,8 +4,8 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.*;
@@ -241,9 +241,9 @@ public class UpdateDisplay implements Runnable{
 
     public static ItemNote getNote(String type, int rank) {
         if(type.equals("highest_price")) {
-            return NoteStorage.getSortedList(NoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
+            return ItemNoteStorage.getSortedList(ItemNoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
         } else if (type.equals("ending_soon")) {
-            return NoteStorage.getSortedList(NoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
+            return ItemNoteStorage.getSortedList(ItemNoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
         }
         return null;
     }

@@ -8,10 +8,10 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Permissions;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,7 +59,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void decorate(Player player) {
-        fillOutPlaces(SettingManager.myAhLayout, player);
+        fillOutPlaces(Layout.myAhLayout, player);
         super.decorate(player);
     }
 
@@ -76,7 +76,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private void fillOutItems(UUID playerID, List<Integer> itemSlots){
-        List<ItemNote> myAuctions = NoteStorage.mySortedDateCreated(playerID);
+        List<ItemNote> myAuctions = ItemNoteStorage.mySortedDateCreated(playerID);
         List<ItemNote> returnList;
         switch (c.myCurrentSort){
             case SOLD_ITEMS -> returnList = myAuctions.stream()

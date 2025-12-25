@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

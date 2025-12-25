@@ -9,9 +9,9 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,7 +20,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
@@ -67,7 +70,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void decorate(Player player) {
-        fillOutPlaces(SettingManager.ahLayout);
+        fillOutPlaces(Layout.ahLayout);
         super.decorate(player);
     }
 
@@ -85,15 +88,15 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     private void fillOutItems(Sort sort, List<Integer> itemSlots){
         switch (sort){
-            case HIGHEST_PRICE -> createButtonsForAuctionItems(NoteStorage.SortMode.PRICE_DESC, itemSlots);
-            case LOWEST_PRICE -> createButtonsForAuctionItems(NoteStorage.SortMode.PRICE_ASC, itemSlots);
-            case ENDING_SOON -> createButtonsForAuctionItems(NoteStorage.SortMode.DATE, itemSlots);
-            case ALPHABETICAL -> createButtonsForAuctionItems(NoteStorage.SortMode.NAME, itemSlots);
+            case HIGHEST_PRICE -> createButtonsForAuctionItems(ItemNoteStorage.SortMode.PRICE_DESC, itemSlots);
+            case LOWEST_PRICE -> createButtonsForAuctionItems(ItemNoteStorage.SortMode.PRICE_ASC, itemSlots);
+            case ENDING_SOON -> createButtonsForAuctionItems(ItemNoteStorage.SortMode.DATE, itemSlots);
+            case ALPHABETICAL -> createButtonsForAuctionItems(ItemNoteStorage.SortMode.NAME, itemSlots);
         }
     }
 
-    private void createButtonsForAuctionItems(NoteStorage.SortMode mode, List<Integer> itemSlots){
-        List<ItemNote> auctions = NoteStorage.getSortedList(mode, c.currentSearch);
+    private void createButtonsForAuctionItems(ItemNoteStorage.SortMode mode, List<Integer> itemSlots){
+        List<ItemNote> auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch);
         noteSize = auctions.size();
         screenSize = itemSlots.size();
         int start = c.currentPage * screenSize;

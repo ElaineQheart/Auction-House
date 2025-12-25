@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
+package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

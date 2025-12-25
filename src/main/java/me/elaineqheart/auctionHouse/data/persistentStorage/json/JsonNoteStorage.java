@@ -3,7 +3,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.json;
 import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -138,7 +138,7 @@ public class JsonNoteStorage {
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
-    public static List<ItemNote> getSortedList(NoteStorage.SortMode mode, String search){
+    public static List<ItemNote> getSortedList(ItemNoteStorage.SortMode mode, String search){
         Set<ItemNote> set = new HashSet<>();
         switch (mode) {
             case DATE -> set = sortedDateCreated.keySet();

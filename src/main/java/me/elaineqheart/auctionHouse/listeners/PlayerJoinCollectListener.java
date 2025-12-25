@@ -4,7 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ public class PlayerJoinCollectListener implements Listener {
         if(!SettingManager.autoCollect) return;
         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Player p = event.getPlayer();
-            for(ItemNote note : NoteStorage.mySortedDateCreated(p.getUniqueId())) {
+            for(ItemNote note : ItemNoteStorage.mySortedDateCreated(p.getUniqueId())) {
                 if (!note.isSold()) continue;
                 int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
                 CollectSoldItemGUI.collect(p, note.getNoteID().toString(), amount, note.getSoldPrice());

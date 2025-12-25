@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.redis;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -91,7 +91,7 @@ public class RedisNoteStorage {
 
 
 
-    public static List<ItemNote> getNotes(NoteStorage.SortMode mode, int start, int stop, String search) {
+    public static List<ItemNote> getNotes(ItemNoteStorage.SortMode mode, int start, int stop, String search) {
         List<ItemNote> notes = new ArrayList<>();
 
         while (notes.size() < stop) {
@@ -118,7 +118,7 @@ public class RedisNoteStorage {
         return notes;
     }
 
-    private static List<String> notes(NoteStorage.SortMode mode, int start, int stop) {
+    private static List<String> notes(ItemNoteStorage.SortMode mode, int start, int stop) {
         final int MAX_RETRIES = 3;
         final long RETRY_DELAY_MS = 200;
 

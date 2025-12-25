@@ -7,7 +7,7 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -96,16 +96,16 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                             p.sendMessage(Messages.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.getInventory().addItem(note.getItem());
                         }
-                        NoteStorage.deleteNote(note);
+                        ItemNoteStorage.deleteNote(note);
                         p.closeInventory();
                     } else {
                         p.getInventory().addItem(note.getItem());
-                        NoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
+                        ItemNoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                     }
 
                     try {
-                        NoteStorage.saveNotes();
+                        ItemNoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

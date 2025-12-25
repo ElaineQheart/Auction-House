@@ -4,9 +4,9 @@ import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
@@ -64,7 +64,7 @@ public final class AuctionHouse extends JavaPlugin {
         if(SettingManager.useRedis) RedisManager.connect();
 
         try {
-            NoteStorage.loadNotes();
+            ItemNoteStorage.loadNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -106,7 +106,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if(!NoteStorage.r()) {
+                    if(!ItemNoteStorage.r()) {
                         //ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
                         if (!note.isOnAuction()) {
                             p.sendMessage(Messages.getFormatted("chat.already-sold2"));
@@ -116,7 +116,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.experience(event);
                         Sounds.breakWood(event);
                         p.getInventory().addItem(note.getItem());
-                        NoteStorage.deleteNote(note);
+                        ItemNoteStorage.deleteNote(note);
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                         p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                     } else {

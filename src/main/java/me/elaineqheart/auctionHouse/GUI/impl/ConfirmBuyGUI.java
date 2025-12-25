@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
@@ -89,8 +89,8 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     }
                     String itemName = note.getItemName();
 
-                    if(!NoteStorage.r()) {
-                        ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if(!ItemNoteStorage.r()) {
+                        ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
                         if (test == null) {
                             p.sendMessage(Messages.getFormatted("chat.non-existent2"));
                             Sounds.villagerDeny(event);
@@ -111,17 +111,17 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         eco.withdrawPlayer(p, price);
                         Sounds.experience(event);
                         p.getInventory().addItem(item);
-                        NoteStorage.setSold(note, true);
-                        NoteStorage.setBuyerName(note, p.getName());
+                        ItemNoteStorage.setSold(note, true);
+                        ItemNoteStorage.setBuyerName(note, p.getName());
                         if (price != note.getPrice()) {
                             if (note.getPartiallySoldAmountLeft() == 0) {
-                                NoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
+                                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
                             } else {
-                                NoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
+                                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
                             }
                         }
                         try {
-                            NoteStorage.saveNotes();
+                            ItemNoteStorage.saveNotes();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

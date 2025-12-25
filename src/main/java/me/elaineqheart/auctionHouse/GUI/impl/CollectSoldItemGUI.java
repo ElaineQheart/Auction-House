@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.vault.VaultHook;
@@ -92,7 +92,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    if(!NoteStorage.r()) {
+                    if(!ItemNoteStorage.r()) {
                         collect(p, note.getNoteID().toString(), item.getAmount(), price);
                         Sounds.experience(event);
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
@@ -108,22 +108,22 @@ public class CollectSoldItemGUI extends InventoryGUI {
     public static void collect(OfflinePlayer p, String noteID, int itemAmount, double price) {
         Economy eco = VaultHook.getEconomy();
         eco.depositPlayer(p, getProfit(price));
-        ItemNote note = NoteStorage.getNote(noteID);
+        ItemNote note = ItemNoteStorage.getNote(noteID);
         if (note.getPartiallySoldAmountLeft() != 0) {
-            NoteStorage.setPrice(note, note.getPrice() - price);
+            ItemNoteStorage.setPrice(note, note.getPrice() - price);
             ItemStack temp = note.getItem().clone();
             temp.setAmount(note.getItem().getAmount() - itemAmount);
-            NoteStorage.setItem(note, temp);
+            ItemNoteStorage.setItem(note, temp);
             if (note.getPartiallySoldAmountLeft() == note.getItem().getAmount()) {
-                NoteStorage.setPartiallySoldAmountLeft(note, 0);
-                NoteStorage.setSold(note, false);
-                NoteStorage.setBuyerName(note, null);
+                ItemNoteStorage.setPartiallySoldAmountLeft(note, 0);
+                ItemNoteStorage.setSold(note, false);
+                ItemNoteStorage.setBuyerName(note, null);
             }
         } else {
-            NoteStorage.deleteNote(note);
+            ItemNoteStorage.deleteNote(note);
         }
         try {
-            NoteStorage.saveNotes();
+            ItemNoteStorage.saveNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

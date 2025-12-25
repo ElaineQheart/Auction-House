@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class NoteStorage {
+public class ItemNoteStorage {
 
     public static void createNote(Player p, ItemStack item, int price) {
         if(r()) RedisNoteStorage.createNote(p, item, price);

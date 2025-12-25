@@ -8,7 +8,7 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -86,8 +86,8 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.confirm)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    if(!NoteStorage.r()) {
-                        ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if(!ItemNoteStorage.r()) {
+                        ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
                         if (test == null) {
                             p.sendMessage(Messages.getFormatted("chat.non-existent"));
                             Sounds.villagerDeny(event);
@@ -101,10 +101,10 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.experience(event);
                         Sounds.breakWood(event);
                         p.closeInventory();
-                        NoteStorage.setAuctionTime(note, -1);
-                        NoteStorage.setAdminMessage(note, reason);
+                        ItemNoteStorage.setAuctionTime(note, -1);
+                        ItemNoteStorage.setAdminMessage(note, reason);
                         try {
-                            NoteStorage.saveNotes();
+                            ItemNoteStorage.saveNotes();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -124,7 +124,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
                     if (test == null) {
                         p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);
@@ -139,11 +139,11 @@ public class AdminConfirmGUI extends InventoryGUI{
                     p.getInventory().addItem(note.getItem());
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    NoteStorage.setAuctionTime(note, -1);
-                    NoteStorage.setAdminMessage(note, reason);
-                    NoteStorage.setItem(note, ItemManager.createDirt());
+                    ItemNoteStorage.setAuctionTime(note, -1);
+                    ItemNoteStorage.setAdminMessage(note, reason);
+                    ItemNoteStorage.setItem(note, ItemManager.createDirt());
                     try {
-                        NoteStorage.saveNotes();
+                        ItemNoteStorage.saveNotes();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

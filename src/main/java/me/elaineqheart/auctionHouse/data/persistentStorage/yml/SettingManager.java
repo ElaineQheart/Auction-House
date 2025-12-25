@@ -4,8 +4,6 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 
 public class SettingManager {
 
@@ -27,8 +25,6 @@ public class SettingManager {
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
-    public static List<String> ahLayout;
-    public static List<String> myAhLayout;
 
     static {
         loadData();
@@ -36,7 +32,6 @@ public class SettingManager {
 
     public static void loadData() {
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
-        FileConfiguration l = ConfigManager.layout.get();
         taxRate = c.getDouble("tax", 0.01);
         auctionDuration = c.getLong("auction-duration", 60*60*48);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
@@ -55,9 +50,6 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
-        ahLayout = l.getStringList("ah-layout");
-        myAhLayout = l.getStringList("my-ah-layout");
-        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) updateLayout(l);
     }
 
 //    multi-server-database:
@@ -99,24 +91,5 @@ public class SettingManager {
         }
     }
 
-    private static void updateLayout(FileConfiguration l) {
-        l.set("ah-layout", Arrays.asList(
-                "# # # # # # # # #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# # # # # # # # #",
-                "s o # p r n # # m"));
-        l.set("my-ah-layout", Arrays.asList(
-                "# # # # # # # # #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# . . . . . . . #",
-                "# # # # # # # # #",
-                "b o # p r n # # i"));
-        ConfigManager.layout.save();
-        ahLayout = l.getStringList("ah-layout");
-        myAhLayout = l.getStringList("my-ah-layout");
-    }
 
 }

@@ -8,8 +8,9 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
-import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.*;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.*;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.CreateNPC;
@@ -59,7 +60,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
-                if(NoteStorage.numberOfAuctions(p) >= Permissions.getAuctionSlots(p)) {
+                if(ItemNoteStorage.numberOfAuctions(p) >= Permissions.getAuctionSlots(p)) {
                     p.sendMessage(Messages.getFormatted("command-feedback.reached-max-auctions",
                             "%limit%", String.valueOf(Permissions.getAuctionSlots(p))));
                     return true;
@@ -114,7 +115,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 ItemStack inputItem = item.clone();
                 inputItem.setAmount(amount);
-                NoteStorage.createNote(p, inputItem, price);
+                ItemNoteStorage.createNote(p, inputItem, price);
                 item.setAmount(item.getAmount() - amount);
                 p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
                 
@@ -146,7 +147,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             }
             if(strings.length == 2 && strings[0].equals("view")) {
                 String noteId = strings[1];
-                ItemNote note = NoteStorage.getNote(noteId);
+                ItemNote note = ItemNoteStorage.getNote(noteId);
                 if(note == null
                     || !note.getPlayerUUID().equals(p.getUniqueId())
                     || note.getBuyerName() == null || note.getBuyerName().isEmpty()) return true;
@@ -412,14 +413,14 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
 
 
     private static void reload() {
+        ConfigManager.reloadConfigs();
         try {
-            NoteStorage.loadNotes();
+            ItemNoteStorage.loadNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         AuctionHouse.getPlugin().reloadConfig();
         SettingManager.loadData();
-        ConfigManager.reloadConfigs();
         UpdateDisplay.reload();
         Messages.reload();
     }

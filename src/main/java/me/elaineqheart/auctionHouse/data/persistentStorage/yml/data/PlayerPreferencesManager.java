@@ -1,10 +1,10 @@
-package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
+package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PlayerPreferencesManager extends ConfigManager{
+public class PlayerPreferencesManager extends ConfigManager {
 
     public static boolean hasAnnouncementsEnabled(UUID uuid) {
         return playerPreferences.get().getBoolean("players." + uuid.toString() + ".announcements", true);
