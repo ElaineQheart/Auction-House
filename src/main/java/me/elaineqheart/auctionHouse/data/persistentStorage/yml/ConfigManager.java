@@ -1,11 +1,9 @@
-package me.elaineqheart.auctionHouse.data.yml;
+package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
@@ -15,6 +13,7 @@ public class ConfigManager {
     public static Config permissions = new Config();
     public static Config blacklist = new Config();
     public static Config playerPreferences = new Config();
+    public static Config layout = new Config();
 
     public static void setupConfigs() {
         displays.setup("displays", false);
@@ -23,6 +22,7 @@ public class ConfigManager {
         permissions.setup("permissions", true);
         blacklist.setup("blacklist", false);
         playerPreferences.setup("playerPreferences", false);
+        layout.setup("layout", true);
         permissionsSetup();
     }
 
@@ -32,6 +32,7 @@ public class ConfigManager {
         permissions.reload();
         blacklist.reload();
         playerPreferences.reload();
+        layout.reload();
     }
 
 

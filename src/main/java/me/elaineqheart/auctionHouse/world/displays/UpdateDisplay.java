@@ -5,9 +5,9 @@ import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.items.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.NoteStorage;
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
-import me.elaineqheart.auctionHouse.data.yml.Messages;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -18,7 +18,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.redis;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

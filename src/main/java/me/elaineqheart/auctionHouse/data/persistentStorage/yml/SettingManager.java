@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.data.yml;
+package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,6 +36,7 @@ public class SettingManager {
 
     public static void loadData() {
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        FileConfiguration l = ConfigManager.layout.get();
         taxRate = c.getDouble("tax", 0.01);
         auctionDuration = c.getLong("auction-duration", 60*60*48);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
@@ -54,9 +55,9 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
-        ahLayout = c.getStringList("ah-layout");
-        myAhLayout = c.getStringList("my-ah-layout");
-        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) updateLayout(c);
+        ahLayout = l.getStringList("ah-layout");
+        myAhLayout = l.getStringList("my-ah-layout");
+        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) updateLayout(l);
     }
 
 //    multi-server-database:
@@ -98,24 +99,24 @@ public class SettingManager {
         }
     }
 
-    private static void updateLayout(FileConfiguration c) {
-        c.set("ah-layout", Arrays.asList(
+    private static void updateLayout(FileConfiguration l) {
+        l.set("ah-layout", Arrays.asList(
                 "# # # # # # # # #",
                 "# . . . . . . . #",
                 "# . . . . . . . #",
                 "# . . . . . . . #",
                 "# # # # # # # # #",
                 "s o # p r n # # m"));
-        c.set("my-ah-layout", Arrays.asList(
+        l.set("my-ah-layout", Arrays.asList(
                 "# # # # # # # # #",
                 "# . . . . . . . #",
                 "# . . . . . . . #",
                 "# . . . . . . . #",
                 "# # # # # # # # #",
                 "b o # p r n # # i"));
-        AuctionHouse.getPlugin().saveConfig();
-        ahLayout = c.getStringList("ah-layout");
-        myAhLayout = c.getStringList("my-ah-layout");
+        ConfigManager.layout.save();
+        ahLayout = l.getStringList("ah-layout");
+        myAhLayout = l.getStringList("my-ah-layout");
     }
 
 }

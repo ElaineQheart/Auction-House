@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.yml.ConfigManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

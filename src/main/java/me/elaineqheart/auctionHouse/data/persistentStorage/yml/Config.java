@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.data.yml;
+package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
 import com.google.common.base.Charsets;
 import me.elaineqheart.auctionHouse.AuctionHouse;

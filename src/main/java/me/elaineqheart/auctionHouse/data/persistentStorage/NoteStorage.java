@@ -3,7 +3,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage;
 import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisNoteStorage;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

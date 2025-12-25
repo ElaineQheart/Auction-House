@@ -9,17 +9,3 @@ partial-selling: false                      # allows players to select the amoun
 admin-permission: "auctionhouse.moderator"
 display-update: 20                          # 20 ticks = 1 second, how frequently the item displays are updated; can be set to 1 for instant updates
 auction-announcements: true                 # announce when someone puts an item on auction (players can toggle this with /ah announce)
-ah-layout:
-  - '# # # # # # # # #'
-  - '# . . . . . . . #'
-  - '# . . . . . . . #'
-  - '# . . . . . . . #'
-  - '# # # # # # # # #'
-  - 's o # p r n # # m'
-my-ah-layout:
-  - '# # # # # # # # #'
-  - '# . . . . . . . #'
-  - '# . . . . . . . #'
-  - '# . . . . . . . #'
-  - '# # # # # # # # #'
-  - 'b o # p r n # # i'

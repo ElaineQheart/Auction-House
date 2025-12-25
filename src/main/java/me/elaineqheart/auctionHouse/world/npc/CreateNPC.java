@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.yml.Messages;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;

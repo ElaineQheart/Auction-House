@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.items;
 
-import me.elaineqheart.auctionHouse.data.yml.Messages;
-import me.elaineqheart.auctionHouse.data.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
