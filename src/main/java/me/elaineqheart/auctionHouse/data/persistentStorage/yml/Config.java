@@ -9,14 +9,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class Config {
 
     private File file;
     private FileConfiguration customFile;
 
-    public void setup(String fileName, boolean copyDefaults){
-        file = new File(AuctionHouse.getPlugin().getDataFolder(),  fileName + ".yml");
+    public void setup(String fileName, boolean copyDefaults, String parent){
+        if(!parent.isEmpty()) backwardsCompatibility(fileName, parent);
+        file = new File(AuctionHouse.getPlugin().getDataFolder() + parent,  fileName + ".yml");
 
         if (!file.exists()){
             try{
@@ -31,7 +34,7 @@ public class Config {
             save();
             return;
         }
-        final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(fileName + ".yml");
+        final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(parent + fileName + ".yml");
         if (defConfigStream == null) return;
         customFile.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
         customFile.options().copyDefaults(true);
@@ -52,6 +55,17 @@ public class Config {
 
     public void reload(){
         customFile = YamlConfiguration.loadConfiguration(file);
+    }
+
+    private void backwardsCompatibility(String fileName, String parent) {
+        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + parent + "/" + fileName + ".yml");
+        File old = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/" + fileName + ".yml");
+        if (old.exists()) {
+            try {
+                Files.copy(old.getAbsoluteFile().toPath(), file.getAbsoluteFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+                old.delete();
+            } catch (IOException ignored) {}
+        }
     }
 
 }

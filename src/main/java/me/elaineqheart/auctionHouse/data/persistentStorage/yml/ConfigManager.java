@@ -16,13 +16,13 @@ public class ConfigManager {
     public static Config layout = new Config();
 
     public static void setupConfigs() {
-        displays.setup("displays", false);
+        displays.setup("displays", false, "/data");
         displaysBackwardsCompatibility();
-        bannedPlayers.setup("bannedPlayers", false);
-        permissions.setup("permissions", true);
-        blacklist.setup("blacklist", false);
-        playerPreferences.setup("playerPreferences", false);
-        layout.setup("layout", true);
+        bannedPlayers.setup("bannedPlayers", false, "/data");
+        permissions.setup("permissions", true, "");
+        blacklist.setup("blacklist", false, "/data");
+        playerPreferences.setup("playerPreferences", false, "/data");
+        layout.setup("layout", true, "");
         permissionsSetup();
     }
 

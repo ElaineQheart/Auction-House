@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,7 +51,7 @@ public class JsonNoteStorage {
     public static void saveNotes() throws IOException {
 
         Gson gson = new Gson();
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/notes.json");
+        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
         //if the parent file of the plugin doesn't exist, it has to be created
         file.getParentFile().mkdir();
         file.createNewFile();
@@ -63,13 +65,23 @@ public class JsonNoteStorage {
     }
 
     public static void loadNotes() throws IOException {
+        backwardsCompatibility();
         Gson gson = new Gson();
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/notes.json");
+        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
         if(file.exists()){
             Reader reader = new FileReader(file);
             ItemNote[] n = gson.fromJson(reader, ItemNote[].class);
             itemNotes = new ArrayList<>(Arrays.asList(n));
             updateSortedLists();
+        }
+    }
+
+    private static void backwardsCompatibility() throws IOException {
+        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
+        File old = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/notes.json");
+        if (old.exists()) {
+            Files.copy(old.getAbsoluteFile().toPath(), file.getAbsoluteFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            old.delete();
         }
     }
 
