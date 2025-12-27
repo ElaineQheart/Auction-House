@@ -12,6 +12,7 @@ public class ConfigManager {
     public static Config bannedPlayers = new Config();
     public static Config permissions = new Config();
     public static Config blacklist = new Config();
+    public static Config whitelist = new Config();
     public static Config playerPreferences = new Config();
     public static Config layout = new Config();
 
@@ -21,6 +22,7 @@ public class ConfigManager {
         bannedPlayers.setup("bannedPlayers", false, "/data");
         permissions.setup("permissions", true, "");
         blacklist.setup("blacklist", false, "/data");
+        whitelist.setup("whitelist", false, "/data");
         playerPreferences.setup("playerPreferences", false, "/data");
         layout.setup("layout", true, "");
         permissionsSetup();
@@ -31,6 +33,7 @@ public class ConfigManager {
         bannedPlayers.reload();
         permissions.reload();
         blacklist.reload();
+        whitelist.reload();
         playerPreferences.reload();
         layout.reload();
     }

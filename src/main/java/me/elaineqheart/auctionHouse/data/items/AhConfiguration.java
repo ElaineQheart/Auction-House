@@ -4,6 +4,9 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+import java.util.Map;
+
 public class AhConfiguration {
 
     public int currentPage;
@@ -14,6 +17,7 @@ public class AhConfiguration {
     public View view;
     public MyAuctionsGUI.MySort myCurrentSort;
     public int myCurrentPage;
+    public List<Map<?, ?>> whitelist;
 
     public AhConfiguration(int currentPage, AuctionHouseGUI.Sort currentSort, String currentSearch, Player currentPlayer, boolean isAdmin) {
         this.currentPage = currentPage;

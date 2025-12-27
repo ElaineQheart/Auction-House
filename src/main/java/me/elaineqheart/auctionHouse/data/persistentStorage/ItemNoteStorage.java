@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ItemNoteStorage {
@@ -89,6 +90,10 @@ public class ItemNoteStorage {
     public static List<ItemNote> getSortedList(SortMode mode, String search){
         if(r()) return new ArrayList<>(); //RedisNoteStorage.getNotes(mode, start, stop, search);
         else return JsonNoteStorage.getSortedList(mode, search);
+    }
+    public static List<ItemNote> getSortedList(SortMode mode, String search, List<Map<?, ?>> whitelist){
+        if(r()) return new ArrayList<>(); //RedisNoteStorage.getNotes(mode, start, stop, search);
+        else return JsonNoteStorage.getSortedList(mode, search, whitelist);
     }
 
     public static List<ItemNote> mySortedDateCreated(UUID playerID){

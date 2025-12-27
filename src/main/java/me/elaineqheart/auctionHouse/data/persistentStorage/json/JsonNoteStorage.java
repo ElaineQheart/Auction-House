@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.Blacklist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -159,6 +160,11 @@ public class JsonNoteStorage {
             }
         }
         return itemList;
+    }
+    public static List<ItemNote> getSortedList(ItemNoteStorage.SortMode mode, String search, List<Map<?, ?>> whitelist){
+        List<ItemNote> notes = getSortedList(mode, search);
+        notes.removeIf(note -> !Blacklist.isBlacklisted(note.getItem(), whitelist));
+        return notes;
     }
 
     public static List<ItemNote> mySortedDateCreated(UUID playerID){

@@ -12,17 +12,17 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
@@ -95,7 +95,9 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
 
     private void createButtonsForAuctionItems(ItemNoteStorage.SortMode mode, List<Integer> itemSlots){
-        List<ItemNote> auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch);
+        List<ItemNote> auctions;
+        if(c.whitelist == null) auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch);
+        else auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch, c.whitelist);
         noteSize = auctions.size();
         screenSize = itemSlots.size();
         int start = c.currentPage * screenSize;
@@ -159,6 +161,20 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     case 'r' -> this.addButton(slot, refresh());
                     case 'm' -> {
                         if (!c.isAdmin) this.addButton(slot, myAuctions()); else this.addButton(slot, commandBlockInfo());
+                    }
+                    case '.', ' ' -> {}
+                    default -> {
+                        String symbol = String.valueOf(places.get(i).charAt(j));
+                        this.addButton(slot, customButton(Layout.getItem(symbol),
+                            event -> {
+                            List<Map<?, ?>> whitelist = ConfigManager.whitelist.get().getMapList(symbol);
+                                if (!whitelist.isEmpty()) {
+                                    c.whitelist = whitelist;
+                                    Sounds.click(event);
+                                    update();
+                                }
+                            }
+                        ));
                     }
                 }
             }
@@ -272,6 +288,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     Sounds.openEnderChest(event);
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), (Player) event.getWhoClicked());
                 });
+    }
+    private InventoryButton customButton(ItemStack item, Consumer<InventoryClickEvent> execute) {
+        return new InventoryButton()
+                .creator(player -> item)
+                .consumer(execute);
     }
 
     private Sort nextSort(Sort input){

@@ -17,8 +17,11 @@ public class Blacklist {
     // <name> = id
 
     public static boolean isBlacklisted(ItemStack item) {
+        return isBlacklisted(item, getData());
+    }
+    public static boolean isBlacklisted(ItemStack item, List<Map<?, ?>> blacklist) {
         boolean blacklisted = false;
-        for(Map<?, ?> entry : getData()) {
+        for(Map<?, ?> entry : blacklist) {
             Object keyObj = entry.get("key");
             switch (entry.get("type").toString()) {
                 case "exact" -> blacklisted = isExact(item, (ItemStack) keyObj);
