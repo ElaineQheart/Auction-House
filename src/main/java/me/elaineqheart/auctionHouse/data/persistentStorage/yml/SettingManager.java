@@ -86,10 +86,9 @@ public class SettingManager {
             c.set("format-time-characters", null);
             reload = true;
         }
-        if (!c.getString("filler-item", "BLACK_STAINED_GLASS_PANE").isEmpty()) {
+        if (c.contains("filler-item")) {
             Material material = Material.matchMaterial(c.getString("filler-item", "BLACK_STAINED_GLASS_PANE"));
-            assert material != null;
-            ItemStack fillerItem = new ItemStack(material);
+            ItemStack fillerItem = material == null ? new ItemStack(Material.AIR) : new ItemStack(material);
             ConfigManager.layout.get().set("filler-item", fillerItem);
             ConfigManager.layout.save();
             ConfigManager.layout.reload();

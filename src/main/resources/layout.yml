@@ -18,52 +18,64 @@ filler-item:
   id: minecraft:black_stained_glass_pane
   count: 1
   schema_version: 1
+s:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:oak_sign
+  count: 1
+  schema_version: 1
+o:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:hopper
+  count: 1
+  schema_version: 1
+p:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+r:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:nether_star
+  count: 1
+  schema_version: 1
+n:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+m:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:ender_chest
+  count: 1
+  schema_version: 1
+b:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:arrow
+  count: 1
+  schema_version: 1
+i:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:paper
+  count: 1
+  schema_version: 1
 locked-slot:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:barrier
   count: 1
   schema_version: 1
-refresh:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:nether_star
-  count: 1
-  schema_version: 1
-back-to-main-menu:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:arrow
-  count: 1
-  schema_version: 1
 back-to-my-auctions:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:arrow
-  count: 1
-  schema_version: 1
-info:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:paper
-  count: 1
-  schema_version: 1
-my-auctions:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:ender_chest
-  count: 1
-  schema_version: 1
-sort:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:hopper
-  count: 1
-  schema_version: 1
-my-sort:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:hopper
   count: 1
   schema_version: 1
 anvil-search-paper:
@@ -120,12 +132,6 @@ choose-item-buy-amount:
   id: minecraft:spruce_hanging_sign
   count: 1
   schema_version: 1
-loading:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:nether_star
-  count: 1
-  schema_version: 1
 dirt:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
@@ -148,23 +154,5 @@ collect-sold-item:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:diamond
-  count: 1
-  schema_version: 1
-next-page:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:arrow
-  count: 1
-  schema_version: 1
-previous-page:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:arrow
-  count: 1
-  schema_version: 1
-search:
-  ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:oak_sign
   count: 1
   schema_version: 1

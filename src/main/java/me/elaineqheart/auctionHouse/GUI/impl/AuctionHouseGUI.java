@@ -184,15 +184,15 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 });
     }
 
-    private InventoryButton loading(){
-        return new InventoryButton()
-                .creator(player -> ItemManager.loading)
-                .consumer(event -> {});
-    }
+//    private InventoryButton loading(){
+//        return new InventoryButton()
+//                .creator(player -> ItemManager.loading)
+//                .consumer(event -> {});
+//    }
 
     private InventoryButton nextPage(){
         int pages = (noteSize-1)/screenSize;
-        ItemStack item = Layout.getItem("next-page");
+        ItemStack item = Layout.getItem("n");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.next-page.name"));
@@ -211,7 +211,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 });
     }
     private InventoryButton previousPage(){
-        ItemStack item = Layout.getItem("previous-page");
+        ItemStack item = Layout.getItem("p");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.previous-page.name"));
@@ -229,7 +229,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 });
     }
     private InventoryButton searchOption(){
-        ItemStack item = Layout.getItem("search");
+        ItemStack item = Layout.getItem("s");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.search.name"));
