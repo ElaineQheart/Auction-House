@@ -5,9 +5,10 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import org.bukkit.Bukkit;
@@ -87,7 +88,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     if(!ItemNoteStorage.r()) {
-                        ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
+                        ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
                         if (test == null) {
                             p.sendMessage(Messages.getFormatted("chat.non-existent"));
                             Sounds.villagerDeny(event);
@@ -124,7 +125,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
                     if (test == null) {
                         p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);

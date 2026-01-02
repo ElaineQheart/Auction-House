@@ -1,6 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.redis;
 
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

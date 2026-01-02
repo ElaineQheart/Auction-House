@@ -4,10 +4,11 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
@@ -90,7 +91,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     String itemName = note.getItemName();
 
                     if(!ItemNoteStorage.r()) {
-                        ItemNote test = ItemNoteStorage.getNote(note.getNoteID().toString());
+                        ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
                         if (test == null) {
                             p.sendMessage(Messages.getFormatted("chat.non-existent2"));
                             Sounds.villagerDeny(event);

@@ -1,9 +1,9 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage;
 
-import me.elaineqheart.auctionHouse.data.items.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,26 +28,10 @@ public class ItemNoteStorage {
         if(!r()) JsonNoteStorage.loadNotes();
     }
 
-    public static ItemNote getNote(String noteID) {
-        if(r()) return RedisNoteStorage.getNote(UUID.fromString(noteID));
-        else return JsonNoteStorage.getNote(noteID);
-    }
-
     public static void deleteNote(ItemNote note) {
         if(r()) RedisNoteStorage.deleteNote(note.getNoteID());
         else JsonNoteStorage.deleteNote(note);
     }
-
-    public static int numberOfAuctions(Player p) {
-        if(r()) return RedisNoteStorage.numberOfAuctions(p);
-        else return JsonNoteStorage.numberOfAuctions(p);
-    }
-
-    public static int numberOfAuctions() {
-        if(r()) return RedisNoteStorage.numberOfAuctions();
-        else return JsonNoteStorage.numberOfAuctions();
-    }
-
 
     public static void setBuyerName(ItemNote note, String buyerName) {
         if(r()) RedisNoteStorage.updateField(note.getNoteID(), "buyerName", buyerName);
@@ -85,20 +69,6 @@ public class ItemNoteStorage {
         PRICE_ASC,
         PRICE_DESC,
         DATE
-    }
-
-    public static List<ItemNote> getSortedList(SortMode mode, String search){
-        if(r()) return new ArrayList<>(); //RedisNoteStorage.getNotes(mode, start, stop, search);
-        else return JsonNoteStorage.getSortedList(mode, search);
-    }
-    public static List<ItemNote> getSortedList(SortMode mode, String search, List<Map<?, ?>> whitelist){
-        if(r()) return new ArrayList<>(); //RedisNoteStorage.getNotes(mode, start, stop, search);
-        else return JsonNoteStorage.getSortedList(mode, search, whitelist);
-    }
-
-    public static List<ItemNote> mySortedDateCreated(UUID playerID){
-        if(r()) return RedisNoteStorage.mySortedDateCreated(playerID);
-        else return JsonNoteStorage.mySortedDateCreated(playerID);
     }
 
     public static void purge() {

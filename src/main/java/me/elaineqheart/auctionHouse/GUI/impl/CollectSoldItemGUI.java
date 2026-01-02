@@ -4,10 +4,11 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.items.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
@@ -108,7 +109,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     public static void collect(OfflinePlayer p, String noteID, int itemAmount, double price) {
         Economy eco = VaultHook.getEconomy();
         eco.depositPlayer(p, getProfit(price));
-        ItemNote note = ItemNoteStorage.getNote(noteID);
+        ItemNote note = AuctionHouseStorage.getNote(noteID);
         if (note.getPartiallySoldAmountLeft() != 0) {
             ItemNoteStorage.setPrice(note, note.getPrice() - price);
             ItemStack temp = note.getItem().clone();

@@ -5,9 +5,10 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CancelAuctionGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.*;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.*;
@@ -60,7 +61,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
-                if(ItemNoteStorage.numberOfAuctions(p) >= Permissions.getAuctionSlots(p)) {
+                if(AuctionHouseStorage.getNumberOfAuctions(p) >= Permissions.getAuctionSlots(p)) {
                     p.sendMessage(Messages.getFormatted("command-feedback.reached-max-auctions",
                             "%limit%", String.valueOf(Permissions.getAuctionSlots(p))));
                     return true;
@@ -147,7 +148,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             }
             if(strings.length == 2 && strings[0].equals("view")) {
                 String noteId = strings[1];
-                ItemNote note = ItemNoteStorage.getNote(noteId);
+                ItemNote note = AuctionHouseStorage.getNote(noteId);
                 if(note == null
                     || !note.getPlayerUUID().equals(p.getUniqueId())
                     || note.getBuyerName() == null || note.getBuyerName().isEmpty()) return true;

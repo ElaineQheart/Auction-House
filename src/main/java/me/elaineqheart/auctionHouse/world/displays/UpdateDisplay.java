@@ -2,8 +2,9 @@ package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.items.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
@@ -241,9 +242,9 @@ public class UpdateDisplay implements Runnable{
 
     public static ItemNote getNote(String type, int rank) {
         if(type.equals("highest_price")) {
-            return ItemNoteStorage.getSortedList(ItemNoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
+            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
         } else if (type.equals("ending_soon")) {
-            return ItemNoteStorage.getSortedList(ItemNoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
+            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
         }
         return null;
     }

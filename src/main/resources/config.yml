@@ -9,3 +9,5 @@ partial-selling: false                      # allows players to select the amoun
 admin-permission: "auctionhouse.moderator"
 display-update: 20                          # 20 ticks = 1 second, how frequently the item displays are updated; can be set to 1 for instant updates
 auction-announcements: true                 # announce when someone puts an item on auction (players can toggle this with /ah announce)
+bidding: true                               # enables actual auctions by typing [/ah bid <amount>]
+bid-auction-duration: 7200                  # the time a bidding auction lasts in seconds

@@ -6,9 +6,10 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
@@ -96,8 +97,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     private void createButtonsForAuctionItems(ItemNoteStorage.SortMode mode, List<Integer> itemSlots){
         List<ItemNote> auctions;
-        if(c.whitelist == null) auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch);
-        else auctions = ItemNoteStorage.getSortedList(mode, c.currentSearch, c.whitelist);
+        if(c.whitelist == null) auctions = AuctionHouseStorage.getSortedList(mode, c.currentSearch);
+        else auctions = AuctionHouseStorage.getSortedList(mode, c.currentSearch, c.whitelist);
         noteSize = auctions.size();
         screenSize = itemSlots.size();
         int start = c.currentPage * screenSize;

@@ -5,9 +5,10 @@ import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
-import me.elaineqheart.auctionHouse.data.items.AhConfiguration;
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNote;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Layout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
@@ -75,7 +76,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private void fillOutItems(UUID playerID, List<Integer> itemSlots){
-        List<ItemNote> myAuctions = ItemNoteStorage.mySortedDateCreated(playerID);
+        List<ItemNote> myAuctions = AuctionHouseStorage.getMySortedDateCreated(playerID);
         List<ItemNote> returnList;
         switch (c.myCurrentSort){
             case SOLD_ITEMS -> returnList = myAuctions.stream()

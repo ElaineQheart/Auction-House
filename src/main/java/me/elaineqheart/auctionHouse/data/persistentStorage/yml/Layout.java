@@ -1,6 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
-import me.elaineqheart.auctionHouse.data.items.ItemManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
