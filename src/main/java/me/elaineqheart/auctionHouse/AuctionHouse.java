@@ -4,8 +4,8 @@ import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
 import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
+import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.redis.RedisManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
@@ -43,8 +43,6 @@ public final class AuctionHouse extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
         }
 
-        getCommand("ah").setExecutor(new AuctionHouseCommands());
-        getCommand("ah").setTabCompleter(new AuctionHouseCommands());
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
@@ -61,7 +59,7 @@ public final class AuctionHouse extends JavaPlugin {
         Messages.get().options().copyDefaults(true);
         Messages.save();
 
-        if(SettingManager.useRedis) RedisManager.connect();
+        //if(SettingManager.useRedis) RedisManager.connect();
 
         try {
             ItemNoteStorage.loadNotes();
@@ -71,6 +69,7 @@ public final class AuctionHouse extends JavaPlugin {
 
         SettingManager.backwardsCompatibility();
 
+        DynamicCommandRegisterer.init();
         UpdateDisplay.init();
         //NoteStorage.purge();
 
@@ -80,7 +79,7 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         guiManager.forceCloseAll();
-        if(SettingManager.useRedis) RedisManager.disconnect();
+        //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 
 }

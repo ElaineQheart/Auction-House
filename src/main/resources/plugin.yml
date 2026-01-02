@@ -6,12 +6,6 @@ authors: [ ElaineQheart ]
 website: https://www.youtube.com/@elaineqheart
 depend: [ Vault ]
 softdepend: [ PlaceholderAPI ]
-commands:
-  ah:
-    description: opens the auction house GUI
-    permission: AuctionHouse.ah
-    aliases:
-      - auctionhouse
 permissions:
   AuctionHouse.ah:
     description: allows the player to use /ah

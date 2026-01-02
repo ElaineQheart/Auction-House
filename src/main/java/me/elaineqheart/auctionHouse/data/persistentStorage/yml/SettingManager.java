@@ -19,7 +19,7 @@ public class SettingManager {
     public static boolean soldMessageEnabled;
     public static String permissionModerate;
     public static boolean partialSelling;
-    public static boolean useRedis;
+    //public static boolean useRedis;
     public static String redisHost;
     public static String redisUsername;
     public static String redisPassword;

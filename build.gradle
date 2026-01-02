@@ -24,7 +24,7 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
-    implementation("redis.clients:jedis:6.1.0")
+    //implementation("redis.clients:jedis:6.1.0")
     implementation("net.kyori:adventure-text-minimessage:4.25.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.25.0")
 }
@@ -35,9 +35,8 @@ tasks.named('jar') {
 
 tasks.named('shadowJar') {
     archiveBaseName.set(rootProject.name ?: 'AuctionHouse')
-    archiveClassifier.set('') // no -all classifier
+    archiveClassifier.set('')
     archiveVersion.set(version)
-    // optional: write directly to your plugins folder
     destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     mergeServiceFiles()
 }

@@ -87,30 +87,28 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.confirm)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    if(!ItemNoteStorage.r()) {
-                        ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
-                        if (test == null) {
-                            p.sendMessage(Messages.getFormatted("chat.non-existent"));
-                            Sounds.villagerDeny(event);
-                            return;
-                        }
-                        if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
-                            p.sendMessage(Messages.getFormatted("chat.already-sold"));
-                            Sounds.villagerDeny(event);
-                            return;
-                        }
-                        Sounds.experience(event);
-                        Sounds.breakWood(event);
-                        p.closeInventory();
-                        ItemNoteStorage.setAuctionTime(note, -1);
-                        ItemNoteStorage.setAdminMessage(note, reason);
-                        try {
-                            ItemNoteStorage.saveNotes();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        p.sendMessage(Messages.getFormatted("chat.admin-expire-auction", "%reason%", reason));
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
+                    if (test == null) {
+                        p.sendMessage(Messages.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
                     }
+                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    Sounds.experience(event);
+                    Sounds.breakWood(event);
+                    p.closeInventory();
+                    ItemNoteStorage.setAuctionTime(note, -1);
+                    ItemNoteStorage.setAdminMessage(note, reason);
+                    try {
+                        ItemNoteStorage.saveNotes();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    p.sendMessage(Messages.getFormatted("chat.admin-expire-auction", "%reason%", reason));
                 });
     }
     private InventoryButton confirmDeleteItem() {

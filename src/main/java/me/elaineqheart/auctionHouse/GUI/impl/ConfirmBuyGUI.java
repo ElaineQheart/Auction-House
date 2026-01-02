@@ -90,67 +90,65 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     }
                     String itemName = note.getItemName();
 
-                    if(!ItemNoteStorage.r()) {
-                        ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
-                        if (test == null) {
-                            p.sendMessage(Messages.getFormatted("chat.non-existent2"));
-                            Sounds.villagerDeny(event);
-                            return;
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
+                    if (test == null) {
+                        p.sendMessage(Messages.getFormatted("chat.non-existent2"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    if (!test.isOnAuction() || test.getCurrentAmount() < item.getAmount()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    Economy eco = VaultHook.getEconomy();
+                    Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), p::closeInventory);
+                    if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
+                        p.sendMessage(Messages.getFormatted("chat.not-enough-money"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+                    eco.withdrawPlayer(p, price);
+                    Sounds.experience(event);
+                    p.getInventory().addItem(item);
+                    ItemNoteStorage.setSold(note, true);
+                    ItemNoteStorage.setBuyerName(note, p.getName());
+                    if (price != note.getPrice()) {
+                        if (note.getPartiallySoldAmountLeft() == 0) {
+                            ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
+                        } else {
+                            ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
                         }
-                        if (!test.isOnAuction() || test.getCurrentAmount() < item.getAmount()) {
-                            p.sendMessage(Messages.getFormatted("chat.already-sold2"));
-                            Sounds.villagerDeny(event);
-                            return;
+                    }
+                    try {
+                        ItemNoteStorage.saveNotes();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    p.sendMessage(Messages.getFormatted("chat.purchase-auction", "%player%", note.getPlayerName()));
+                    Player seller = Bukkit.getPlayer(note.getPlayerName());
+                    if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
+                        if(SettingManager.autoCollect) {
+                            seller.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect",
+                                    "%player%", p.getName(),
+                                    "%item%", itemName,
+                                    "%price%", StringUtils.formatPrice(price),
+                                    "%amount%", String.valueOf(item.getAmount())));
+                        } else {
+                            TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix",
+                                    "%player%", p.getName(),
+                                    "%item%", itemName,
+                                    "%price%", StringUtils.formatPrice(price),
+                                    "%amount%", String.valueOf(item.getAmount())));
+                            TextComponent click = new TextComponent(Messages.getFormatted("chat.sold-message.interaction"));
+                            click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
+                            seller.spigot().sendMessage(component, click);
                         }
-                        Economy eco = VaultHook.getEconomy();
-                        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), p::closeInventory);
-                        if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
-                            p.sendMessage(Messages.getFormatted("chat.not-enough-money"));
-                            Sounds.villagerDeny(event);
-                            return;
-                        }
-                        eco.withdrawPlayer(p, price);
-                        Sounds.experience(event);
-                        p.getInventory().addItem(item);
-                        ItemNoteStorage.setSold(note, true);
-                        ItemNoteStorage.setBuyerName(note, p.getName());
-                        if (price != note.getPrice()) {
-                            if (note.getPartiallySoldAmountLeft() == 0) {
-                                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
-                            } else {
-                                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
-                            }
-                        }
-                        try {
-                            ItemNoteStorage.saveNotes();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        p.sendMessage(Messages.getFormatted("chat.purchase-auction", "%player%", note.getPlayerName()));
-                        Player seller = Bukkit.getPlayer(note.getPlayerName());
-                        if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
-                            if(SettingManager.autoCollect) {
-                                seller.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect",
-                                        "%player%", p.getName(),
-                                        "%item%", itemName,
-                                        "%price%", StringUtils.formatPrice(price),
-                                        "%amount%", String.valueOf(item.getAmount())));
-                            } else {
-                                TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix",
-                                        "%player%", p.getName(),
-                                        "%item%", itemName,
-                                        "%price%", StringUtils.formatPrice(price),
-                                        "%amount%", String.valueOf(item.getAmount())));
-                                TextComponent click = new TextComponent(Messages.getFormatted("chat.sold-message.interaction"));
-                                click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
-                                seller.spigot().sendMessage(component, click);
-                            }
-                        }
-                        if (SettingManager.autoCollect && Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(note.getPlayerUUID()))) {
-                            Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
-                                    (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID().toString(), item.getAmount(), note.getSoldPrice())
-                            );
-                        }
+                    }
+                    if (SettingManager.autoCollect && Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(note.getPlayerUUID()))) {
+                        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
+                                (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID().toString(), item.getAmount(), note.getSoldPrice())
+                        );
                     }
                 });
     }

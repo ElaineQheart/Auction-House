@@ -109,23 +109,19 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if(!ItemNoteStorage.r()) {
-                        //ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
-                        if (!note.isOnAuction()) {
-                            p.sendMessage(Messages.getFormatted("chat.already-sold2"));
-                            Sounds.villagerDeny(event);
-                            return;
-                        }
-                        Sounds.experience(event);
-                        Sounds.breakWood(event);
-                        p.getInventory().addItem(note.getItem());
-                        ItemNoteStorage.deleteNote(note);
-                        if(goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-                        else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-                        p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
-                    } else {
-
+                    //ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
+                    if (!note.isOnAuction()) {
+                        p.sendMessage(Messages.getFormatted("chat.already-sold2"));
+                        Sounds.villagerDeny(event);
+                        return;
                     }
+                    Sounds.experience(event);
+                    Sounds.breakWood(event);
+                    p.getInventory().addItem(note.getItem());
+                    ItemNoteStorage.deleteNote(note);
+                    if(goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
+                    else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                 });
     }
 

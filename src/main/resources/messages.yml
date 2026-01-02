@@ -303,6 +303,8 @@ world:
     by-player: "by: "
 
 commands:
+  ah: "ah"
+  alias: "auctionhouse"
   sell: "sell"
   announce: "announce"
   admin: "admin"
