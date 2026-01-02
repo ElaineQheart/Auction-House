@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.ram;
 
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Permissions;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import org.bukkit.Bukkit;
