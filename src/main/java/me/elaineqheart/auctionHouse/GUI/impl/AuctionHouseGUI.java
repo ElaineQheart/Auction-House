@@ -131,18 +131,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         return;
                     }
                     Sounds.click(event);
-                    if(!Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer) || c.isAdmin) {
-                        if(c.isAdmin) {
-                            AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.currentPlayer);
-                        }else {
-                            AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), c.currentPlayer);
-                        }
+                    if(c.isAdmin) {
+                        AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.currentPlayer);
+                        return;
                     }
+                    if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.currentPlayer)) {
+                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.currentPlayer);
+                        return;
+                    }
+                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c), c.currentPlayer);
                 });
     }
 
 
     private void fillOutPlaces(List<String> places){
+        //TODO: remove layout? every slot defined by itself
         List<Integer> itemSlots = new ArrayList<>();
         for(int i = 0; i < places.size(); i++) {
             for (int j = 0; j < places.get(i).length(); j += 2) {

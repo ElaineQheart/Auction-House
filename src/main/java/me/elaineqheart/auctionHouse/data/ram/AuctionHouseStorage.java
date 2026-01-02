@@ -47,15 +47,11 @@ public class AuctionHouseStorage {
                 set = new LinkedHashSet<>(temp);
             }
         }
-        List<ItemNote> itemList = new ArrayList<>();
-        for(ItemNote note : set) {
-            if(note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList()) {
-                if(search.isEmpty() || Arrays.stream(note.getSearchIndex()).anyMatch(s -> s.contains(search.toLowerCase()))) {
-                    itemList.add(note);
-                }
-            }
-        }
-        return itemList;
+        return set.stream()
+                .filter(note -> note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList())
+                .filter(note -> search.isEmpty() || Arrays.stream(note.getSearchIndex())
+                        .anyMatch(s -> s.contains(search.toLowerCase())))
+                .collect(Collectors.toList());
     }
 
     public static List<ItemNote> getSortedList(ItemNoteStorage.SortMode mode, String search, List<Map<?, ?>> whitelist){
@@ -64,32 +60,16 @@ public class AuctionHouseStorage {
         return notes;
     }
 
-    public static List<ItemNote> getMySortedDateCreated(UUID playerID){
-        List<ItemNote> newSortedDateCreated = new ArrayList<>();
-        for(ItemNote note : itemNotes){
-            if (Bukkit.getPlayer(note.getPlayerUUID()) == Bukkit.getPlayer(playerID)) {
-                newSortedDateCreated.add(note);
-            }
-        }
-        return newSortedDateCreated;
+    public static List<ItemNote> getMySortedDateCreated(UUID playerID){ //use only for online players
+        return itemNotes.stream()
+                .filter(note -> Bukkit.getPlayer(note.getPlayerUUID()) == Bukkit.getPlayer(playerID))
+                .toList(); // toList() makes it unmodifiable
     }
 
     public static int getNumberOfAuctions(Player p) {
-        int count = 0;
-        for (ItemNote note : itemNotes) {
-            if (Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()), p)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public static int getNumberOfAuctions() {
-        int count = 0;
-        for (ItemNote note : itemNotes){
-            if(note.isOnAuction() && !note.isExpired()) count++;
-        }
-        return count;
+        return (int) itemNotes.stream()
+                .filter(note -> Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()), p))
+                .count();
     }
 
     public static ItemNote getNote(String noteID) {

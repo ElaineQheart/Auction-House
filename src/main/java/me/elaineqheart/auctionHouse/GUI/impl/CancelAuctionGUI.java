@@ -24,6 +24,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
     private final UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private final ItemStack item;
+    private final boolean goBackToAuctionHouse;
 
     @Override
     public void run() {
@@ -35,6 +36,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         super();
         this.note = note;
         c = configuration;
+        goBackToAuctionHouse = c.view == AhConfiguration.View.AUCTION_HOUSE;
         c.view = AhConfiguration.View.CANCEL_AUCTION;
         this.item = ItemManager.createItemFromNote(note, c.currentPlayer, true);
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 0, 20).getTaskId());
@@ -92,7 +94,8 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    if(goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
+                    else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                 });
     }
     private InventoryButton collectItem() {
@@ -117,7 +120,8 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.breakWood(event);
                         p.getInventory().addItem(note.getItem());
                         ItemNoteStorage.deleteNote(note);
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                        if(goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
+                        else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                         p.sendMessage(Messages.getFormatted("chat.auction-canceled"));
                     } else {
 
