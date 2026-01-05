@@ -3,11 +3,9 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Blacklist {
 
@@ -28,6 +26,8 @@ public class Blacklist {
                 case "material" -> blacklisted = isMaterial(item, keyObj.toString());
                 case "lore" -> blacklisted = loreContains(item, keyObj.toString());
                 case "name" -> blacklisted = nameContains(item, keyObj.toString());
+                case "item_model" -> blacklisted = itemModelContains(item, keyObj.toString());
+                case "custom_model_data" -> blacklisted = customModelContains(item, keyObj.toString());
                 case null -> {}
                 default -> throw new IllegalStateException("Unexpected value: " + keyObj);
             }
@@ -53,40 +53,43 @@ public class Blacklist {
         if(meta == null) return false;
         return meta.getDisplayName().contains(key) || meta.getItemName().contains(key);
     }
+    private static boolean itemModelContains(ItemStack item, String key) {
+        ItemMeta meta = item.getItemMeta();
+        if(meta == null || !meta.hasItemModel() || meta.getItemModel() == null) return false;
+        //if(meta.hasCustomModelData()) blacklisted |= String.valueOf(meta.getCustomModelData()).contains(key); //deprecated
+        return meta.getItemModel().getKey().contains(key);
+    }
+    private static boolean customModelContains(ItemStack item, String key) {
+        ItemMeta meta = item.getItemMeta();
+        if(meta == null) return false;
+        return meta.getCustomModelDataComponent().getStrings().stream().anyMatch(s -> s.equals(key));
+    }
 
     public static void addExact(ItemStack item) {
-        List<Map<?, ?>> blacklist = getData();
-        Map<String, Object> entry1 = new HashMap<>();
-        entry1.put("type", "exact");
-        entry1.put("key", item);
-        blacklist.add(entry1);
-        save(blacklist);
+        add("exact", item);
     }
-
     public static void addMaterial(String material) {
-        List<Map<?, ?>> blacklist = getData();
-        Map<String, Object> entry1 = new HashMap<>();
-        entry1.put("type", "material");
-        entry1.put("key", material);
-        blacklist.add(entry1);
-        save(blacklist);
+        add("material", material);
     }
-
     public static void addLoreContains(String lore) {
-        List<Map<?, ?>> blacklist = getData();
-        Map<String, Object> entry1 = new HashMap<>();
-        entry1.put("type", "lore");
-        entry1.put("key", lore);
-        blacklist.add(entry1);
-        save(blacklist);
+        add("lore", lore);
+    }
+    public static void addNameContains(String itemName) {
+        add("name", itemName);
+    }
+    public static void addItemModel(String model) {
+        add("item_model", model);
+    }
+    public static void addCustomModelData(String model) {
+        add("custom_model_data", model);
     }
 
-    public static void addNameContains(String itemName) {
+    private static void add(String type, Object object) {
         List<Map<?, ?>> blacklist = getData();
-        Map<String, Object> entry1 = new HashMap<>();
-        entry1.put("type", "name");
-        entry1.put("key", itemName);
-        blacklist.add(entry1);
+        Map<String, Object> entry = new HashMap<>();
+        entry.put("type", type);
+        entry.put("key", object);
+        blacklist.add(entry);
         save(blacklist);
     }
 

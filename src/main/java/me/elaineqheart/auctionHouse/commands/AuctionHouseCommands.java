@@ -292,7 +292,8 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     return true;
                 } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.blacklist"))
                         && strings[1].equals(Messages.getFormatted("commands.add"))) {
-                    if (strings[2].equals(Messages.getFormatted("commands.exact")) || strings[2].equals(Messages.getFormatted("commands.material"))) {
+                    if (strings[2].equals(Messages.getFormatted("commands.exact")) || strings[2].equals(Messages.getFormatted("commands.material"))
+                            || strings[2].equals(Messages.getFormatted("commands.item_model"))) {
                         ItemStack item = p.getInventory().getItemInMainHand();
                         if (item.getType().equals(Material.AIR)) {
                             p.sendMessage(Messages.getFormatted("command-feedback.blacklist-no-item-in-hand"));
@@ -302,8 +303,17 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         assert meta != null;
                         if (strings[2].equals(Messages.getFormatted("commands.exact"))) {
                             Blacklist.addExact(item);
-                        } else {
+                        } else if (strings[2].equals(Messages.getFormatted("commands.material"))){
                             Blacklist.addMaterial(item.getType().toString());
+                        } else if (strings[2].equals(Messages.getFormatted("commands.item_model"))) {
+                            if(item.getItemMeta().getItemModel() == null) {
+                                p.sendMessage(Messages.getFormatted("command-feedback.blacklist-no-model"));
+                                return true;
+                            }
+                            else Blacklist.addItemModel(item.getItemMeta().getItemModel().getKey());
+                            p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%",
+                                    item.getItemMeta().getItemModel().getKey()));
+                            return true;
                         }
                         p.sendMessage(Messages.getFormatted("command-feedback.blacklist-success", "%item%", item.getType().name()));
                         return true;
@@ -319,6 +329,10 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                         Blacklist.addLoreContains(strings[3]);
                     } else if (strings[2].equals(Messages.getFormatted("commands.name_contains"))) {
                         Blacklist.addNameContains(strings[3]);
+                    } else if (strings[2].equals(Messages.getFormatted("commands.custom_model_data"))) {
+                        Blacklist.addCustomModelData(strings[3]);
+                    } else if (strings[2].equals(Messages.getFormatted("commands.item_model"))) {
+                        Blacklist.addItemModel((strings[3]));
                     }
                     p.sendMessage(Messages.getFormatted("command-feedback.blacklist-name-success", "%name%", strings[3]));
                     return true;
@@ -406,7 +420,8 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.blacklist")) && strings[1].equals(Messages.getFormatted("commands.add"))) {
             List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.exact"),
                     Messages.getFormatted("commands.material"), Messages.getFormatted("commands.name_contains"),
-                    Messages.getFormatted("commands.contains_lore")}));
+                    Messages.getFormatted("commands.contains_lore"), Messages.getFormatted("commands.item_model"),
+                    Messages.getFormatted("commands.custom_model_data")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0){
                     params.add(p);
