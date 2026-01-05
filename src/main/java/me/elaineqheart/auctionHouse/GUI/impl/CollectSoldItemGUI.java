@@ -90,14 +90,13 @@ public class CollectSoldItemGUI extends InventoryGUI {
     }
     private InventoryButton collectItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.collectSoldItem(StringUtils.formatNumber(price)))
+                .creator(player -> ItemManager.collectSoldItem(getProfit(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                         collect(p, note.getNoteID().toString(), item.getAmount(), price);
                         Sounds.experience(event);
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-                        p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",
-                                "%price%", StringUtils.formatPrice(getProfit(price)),
+                        p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",getProfit(price),
                                 "%amount%", String.valueOf(item.getAmount())));
                 });
     }
