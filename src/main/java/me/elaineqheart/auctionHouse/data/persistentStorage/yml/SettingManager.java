@@ -7,11 +7,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 public class SettingManager {
 
     public static double taxRate;
-    public static long auctionDuration; // in seconds, default is 48 hours
     public static long auctionSetupTime;
     public static DecimalFormat formatter;
     public static String formatTimeCharacters;
@@ -20,10 +20,10 @@ public class SettingManager {
     public static String permissionModerate;
     public static boolean partialSelling;
     //public static boolean useRedis;
-    public static String redisHost;
-    public static String redisUsername;
-    public static String redisPassword;
-    public static int redisPort;
+    //public static String redisHost;
+    //public static String redisUsername;
+    //public static String redisPassword;
+    //public static int redisPort;
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
@@ -65,23 +65,23 @@ public class SettingManager {
         boolean reload = false;
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
         FileConfiguration messageFile = Messages.get();
-        if(c.getString("currency") != null) {
+        if(c.contains("currency")) {
             messageFile.set("placeholders.currency-symbol", c.getString("currency"));
             c.set("currency", null);
             c.set("currency-symbol", "has been moved to messages.yml");
             reload = true;
         }
-        if(c.get("currency-before-number") != null) {
+        if(c.contains("currency-before-number")) {
             messageFile.set("placeholders.price", "%currency-symbol%%number%");
             c.set("currency-before-number", null);
             reload = true;
         }
-        if(c.get("format-numbers") != null) {
+        if(c.contains("format-numbers")) {
             messageFile.set("placeholders.format-numbers", c.getString("format-numbers"));
             c.set("format-numbers", null);
             reload = true;
         }
-        if(c.get("format-time-characters") != null) {
+        if(c.contains("format-time-characters")) {
             messageFile.set("placeholders.format-time-characters", c.getString("format-time-characters"));
             c.set("format-time-characters", null);
             reload = true;
@@ -93,6 +93,9 @@ public class SettingManager {
             ConfigManager.layout.save();
             ConfigManager.layout.reload();
             c.set("filler-item", null);
+            reload = true;
+        if (Objects.equals(messageFile.getString("placeholders.currency-symbol"), " §ecoins")) {
+            messageFile.set("placeholders.currency-symbol", " coins");
             reload = true;
         }
         if(reload) {

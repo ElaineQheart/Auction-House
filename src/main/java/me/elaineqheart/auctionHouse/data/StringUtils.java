@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -67,9 +68,9 @@ public class StringUtils {
     }
 
     public static String formatNumber(double number) {
-        // if the price is a whole number, format it without decimal places
         // fallback for async threads
-        DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () -> new DecimalFormat(Messages.getFormatted("placeholders.format-numbers")));
+        DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () ->
+                new DecimalFormat(Messages.getFormatted("placeholders.format-numbers")));
         return Messages.getFormatted("placeholders.number", "%input%", fmt.format(number));
     }
     public static String formatNumber(String number) {
@@ -87,7 +88,8 @@ public class StringUtils {
                 "%currency-symbol%", Messages.getFormatted("placeholders.currency-symbol"));
     }
 
-    public static String getItemName(ItemStack item, World world) {
+    public static String getItemName(ItemStack item) {
+        World world = Bukkit.getWorlds().getFirst();
         Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();

@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
 import com.google.common.base.Charsets;
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.StringUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -69,10 +70,26 @@ public class Messages {
         message = replacePlaceholders(key, message, replacements);
         return adventureApi(message);
     }
+    public static String getFormatted(String key, double price, String... replacements) {
+        String message = getValue(key,true);
+        message = replacePlaceholders(key, message, replacements);
+        message = message.replace("%price%", StringUtils.formatPrice(price));
+        message = message.replace("%number%", StringUtils.formatNumber(price));
+        return adventureApi(message);
+    }
 
     public static List<String> getLoreList(String key, String... replacements) {
         String message = getValue(key,false);
         message = replacePlaceholders(key, message, replacements);
+        List<String> list = List.of(message.split("&n"));
+        list.forEach(Messages::adventureApi);
+        return list;
+    }
+    public static List<String> getLoreList(String key, double price, String... replacements) {
+        String message = getValue(key,false);
+        message = replacePlaceholders(key, message, replacements);
+        message = message.replace("%price%", StringUtils.formatPrice(price));
+        message = message.replace("%number%", StringUtils.formatNumber(price));
         List<String> list = List.of(message.split("&n"));
         list.forEach(Messages::adventureApi);
         return list;

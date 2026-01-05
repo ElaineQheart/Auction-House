@@ -374,6 +374,6 @@ command-feedback:
 placeholders:
   number: "§6%input%§r"
   price: "%number%%currency-symbol%"
-  currency-symbol: " §ecoins"
+  currency-symbol: " coins"
   format-numbers: "#,###.##"
   format-time-characters: "dhms"
