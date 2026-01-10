@@ -60,7 +60,15 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
             }
-            if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.sell"))) {
+            if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.about"))) {
+                p.sendMessage("§6> §7§l----------------[ §dAuction House§7 ]----------------");
+                p.sendMessage("§6> §7Made by:§e ElaineQheart");
+                p.sendMessage("§6> §7Contact:§e https://discord.gg/ePTwfDK6AY");
+                p.sendMessage("§6> §7Plugin Version:§e " + AuctionHouse.getPlugin().getDescription().getVersion());
+                p.sendMessage("§6> §7A free Auction House Plugin made with lots of dedication");
+                p.sendMessage("§6> §7§l----------------[ §dAuction House§7 ]----------------");
+            }
+            if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.sell")) && SettingManager.BINAuctions) {
                 p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
             if((strings.length==2 || strings.length==3) && strings[0].equals(Messages.getFormatted("commands.sell"))) {
@@ -357,6 +365,9 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             List<String> assetParams = new ArrayList<>(List.of(new String[]{
                     Messages.getFormatted("commands.sell")
             }));
+            List<String> assetParams = new ArrayList<>();
+            assetParams.add(Messages.getFormatted("commands.about"));
+            if(SettingManager.BINAuctions) assetParams.add(Messages.getFormatted("commands.sell"));
             if(SettingManager.auctionAnnouncementsEnabled) assetParams.add(Messages.getFormatted("commands.announce"));
             if(commandSender.hasPermission(SettingManager.permissionModerate)) {
                 assetParams.add(Messages.getFormatted("commands.admin"));
