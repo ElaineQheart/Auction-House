@@ -11,3 +11,5 @@ display-update: 20                          # 20 ticks = 1 second, how frequentl
 auction-announcements: true                 # announce when someone puts an item on auction (players can toggle this with /ah announce)
 bidding: true                               # enables actual auctions by typing [/ah bid <amount>]
 bid-auction-duration: 7200                  # the time a bidding auction lasts in seconds
+min-bin: 1                                  # the minimum sell price
+min-bid: 1                                  # the minimum bid price

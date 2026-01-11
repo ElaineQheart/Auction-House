@@ -113,6 +113,15 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     p.sendMessage(Messages.getFormatted("command-feedback.invalid-number2"));
                     return true;
                 }
+                if (strings[0].equals(Messages.getFormatted("commands.sell")) && price < SettingManager.minBINPrice) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.min-bin",
+                            "%price%", SettingManager.minBINPrice + Messages.getFormatted("placeholders.currency-symbol")));
+                    return true;
+                } else if (strings[0].equals(Messages.getFormatted("commands.bid")) && price < SettingManager.minBIDPrice) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.min-bid",
+                            "%price%", SettingManager.minBIDPrice + Messages.getFormatted("placeholders.currency-symbol")));
+                    return true;
+                }
                 int amount = item.getAmount();
                 if(strings.length == 3) {
                     try {

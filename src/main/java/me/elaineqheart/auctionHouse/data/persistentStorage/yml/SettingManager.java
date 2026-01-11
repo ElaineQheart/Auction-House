@@ -27,6 +27,8 @@ public class SettingManager {
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
+    public static double minBINPrice;
+    public static double minBIDPrice;
 
     static {
         loadData();
@@ -52,6 +54,8 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
+        minBINPrice = c.getDouble("min-bin", 1);
+        minBIDPrice = c.getDouble("min-bid", 1);
     }
 
 //    multi-server-database:
