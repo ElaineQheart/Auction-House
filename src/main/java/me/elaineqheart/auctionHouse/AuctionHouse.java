@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse;
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIManager;
+import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
@@ -83,7 +84,7 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         PlayerPreferencesManager.disable();
-        guiManager.forceCloseAll();
+        if(guiManager != null) guiManager.forceCloseAll();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 

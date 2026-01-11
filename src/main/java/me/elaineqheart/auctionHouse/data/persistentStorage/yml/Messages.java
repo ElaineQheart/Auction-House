@@ -39,14 +39,14 @@ public class Messages {
         customFile.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
     }
 
-    public static FileConfiguration get(){
+    public static FileConfiguration get() {
         return customFile;
     }
 
-    public static void save(){
+    public static void save() {
         try {
             customFile.save(file);
-        }catch (IOException e){
+        } catch (IOException e) {
             AuctionHouse.getPlugin().getLogger().severe("Couldn't save messages.yml file");
         }
     }
