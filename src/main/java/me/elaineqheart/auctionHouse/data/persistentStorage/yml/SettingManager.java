@@ -27,6 +27,12 @@ public class SettingManager {
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
+    public static boolean BINAuctions;
+    public static long BINAuctionDuration; // in seconds, default is 48 hours
+    public static boolean BIDAuctions;
+    public static long BIDAuctionDuration;
+    public static int lastBIDExtraTime;
+    public static double bidIncreaseRatio;
     public static double minBINPrice;
     public static double minBIDPrice;
 
@@ -54,6 +60,12 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
+        BINAuctions = c.getBoolean("bin-auctions", true);
+        BINAuctionDuration = c.getLong("bin-auction-duration", 172800);
+        BIDAuctions = c.getBoolean("bid-auctions", true);
+        BIDAuctionDuration = c.getLong("bid-auction-duration", 7200);
+        lastBIDExtraTime = c.getInt("last-bid-extra-time", 60);
+        bidIncreaseRatio = c.getDouble("bid-increase-percent", 25) / 100;
         minBINPrice = c.getDouble("min-bin", 1);
         minBIDPrice = c.getDouble("min-bid", 1);
     }

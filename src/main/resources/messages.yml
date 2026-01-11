@@ -369,7 +369,7 @@ command-feedback:
   blacklist-success: "Successfully added the properties of %item% to the blacklist"
   blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
   item-blacklisted: "§cYou cannot auction this item!"
-  item-saved-to-layout-file: "Item from main hand saved in layout.yml under \"test:\""
+  item-saved-to-layout-file: "Item from main hand saved in layout.yml under \"test\""
   min-bid: "Your starting bid must be at least %price%!"
   min-bin: "The item price must be at least %price%!"
 

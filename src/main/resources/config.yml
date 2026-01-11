@@ -13,3 +13,4 @@ bidding: true                               # enables actual auctions by typing 
 bid-auction-duration: 7200                  # the time a bidding auction lasts in seconds
 min-bin: 1                                  # the minimum sell price
 min-bid: 1                                  # the minimum bid price
+version: 1.4
