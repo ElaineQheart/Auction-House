@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Objects;
@@ -12,20 +13,26 @@ public class ConfigManager {
     public static Config bannedPlayers = new Config();
     public static Config permissions = new Config();
     public static Config blacklist = new Config();
-    public static Config whitelist = new Config();
+    public static Config categories = new Config();
     public static Config playerPreferences = new Config();
     public static Config layout = new Config();
 
     public static void setupConfigs() {
+        AuctionHouse.getPlugin().reloadConfig();
         displays.setup("displays", false, "/data");
         displaysBackwardsCompatibility();
         bannedPlayers.setup("bannedPlayers", false, "/data");
         permissions.setup("permissions", true, "");
         blacklist.setup("blacklist", false, "/data");
-        whitelist.setup("whitelist", false, "/data");
+        categories.setup("categories", false, "/data");
         playerPreferences.setup("playerPreferences", false, "/data");
         layout.setup("layout", true, "");
         permissionsSetup();
+    }
+
+    public static boolean backwardsCompatibility() {
+        FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        return !Objects.equals(c.getString("plugin-version"), AuctionHouse.getPlugin().getDescription().getVersion());
     }
 
     public static void reloadConfigs() {
@@ -33,7 +40,7 @@ public class ConfigManager {
         bannedPlayers.reload();
         permissions.reload();
         blacklist.reload();
-        whitelist.reload();
+        categories.reload();
         playerPreferences.reload();
         layout.reload();
     }
@@ -44,8 +51,12 @@ public class ConfigManager {
             permissions.get().createSection("auction-slots");
             permissions.save();
         }
-        if(permissions.get().getConfigurationSection("auction-duration") == null) {
-            permissions.get().createSection("auction-duration");
+        if(permissions.get().getConfigurationSection("bin-auction-duration") == null) {
+            permissions.get().createSection("bin-auction-duration");
+            permissions.save();
+        }
+        if(permissions.get().getConfigurationSection("bid-auction-duration") == null) {
+            permissions.get().createSection("bid-auction-duration");
             permissions.save();
         }
     }

@@ -38,14 +38,14 @@ public class StringUtils {
         }else{
             h = String.valueOf(hours);
         }
-        if(convertDays) {
-            int days = (int) (seconds / 60 / 60 / 24);
+        int days = (int) (seconds / 60 / 60 / 24);
+        if(convertDays && days != 0) {
             if (String.valueOf(days).length() == 1) {
                 d = '0' + String.valueOf(days);
             } else {
                 d = String.valueOf(days);
             }
-            return (ChatColor.YELLOW+d+ SettingManager.formatTimeCharacters.charAt(0)+" "+
+            return (ChatColor.YELLOW+d+SettingManager.formatTimeCharacters.charAt(0)+" "+
                     h+SettingManager.formatTimeCharacters.charAt(1)+" "+
                     m+SettingManager.formatTimeCharacters.charAt(2)+" "+
                     s+SettingManager.formatTimeCharacters.charAt(3));
@@ -68,10 +68,13 @@ public class StringUtils {
     }
 
     public static String formatNumber(double number) {
+        return Messages.getFormatted("placeholders.number", "%input%", formatNumberPlain(number));
+    }
+    public static String formatNumberPlain(double number) {
         // fallback for async threads
         DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () ->
                 new DecimalFormat(Messages.getFormatted("placeholders.format-numbers")));
-        return Messages.getFormatted("placeholders.number", "%input%", fmt.format(number));
+        return fmt.format(number);
     }
     public static String formatNumber(String number) {
         return Messages.getFormatted("placeholders.number", "%input%", number);
@@ -96,6 +99,30 @@ public class StringUtils {
         itemEntity.remove();
         if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
         return ChatColor.RESET + name;
+    }
+
+    public static int parsePositiveNumber(String input) {
+        try{
+            return Math.max(Integer.parseInt(input), 0);
+        } catch (Exception e) {
+            try{
+                int price = Integer.parseInt(input.substring(0, input.length()-1));
+                String suffix = input.substring(input.length()-1).toLowerCase();
+                switch (suffix) {
+                    case "k":
+                        price *= 1000;
+                        break;
+                    case "m":
+                        price *= 1000000;
+                        break;
+                    default:
+                        return -1;
+                }
+                return Math.max(price, 0);
+            } catch (Exception f) {
+                return -1;
+            }
+        }
     }
 
 }

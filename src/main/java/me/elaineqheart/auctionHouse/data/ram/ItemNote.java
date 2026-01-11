@@ -11,10 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ItemNote {
 
@@ -30,8 +28,11 @@ public class ItemNote {
     private String adminMessage;
     private long auctionTime;
     private String itemName;
+    private final boolean isBINAuction;
+    private List<Bid> bidHistory = new ArrayList<>();
+    private Set<UUID> claimedPlayers = new HashSet<>(); 
 
-    public ItemNote(Player player, ItemStack item, int price) {
+    public ItemNote(Player player, ItemStack item, int price, boolean isBINAuction) {
         this.noteID = UUID.randomUUID();
         this.playerName = player.getDisplayName();
         this.buyerName = null;
@@ -40,41 +41,26 @@ public class ItemNote {
         this.itemData = ItemStackConverter.encode(item);
         this.price = price;
         this.isSold = false;
-        this.auctionTime = Permissions.getAuctionDuration(player);
-        itemName = StringUtils.getItemName(item, player.getWorld());
-    }
-
-    public ItemNote(String playerName, UUID playerUUID, String buyerName, double price, String itemData, Date dateCreated, boolean isSold, 
-                    String adminMessage, int partiallySoldAmountLeft, long auctionTime, String itemName, UUID noteID) {
-        this.noteID = noteID;
-        this.playerName = playerName;
-        this.playerUUID = playerUUID;
-        this.buyerName = buyerName;
-        this.price = price;
-        this.itemData = itemData;
-        this.dateCreated = dateCreated;
-        this.isSold = isSold;
-        this.adminMessage = adminMessage;
-        this.partiallySoldAmountLeft = partiallySoldAmountLeft;
-        this.auctionTime = auctionTime;
-        this.itemName = itemName;
+        this.auctionTime = Permissions.getAuctionDuration(player, isBINAuction);
+        this.itemName = StringUtils.getItemName(item);
+        this.isBINAuction = isBINAuction;
     }
 
     public ItemStack getItem(){
         return ItemStackConverter.decode(itemData);
     }
-    public long timeLeft(){
+    public long getTimeLeft(){
         // +30 seconds [auctionSetupTime] wait time until the item is up on auction
-        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)); //backwards compatibility
+        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID), isBINAuction); //backwards compatibility
         return auctionTime + SettingManager.auctionSetupTime - (new Date().getTime() - dateCreated.getTime())/1000; // divided by 1000 to get seconds
     }
     public boolean isExpired(){
-        return timeLeft()<0;
+        return getTimeLeft()<0;
     }
 
     public boolean isOnWaitingList() {
-        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID)); //backwards compatibility
-        return timeLeft() > auctionTime;
+        if(auctionTime == 0) auctionTime = Permissions.getAuctionDuration(Bukkit.getPlayer(playerUUID), isBINAuction); //backwards compatibility
+        return getTimeLeft() > auctionTime;
     }
 
     public double getCurrentPrice() {
@@ -102,7 +88,7 @@ public class ItemNote {
 
     //Getters and Setters
     public String getPlayerName() {return playerName;}
-    public String getBuyerName() {return buyerName;}
+    public String getBuyerName() {return isBINAuction ? buyerName : getLastBidderName();}
     public UUID getPlayerUUID() {return playerUUID;}
     public Date getDateCreated() {return dateCreated;}
     public double getPrice() {return price;}
@@ -120,14 +106,48 @@ public class ItemNote {
     public int getPartiallySoldAmountLeft() {return partiallySoldAmountLeft;}
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}
-    public String getItemData() {return itemData;}
-    public long getAuctionTime() {return auctionTime;}
     public String getItemName() {
-        if (itemName == null) itemName = StringUtils.getItemName(getItem(), Bukkit.getWorlds().getFirst());
+        if (itemName == null) itemName = StringUtils.getItemName(getItem());
         return itemName;
     }
+    public List<Bid> getBidHistoryList() {
+        if(bidHistory == null) bidHistory = new ArrayList<>();
+        return bidHistory;
+    }
+    public boolean hasBidHistory() {return bidHistory != null && !bidHistory.isEmpty();}
+    public boolean isBINAuction() {return isBINAuction;}
+    public String getLastBidderName() {return getBidHistoryList().isEmpty() ? null : getBidHistoryList().getLast().getPlayerName();}
+    public UUID getLastBidder() {return getBidHistoryList().isEmpty() ? null : getBidHistoryList().getLast().getPlayerID();}
+    public Set<UUID> getBidders() {
+        return getBidHistoryList().stream()
+                .map(Bid::getPlayerID)
+                .collect(Collectors.toSet());
+    }
+    public double getBid(Player p) {
+        return getBidHistoryList().stream()
+                .filter(bid -> bid.getPlayerID().equals(p.getUniqueId()))
+                .map(Bid::getPrice)
+                .reduce((first, second) -> second)
+                .orElse(0.0);
+    }
+    public Set<UUID> getClaimedPlayers() {
+        if(claimedPlayers == null) claimedPlayers = new HashSet<>();
+        return claimedPlayers;
+    }
+    public boolean canClaimBid(UUID playerID) {return !getClaimedPlayers().contains(playerID);}
 
-    public void setBuyerName(String buyerName) {this.buyerName = buyerName;}
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+    public void addBid(Player player, double bid) {
+        this.bidHistory.add(new Bid(player, new Date(), bid));
+        this.price = bid;
+        if (getTimeLeft() < SettingManager.lastBIDExtraTime) {
+            auctionTime = SettingManager.lastBIDExtraTime - SettingManager.auctionSetupTime + (new Date().getTime() - dateCreated.getTime())/1000;
+        }
+        AuctionHouseStorage.addBid(player.getUniqueId(), noteID);
+    }
+    public void removeBid(Player player) {getClaimedPlayers().add(player.getUniqueId());}
     public void setSold(boolean isSold) {this.isSold = isSold;}
     public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
     public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}

@@ -39,6 +39,7 @@ public class ItemManager {
     public static ItemStack emptyPaper;
     public static ItemStack cancel;
     public static ItemStack collectExpiredItem;
+    public static ItemStack cancelBINAuction;
     public static ItemStack cancelAuction;
     public static ItemStack commandBlockInfo;
     public static ItemStack adminCancelAuction;
@@ -46,6 +47,7 @@ public class ItemManager {
     public static ItemStack confirm;
     public static ItemStack chooseItemBuyAmount;
     public static ItemStack refresh;
+    public static ItemStack myBids;
 
     static {
         reload();
@@ -69,6 +71,7 @@ public class ItemManager {
         emptyPaper = createEmptyPaper();
         cancel = createCancel();
         collectExpiredItem = createCollectExpiredItem();
+        cancelBINAuction = createCancelBINAuction();
         cancelAuction = createCancelAuction();
         commandBlockInfo = createCommandBlockInfo();
         adminCancelAuction = createAdminCancelAuction();
@@ -76,6 +79,7 @@ public class ItemManager {
         confirm = createConfirmItem();
         chooseItemBuyAmount = createChooseItemBuyAmount();
         refresh = createRefresh();
+        myBids = createMyBids();
     }
 
     private static ItemStack createFillerItem(){
@@ -100,6 +104,15 @@ public class ItemManager {
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.refresh.name"));
         meta.setLore(Messages.getLoreList("items.refresh.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createMyBids(){
+        ItemStack item = Layout.getItem("d");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.my-bids.name"));
+        meta.setLore(Messages.getLoreList("items.my-bids.lore"));
         item.setItemMeta(meta);
         return item;
     }
@@ -251,12 +264,21 @@ public class ItemManager {
         item.setItemMeta(meta);
         return item;
     }
-    private static ItemStack createCancelAuction() {
+    private static ItemStack createCancelBINAuction() {
         ItemStack item = Layout.getItem("cancel-auction");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.cancel-auction.name"));
         meta.setLore(Messages.getLoreList("items.cancel-auction.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createCancelAuction() {
+        ItemStack item = Layout.getItem("cancel-auction");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.cancel-bid-auction.name"));
+        meta.setLore(Messages.getLoreList("items.cancel-bid-auction.lore"));
         item.setItemMeta(meta);
         return item;
     }
@@ -330,9 +352,20 @@ public class ItemManager {
         if(isShulkerBox(item)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.shulker-preview"));
         }
-        lore.addAll(Messages.getLoreList("items.auction.lore.default",
-                "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(ownAuction ? note.getPrice() : note.getCurrentPrice())));
+        if(note.isBINAuction()) {
+            lore.addAll(Messages.getLoreList("items.auction.lore.default", ownAuction ? note.getPrice() : note.getCurrentPrice(),
+                    "%player%", note.getPlayerName()));
+        } else {
+            if(note.getBidHistoryList().isEmpty()) {
+                lore.addAll(Messages.getLoreList("items.auction.lore.default-starting-bid", note.getPrice(),
+                        "%player%", note.getPlayerName()));
+            } else {
+                lore.addAll(Messages.getLoreList("items.auction.lore.default-bid", note.getPrice(),
+                        "%player%", note.getPlayerName(),
+                        "%amountOfBids%", String.valueOf(note.getBidHistoryList().size()),
+                        "%bidder%", note.getLastBidderName()));
+            }
+        }
         if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
@@ -356,21 +389,25 @@ public class ItemManager {
             }
             if(!note.isExpired()) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.active",
-                        "%time%", StringUtils.getTime(note.timeLeft(), true)));
+                        "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
             } else {
                 lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
             }
-        }else if(note.isExpired() && !note.isSold()) {
+        }else if(note.isExpired() && (!note.isSold() && note.isBINAuction() || !note.hasBidHistory() && !note.isBINAuction())) {
             lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
+        }else if (!note.isBINAuction() && note.hasBidHistory() && note.isExpired()) {
+            lore.addAll(Messages.getLoreList("items.auction.lore.ended"));
         }else if(note.isSold() && !note.isOnAuction()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.sold",
                     "%buyer%", note.getBuyerName()));
-        }else if(note.isOnWaitingList()){
+        }else if(note.isOnWaitingList()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.waiting-list",
-                    "%time%", StringUtils.getTime(note.timeLeft() - Permissions.getAuctionDuration(p), true)));
+                    "%time%", StringUtils.getTime(
+                            note.getTimeLeft() - Permissions.getAuctionDuration(p, note.isBINAuction()), true
+                    )));
         }else{
             lore.addAll(Messages.getLoreList("items.auction.lore.active",
-                    "%time%", StringUtils.getTime(note.timeLeft(), true)));
+                    "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
         }
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -382,12 +419,11 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
-        lore.addAll(Messages.getLoreList("items.auction.lore.default",
-                "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getSoldPrice())));
+        lore.addAll(Messages.getLoreList("items.auction.lore.default", note.getSoldPrice(),
+                "%player%", note.getPlayerName()));
         lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         lore.addAll(Messages.getLoreList("items.auction.lore.sold",
-                "%buyer%", note.getBuyerName()));
+                "%buyer%", note.getLastBidderName()));
         item.setAmount(item.getAmount() - note.getPartiallySoldAmountLeft());
 
         meta.setLore(lore);
@@ -410,9 +446,8 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.addAll(Messages.getLoreList("items.admin-expire-item.lore",
+        lore.addAll(Messages.getLoreList("items.admin-expire-item.lore", note.getPrice(),
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -424,51 +459,167 @@ public class ItemManager {
         assert meta != null;
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
-        lore.addAll(Messages.getLoreList("items.admin-delete-item.lore",
+        lore.addAll(Messages.getLoreList("items.admin-delete-item.lore", note.getPrice(),
                 "%player%", note.getPlayerName(),
-                "%price%", StringUtils.formatNumber(note.getPrice()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createTurtleScute(String price) {
+    public static ItemStack createTurtleScute(double price) {
         ItemStack item = Layout.getItem("turtle-scute-confirm");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.buy-item.name"));
-        meta.setLore(Messages.getLoreList("items.buy-item.lore",
-                        "%price%", price));
+        meta.setLore(Messages.getLoreList("items.buy-item.lore", price));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createArmadilloScute(String price) {
-        ItemStack item = Layout.getItem("armadillo-scute-cancel");
+    public static ItemStack createArmadilloScute(double price) {
+        ItemStack item = Layout.getItem("cannot-afford");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.not-enough-money.name"));
-        meta.setLore(Messages.getLoreList("items.not-enough-money.lore",
-                "%price%", price));
+        meta.setLore(Messages.getLoreList("items.not-enough-money.lore", price));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack createConfirm(String price) {
+    public static ItemStack createConfirm(double price) {
         ItemStack item = Layout.getItem("confirm");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.confirm-buy.name"));
-        meta.setLore(Messages.getLoreList("items.confirm-buy.lore",
-                        "%price%", price));
+        meta.setLore(Messages.getLoreList("items.confirm-buy.lore", price));
         item.setItemMeta(meta);
         return item;
     }
-    public static ItemStack collectSoldItem(String price) {
+    public static ItemStack collectSoldItem(double price) {
         ItemStack item = Layout.getItem("collect-sold-item");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(Messages.getFormatted("items.collect-sold.name"));
-        meta.setLore(Messages.getLoreList("items.collect-sold.lore",
-                        "%price%", price));
+        meta.setLore(Messages.getLoreList("items.collect-sold.lore", price));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createBidHistory(List<Bid> bidHistory) {
+        ItemStack item = Layout.getItem("bid-history");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.bid-history.name"));
+        List<String> lore = meta.getLore();
+        if(lore==null) lore = new ArrayList<>();
+        lore.addAll(Messages.getLoreList("items.bid-history.lore",
+                "%amountOfBids%", String.valueOf(bidHistory.size())));
+        for(int i = 0; i < Math.min(bidHistory.size(), 6); i++) {
+            Bid bid = bidHistory.get(bidHistory.size()-1-i);
+            lore.addAll(Messages.getLoreList("items.bid-history.bid", bid.getPrice(),
+                    "%player%", bid.getPlayerName(),
+                    "%time%", bid.getTimeAgo()));
+        }
+        if(bidHistory.size() - 6 > 0) {
+            lore.addAll(Messages.getLoreList("items.bid-history.more",
+                    "%amount%", String.valueOf(bidHistory.size()-6)));
+        }
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createBidExplanation(double amount) {
+        ItemStack item = Layout.getItem("bid-explanation");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.bid-explanation.name", amount));
+        meta.setLore(Messages.getLoreList("items.bid-explanation.lore", amount));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createSubmitBid(double amount, double previousBid) {
+        ItemStack item = Layout.getItem("submit-bid");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        if(previousBid == 0) {
+            meta.setItemName(Messages.getFormatted("items.submit-bid.name", amount));
+            meta.setLore(Messages.getLoreList("items.submit-bid.lore", amount));
+        } else {
+            meta.setItemName(Messages.getFormatted("items.submit-another-bid.name", amount));
+            meta.setLore(Messages.getLoreList("items.submit-another-bid.lore", amount,
+                    "%price2%", StringUtils.formatPrice(previousBid),
+                    "%number2%", StringUtils.formatNumber(previousBid),
+                    "%price3%", StringUtils.formatPrice(amount - previousBid),
+                    "%number3%", StringUtils.formatNumber(amount - previousBid)));
+        }
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createOwnBid(double amount) {
+        ItemStack item = Layout.getItem("own-bid");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.own-bid.name", amount));
+        meta.setLore(Messages.getLoreList("items.own-bid.lore", amount));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createCannotAffordBid(double amount) {
+        ItemStack item = Layout.getItem("cannot-afford-bid");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.cannot-afford-bid.name", amount));
+        meta.setLore(Messages.getLoreList("items.cannot-afford-bid.lore", amount));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createTopBid(double amount, double newBid) {
+        ItemStack item = Layout.getItem("top-bid");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.top-bid.name", amount));
+        meta.setLore(Messages.getLoreList("items.top-bid.lore", amount,
+                "%price2%", StringUtils.formatPrice(newBid),
+                "%number2%", StringUtils.formatNumber(newBid)));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createBINFilter(AhConfiguration.BINFilter binFilter) {
+        ItemStack item = switch(binFilter) {
+            case ALL -> Layout.getItem("f");
+            case BIN_ONLY -> Layout.getItem("bin-filter-bin");
+            case AUCTIONS_ONLY -> Layout.getItem("bin-filter-auctions");
+        };
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted(switch(binFilter) {
+            case ALL -> "items.bin-filter-all.name";
+            case BIN_ONLY -> "items.bin-filter-bin.name";
+            case AUCTIONS_ONLY -> "items.bin-filter-auctions.name";
+        }));
+        meta.setLore(Messages.getLoreList(switch(binFilter) {
+            case ALL -> "items.bin-filter-all.lore";
+            case BIN_ONLY -> "items.bin-filter-bin.lore";
+            case AUCTIONS_ONLY -> "items.bin-filter-auctions.lore";
+        }));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createCollectAuction(ItemNote note) {
+        ItemStack item = Layout.getItem("collect-auction");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.collect-auction.name"));
+        meta.setLore(Messages.getLoreList("items.collect-auction.lore", note.getBidHistoryList().getLast().getPrice()));
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack createCollectCoins(ItemNote note, Player p) {
+        ItemStack item = Layout.getItem("collect-coins");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(Messages.getFormatted("items.collect-coins.name"));
+        meta.setLore(Messages.getLoreList("items.collect-coins.lore", note.getBidHistoryList().getLast().getPrice(),
+                "%price2%", StringUtils.formatPrice(note.getBid(p)),
+                "%number2%", StringUtils.formatNumber(note.getBid(p)),
+                "%player%", note.getLastBidderName()));
         item.setItemMeta(meta);
         return item;
     }

@@ -7,6 +7,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.*;
@@ -61,7 +62,7 @@ public class UpdateDisplay implements Runnable{
                     }
 
                     String price = note.getPriceTrimmed();
-                    String time = StringUtils.getTimeTrimmed(note.timeLeft());
+                    String time = StringUtils.getTimeTrimmed(note.getTimeLeft());
                     String playerName = note.getPlayerName();
                     ItemStack item = note.getItem();
 
@@ -242,9 +243,9 @@ public class UpdateDisplay implements Runnable{
 
     public static ItemNote getNote(String type, int rank) {
         if(type.equals("highest_price")) {
-            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.PRICE_DESC, "").stream().skip(rank-1).findFirst().orElse(null);
+            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.PRICE_DESC, "", AhConfiguration.BINFilter.ALL).stream().skip(rank-1).findFirst().orElse(null);
         } else if (type.equals("ending_soon")) {
-            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.DATE, "").stream().skip(rank-1).findFirst().orElse(null);
+            return AuctionHouseStorage.getSortedList(ItemNoteStorage.SortMode.DATE, "", AhConfiguration.BINFilter.ALL).stream().skip(rank-1).findFirst().orElse(null);
         }
         return null;
     }

@@ -18,7 +18,7 @@ public class Config {
     private FileConfiguration customFile;
 
     public void setup(String fileName, boolean copyDefaults, String parent){
-        if(!parent.isEmpty()) backwardsCompatibility(fileName, parent);
+        if(ConfigManager.backwardsCompatibility() && !parent.isEmpty()) backwardsCompatibility(fileName, parent);
         file = new File(AuctionHouse.getPlugin().getDataFolder() + parent,  fileName + ".yml");
 
         if (!file.exists()){

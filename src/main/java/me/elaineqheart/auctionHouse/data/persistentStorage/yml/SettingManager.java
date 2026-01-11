@@ -44,7 +44,6 @@ public class SettingManager {
         AuctionHouse.getPlugin().reloadConfig();
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
         taxRate = c.getDouble("tax", 0.01);
-        auctionDuration = c.getLong("auction-duration", 60*60*48);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
@@ -68,6 +67,7 @@ public class SettingManager {
         bidIncreaseRatio = c.getDouble("bid-increase-percent", 25) / 100;
         minBINPrice = c.getDouble("min-bin", 1);
         minBIDPrice = c.getDouble("min-bid", 1);
+        if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
     }
 
 //    multi-server-database:
@@ -77,30 +77,26 @@ public class SettingManager {
 //    redis-password: ""
 //    redis-port:                               # the port is the last thing in your public endpoint
 
-    public static void backwardsCompatibility() {
-        boolean reload = false;
+    private static void backwardsCompatibility() {
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        c.set("plugin-version", AuctionHouse.getPlugin().getDescription().getVersion());
         FileConfiguration messageFile = Messages.get();
         if(c.contains("currency")) {
             messageFile.set("placeholders.currency-symbol", c.getString("currency"));
             c.set("currency", null);
             c.set("currency-symbol", "has been moved to messages.yml");
-            reload = true;
         }
         if(c.contains("currency-before-number")) {
             messageFile.set("placeholders.price", "%currency-symbol%%number%");
             c.set("currency-before-number", null);
-            reload = true;
         }
         if(c.contains("format-numbers")) {
             messageFile.set("placeholders.format-numbers", c.getString("format-numbers"));
             c.set("format-numbers", null);
-            reload = true;
         }
         if(c.contains("format-time-characters")) {
             messageFile.set("placeholders.format-time-characters", c.getString("format-time-characters"));
             c.set("format-time-characters", null);
-            reload = true;
         }
         if (c.contains("filler-item")) {
             Material material = Material.matchMaterial(c.getString("filler-item", "BLACK_STAINED_GLASS_PANE"));
@@ -109,16 +105,24 @@ public class SettingManager {
             ConfigManager.layout.save();
             ConfigManager.layout.reload();
             c.set("filler-item", null);
-            reload = true;
+        }
+        if (c.contains("auction-duration")) {
+            c.set("bin-auction-duration", c.get("auction-duration"));
+            c.set("auction-duration", null);
+        }
+        if (ConfigManager.permissions.get().contains("auction-duration")) {
+            ConfigManager.permissions.get().set("bin-auction-duration", ConfigManager.permissions.get().get("auction-duration"));
+            ConfigManager.permissions.get().set("auction-duration", null);
+            ConfigManager.permissions.save();
+            ConfigManager.permissions.reload();
+        }
         if (Objects.equals(messageFile.getString("placeholders.currency-symbol"), " §ecoins")) {
             messageFile.set("placeholders.currency-symbol", " coins");
-            reload = true;
         }
-        if(reload) {
-            Messages.save();
-            Messages.reload();
-            AuctionHouse.getPlugin().saveConfig();
-        }
+        Messages.save();
+        Messages.reload();
+        AuctionHouse.getPlugin().saveConfig();
+        AuctionHouse.getPlugin().reloadConfig();
     }
 
 

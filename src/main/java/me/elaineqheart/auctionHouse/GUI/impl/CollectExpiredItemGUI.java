@@ -23,7 +23,7 @@ public class CollectExpiredItemGUI extends InventoryGUI {
         super();
         this.note = note;
         c = configuration;
-        c.view = AhConfiguration.View.COLLECT_EXPIRED_ITEM;
+        c.setView(AhConfiguration.View.COLLECT_EXPIRED_ITEM);
     }
 
     @Override

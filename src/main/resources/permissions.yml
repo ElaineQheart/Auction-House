@@ -1,11 +1,16 @@
 auction-slots:
-auction-duration:
+bin-auction-duration:
+bid-auction-duration:
 
 #  auction-slots:
 #    vip: 12
 #    mvp: 15
 #    custom.example.permission: 50
-#  auction-duration:
-#    vip: 60*60*72 # 72 hours = 3 days
-#    mvp: 60*60*96 # 96 hours = 4 days
-#    custom.example.permission: 60*60*24*5 # 5 days
+#  bin-auction-duration:
+#    vip: 259200 # 3 days = 259200 seconds
+#    mvp: 345600 # 4 days
+#    custom.example.permission: 432000 # 5 days
+#  bid-auction-duration:
+#    vip: 10800 # 3 hours
+#    mvp: 10800 # 3 hours
+#    custom.example.permission: 86400 # 24 hours

@@ -19,9 +19,9 @@ public class Permissions {
         return slots;
     }
 
-    public static long getAuctionDuration(Player player) {
-        long duration = SettingManager.auctionDuration;
-        ConfigurationSection section = ConfigManager.permissions.get().getConfigurationSection("auction-duration");
+    public static long getAuctionDuration(Player player, boolean BIN) {
+        long duration = BIN ? SettingManager.BINAuctionDuration : SettingManager.BIDAuctionDuration;
+        ConfigurationSection section = ConfigManager.permissions.get().getConfigurationSection(BIN ? "bin-auction-duration" : "bid-auction-duration");
         if (section == null) return duration;
         for (String key : section.getKeys(true)) {
             if (player.hasPermission(key)) {

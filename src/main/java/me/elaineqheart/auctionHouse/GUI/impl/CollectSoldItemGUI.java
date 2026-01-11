@@ -4,7 +4,6 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
@@ -21,6 +20,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.UUID;
 
 public class CollectSoldItemGUI extends InventoryGUI {
 
@@ -35,7 +35,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
         price = note.getSoldPrice();
         item =  ItemManager.createCollectingItemFromNote(note);
         c = configuration;
-        c.view = AhConfiguration.View.COLLECT_SOLD_ITEM;
+        c.setView(AhConfiguration.View.COLLECT_SOLD_ITEM);
     }
 
     @Override
@@ -93,18 +93,21 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectSoldItem(getProfit(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                        collect(p, note.getNoteID().toString(), item.getAmount(), price);
+                        collect(p, note.getNoteID(), item.getAmount(), price);
                         Sounds.experience(event);
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-                        p.sendMessage(Messages.getFormatted("chat.collect-sold-auction",getProfit(price),
-                                "%amount%", String.valueOf(item.getAmount())));
+                        p.sendMessage(Messages.getFormatted("chat.collect-sold-auction", getProfit(price),
+                                "%amount%", String.valueOf(item.getAmount()),
+                                "%item%", note.getItemName()));
                 });
     }
 
-    public static void collect(OfflinePlayer p, String noteID, int itemAmount, double price) {
+    public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
+        ItemNote note = AuctionHouseStorage.getNote(noteID);
+        if(note == null) return false;
+        if(!note.isBINAuction() && note.isSold()) return false;
         Economy eco = VaultHook.getEconomy();
         eco.depositPlayer(p, getProfit(price));
-        ItemNote note = AuctionHouseStorage.getNote(noteID);
         if (note.getPartiallySoldAmountLeft() != 0) {
             ItemNoteStorage.setPrice(note, note.getPrice() - price);
             ItemStack temp = note.getItem().clone();
@@ -116,13 +119,18 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 ItemNoteStorage.setBuyerName(note, null);
             }
         } else {
-            ItemNoteStorage.deleteNote(note);
+            if(note.isBINAuction()) ItemNoteStorage.deleteNote(note);
+            else {
+                note.setSold(true);
+                AuctionHouseStorage.checkRemove(noteID);
+            }
         }
         try {
             ItemNoteStorage.saveNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return true;
     }
 
     private static double getProfit(double price) {

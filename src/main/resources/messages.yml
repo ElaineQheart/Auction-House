@@ -28,9 +28,11 @@
 chat:
   already-sold: "§cERROR! This item has already been sold!"
   already-sold2: "§cThis item has already been sold!"
+  already-sold3: "§cAnother player already placed a bid!"
   non-existent: "§cERROR! This item has been removed!"
   non-existent2: "§cThis item has been removed!"
   not-enough-money: "§cYou don't have enough money to buy this item!"
+  expired: "§cThe item is no longer on auction!"
   inventory-full: "§cYour inventory is full!
     &nPlease empty a slot in order to take the item!"
   admin-expire-auction: "§b-------------------------------------------------
@@ -57,7 +59,7 @@ chat:
     &n§eYou collected an auction for %price%!
     &n§b-------------------------------------------------"
   purchase-auction: "§b-------------------------------------------------
-    &n§eYou purchased an item from §7%player%§e's auction
+    &n§eYou purchased %item% from §7%player%§e's auction
     &n§b-------------------------------------------------"
   sold-message:
     prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
@@ -65,6 +67,17 @@ chat:
     auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+%price%"
   auction-announcement: "§6[Auction] §7%player%§e is selling %item%§e x%amount% for %price%"
   invalid-amount: "§cThat is not a valid amount!"
+  placed-bid: "§eBid of %price%§e placed for %item%§e!"
+  outbid:
+    prefix: "§6[Auction] §7%player%§e outbid you by %price%§e for %item%"
+    interaction: "§f§l[CLICK]"
+  already-top-bid: "§aYou already have the top bid on this auction!"
+  claim-auction: "§b-------------------------------------------------
+    &n§eYou claimed %item%§e from §7%player%§e's auction
+    &n§b-------------------------------------------------"
+  collect-coins: "§b-------------------------------------------------
+    &n§eYou collected %price%§e back from an auction
+    &n§b-------------------------------------------------"
 
 inventory-titles:
   admin-confirm-gui: "Confirm Action"
@@ -79,6 +92,10 @@ inventory-titles:
   anvil-admin-expire-message: "Expire Item Reason"
   anvil-admin-delete-message: "Delete Item Reason"
   anvil-set-amount: "Set Amount"
+  anvil-set-bid: "Set Bid"
+  confirm-bid: "Confirm Bid"
+  my-bids: "Your Bids"
+  auction-view: "Auction View"
 items:
   next-page:
     name: "§aNext Page"
@@ -115,9 +132,9 @@ items:
     name: "§aInfo"
     lore: "§7To set up a new auction use
       &n§7/ah sell 1000
-      &n§7while holding the item to sell in your hand
-      &n§7The number will be the price of the item
-      &n§7Current tax is %tax%
+      &n§7while holding the item to sell in your hand.
+      &n§7The number will be the price of the item.
+      &n§7Current tax is %tax%§7.
       &n§8 - auction house made by ElaineQheart"
   my-auctions:
     name: "§aMy Auctions"
@@ -162,6 +179,33 @@ items:
       &n
       &n§eRight-Click to go backwards!
       &n§aClick to switch sort!"
+  bin-filter-all:
+    name: "§aBIN Filter"
+    lore: "
+      &n§b► Show All
+      &n§7 BIN Only
+      &n§7 Auctions Only
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch filter!"
+  bin-filter-bin:
+    name: "§aBIN Filter"
+    lore: "
+      &n§7 Show All
+      &n§b► BIN Only
+      &n§7 Auctions Only
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch filter!"
+  bin-filter-auctions:
+    name: "§aBIN Filter"
+    lore: "
+      &n§7 Show All
+      &n§7 BIN Only
+      &n§b► Auctions Only
+      &n
+      &n§eRight-Click to go backwards!
+      &n§aClick to switch filter!"
   my-sort-all:
     name: "§aSort"
     lore: "
@@ -212,6 +256,13 @@ items:
     name: "§cCancel Auction Item"
     lore: "
       &n§eClick to collect!"
+  cancel-bid-auction:
+    name: "§cCancel Auction"
+    lore: "
+      &n§7You can cancel auctions as long
+      &n§7as they have§c 0§7 bids!
+      &n
+      &n§eClick to cancel auction!"
   admin-info:
     name: "§aInfo"
     lore: "§7Click on an item to expire or delete it
@@ -234,7 +285,18 @@ items:
     lore:
       default: "§8------------------
         &n§7Seller: %player%
-        &n§7Price: %price%
+        &n§7Buy it now: %price%
+        &n "
+      default-starting-bid: "§8------------------
+        &n§7Seller: %player%
+        &n§7Starting Bid: %price%
+        &n "
+      default-bid: "§8------------------
+        &n§7Seller: %player%
+        &n§7Bids: §a%amountOfBids% bids
+        &n 
+        &n§7Top bid: %price%
+        &n§7Bidder: %bidder%
         &n "
       own-auction: "§aThis is your own item!
         &n "
@@ -242,6 +304,7 @@ items:
       admin-expired: "§cExpired by a moderator!"
       admin-message: "§7Reason: %reason%"
       expired: "§cExpired!"
+      ended: "§7Status:§a Ended!"
       sold: "§6Sold!
         &n§7Buyer: %buyer%"
       partially-sold: "§6Sold: §e%sold%/%total%
@@ -294,7 +357,83 @@ items:
       &n§eClick to set!"
   loading:
     name: "loading..."
-
+  bid-history:
+    name: "§fBid History"
+    lore: "§7Total bids: §a%amountOfBids% bids"
+    bid: "§8------------------
+      &n§7Bid: %price%
+      &n§7By: %player%
+      &n§b%time% ago"
+    more: "§8------------------
+      &n§7...%amount% more"
+  bid-explanation:
+    name: "§fBid Amount: %price%"
+    lore: "§7You need to bid at least %price%§7 to
+      &n§7hold the top bid on this auction.
+      &n
+      &n§7When the auction ends, the§e top bid
+      &n§7wins the item.
+      &n
+      &n§7If you do not win, you can claim your
+      &n§7bid coins back.
+      &n
+      &n§eClick to edit amount!"
+  submit-bid:
+    name: "§6Submit Bid"
+    lore: "
+      &n§7New bid: %price%
+      &n
+      &n§eClick to bid!"
+  submit-another-bid:
+    name: "§6Submit Bid"
+    lore: "
+      &n§7New bid: %price%
+      &n§7Your previous bid: %price2%
+      &n
+      &n§7You pay: %price3%
+      &n
+      &n§eClick to bid!"
+  cannot-afford-bid:
+    name: "§6Submit Bid"
+    lore: "
+      &n§7New Bid: %price%
+      &n
+      &n§cCannot afford bid!"
+  top-bid:
+    name: "§6Highest Bid"
+    lore: "
+      &n§7Your bid: %price%
+      &n§7New bid: %price2%
+      &n
+      &n§aAlready top bid!"
+  my-bids:
+    name: "§aManage Bids"
+    lore: "§7View and manage your bids
+      &n
+      &n§eClick to view!"
+  collect-auction:
+    name: "§6Collect Auction"
+    lore: "
+      &n§7You had the top bid for %price%
+      &n§7You may collect the item.
+      &n
+      &n§eClick to collect item!"
+  collect-coins:
+    name: "§6Collect Coins"
+    lore: "
+      &n§7You did not place the top bid of this auction.
+      &n§7You may collect your bid coins back.
+      &n
+      &n§7Top bid: %price%§7 by %player%
+      &n§7Your bid: %price2%
+      &n
+      &n§eClick to collect coins!"
+  own-bid:
+    name: "§6Submit Bid"
+    lore: "
+      &n§7New bid: %price%
+      &n
+      &n§aThis is your own auction!"
 
 world:
   npc: "§6Auction Master"
@@ -306,6 +445,7 @@ commands:
   ah: "ah"
   alias: "auctionhouse"
   sell: "sell"
+  bid: "bid"
   announce: "announce"
   admin: "admin"
   ban: "ban"
@@ -328,11 +468,16 @@ commands:
   material: "material"
   name_contains: "name_contains"
   contains_lore: "contains_lore"
+  item_model: "item_model"
+  custom_model_data: "custom_model_data"
+  all: "all"
   test: "test"
   save-item-to-layout-file: "saveitemtolayout.yml"
+  about: "about"
 
 command-feedback:
   usage: "§eUsage: /ah sell <price> <amount>"
+  bid-usage: "§eTo sell an item: /ah bid <price> <amount>"
   reached-max-auctions: "§eYou can only have %limit% auctions at a time"
   no-item-in-hand: "§eYou need to hold an item in your hand to sell it"
   invalid-number: "That is not a valid number"
@@ -366,8 +511,10 @@ command-feedback:
   blacklist-undo: "Successfully removed the last rule"
   blacklist-undo-error: "There are no rules"
   blacklist-no-item-in-hand: "§eYou need to hold an item in your hand to add its properties to the blacklist"
+  blacklist-no-model: "§eYou need to hold an item in your hand with a custom \"item_model\" to add that model to the blacklist"
   blacklist-success: "Successfully added the properties of %item% to the blacklist"
   blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
+  blacklist-all: "Successfully added EVERY item to the blacklist"
   item-blacklisted: "§cYou cannot auction this item!"
   item-saved-to-layout-file: "Item from main hand saved in layout.yml under \"test\""
   min-bid: "Your starting bid must be at least %price%!"

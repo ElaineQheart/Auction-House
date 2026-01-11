@@ -3,9 +3,11 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Blacklist {
 
@@ -28,6 +30,7 @@ public class Blacklist {
                 case "name" -> blacklisted = nameContains(item, keyObj.toString());
                 case "item_model" -> blacklisted = itemModelContains(item, keyObj.toString());
                 case "custom_model_data" -> blacklisted = customModelContains(item, keyObj.toString());
+                case "all" -> blacklisted = true;
                 case null -> {}
                 default -> throw new IllegalStateException("Unexpected value: " + keyObj);
             }
@@ -83,6 +86,9 @@ public class Blacklist {
     public static void addCustomModelData(String model) {
         add("custom_model_data", model);
     }
+    public static void addAll() {
+        add("all", "0");
+    }
 
     private static void add(String type, Object object) {
         List<Map<?, ?>> blacklist = getData();
@@ -101,10 +107,6 @@ public class Blacklist {
             return true;
         }
         return false;
-    }
-
-    public static boolean exists(String name) {
-        return ConfigManager.blacklist.get().get(name) != null;
     }
 
     private static List<Map<?, ?>> getData() {

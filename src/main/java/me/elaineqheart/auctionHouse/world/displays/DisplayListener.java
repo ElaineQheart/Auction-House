@@ -72,7 +72,7 @@ public class DisplayListener implements Listener {
             if(note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE,0.2f,1);
                 AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
-                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, configuration), p);
+                AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, configuration, 0, AhConfiguration.View.AUCTION_HOUSE), p);
             }
         }
     }

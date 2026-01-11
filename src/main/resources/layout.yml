@@ -4,14 +4,14 @@ ah-layout:
   - '# . . . . . . . #'
   - '# . . . . . . . #'
   - '# # # # # # # # #'
-  - 's o # p r n # # m'
+  - 's o # p r n # f m'
 my-ah-layout:
   - '# # # # # # # # #'
   - '# . . . . . . . #'
   - '# . . . . . . . #'
   - '# . . . . . . . #'
   - '# # # # # # # # #'
-  - 'b o # p r n # # i'
+  - 'b o # p r n # d i'
 filler-item:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
@@ -22,6 +22,12 @@ s:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:oak_sign
+  count: 1
+  schema_version: 1
+active-search:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:spruce_sign
   count: 1
   schema_version: 1
 o:
@@ -64,6 +70,30 @@ i:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:paper
+  count: 1
+  schema_version: 1
+f:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:powered_rail
+  count: 1
+  schema_version: 1
+d:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:golden_carrot
+  count: 1
+  schema_version: 1
+bin-filter-bin:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_ingot
+  count: 1
+  schema_version: 1
+bin-filter-auctions:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_block
   count: 1
   schema_version: 1
 locked-slot:
@@ -129,7 +159,7 @@ confirm:
 choose-item-buy-amount:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
-  id: minecraft:spruce_hanging_sign
+  id: minecraft:oak_hanging_sign
   count: 1
   schema_version: 1
 dirt:
@@ -144,7 +174,7 @@ turtle-scute-confirm:
   id: minecraft:turtle_scute
   count: 1
   schema_version: 1
-armadillo-scute-cancel:
+cannot-afford:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:armadillo_scute
@@ -154,5 +184,53 @@ collect-sold-item:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:diamond
+  count: 1
+  schema_version: 1
+bid-history:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:filled_map
+  count: 1
+  schema_version: 1
+bid-explanation:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_ingot
+  count: 1
+  schema_version: 1
+submit-bid:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_nugget
+  count: 1
+  schema_version: 1
+cannot-afford-bid:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:armadillo_scute
+  count: 1
+  schema_version: 1
+top-bid:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_block
+  count: 1
+  schema_version: 1
+collect-auction:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_block
+  count: 1
+  schema_version: 1
+collect-coins:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:gold_nugget
+  count: 1
+  schema_version: 1
+own-bid:
+  ==: org.bukkit.inventory.ItemStack
+  DataVersion: 4325
+  id: minecraft:poisonous_potato
   count: 1
   schema_version: 1

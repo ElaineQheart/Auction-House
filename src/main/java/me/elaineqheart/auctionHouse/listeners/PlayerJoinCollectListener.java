@@ -2,7 +2,6 @@ package me.elaineqheart.auctionHouse.listeners;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
-import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
@@ -20,18 +19,21 @@ public class PlayerJoinCollectListener implements Listener {
         if(!SettingManager.autoCollect) return;
         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Player p = event.getPlayer();
-            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) {
-                if (!note.isSold()) continue;
-                int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
-                CollectSoldItemGUI.collect(p, note.getNoteID().toString(), amount, note.getSoldPrice());
-                if(SettingManager.soldMessageEnabled) p.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect",
-                        "%player%", note.getBuyerName(),
-                        "%item%", note.getItemName(),
-                        "%price%", StringUtils.formatPrice(note.getSoldPrice()),
-                        "%amount%", String.valueOf(amount)));
+            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p)) {
+                sell(note, p);
             }
         }, 1);
 
+    }
+
+    public static void sell(ItemNote note, Player p) {
+        if (!note.isSold() && !(!note.isBINAuction() && note.hasBidHistory() && note.isExpired())) return;
+        int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
+        if(CollectSoldItemGUI.collect(p, note.getNoteID(), amount, note.getSoldPrice())
+            && SettingManager.soldMessageEnabled) p.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect", note.getSoldPrice(),
+                    "%player%", note.getBuyerName(),
+                    "%item%", note.getItemName(),
+                    "%amount%", String.valueOf(amount)));
     }
 
 }

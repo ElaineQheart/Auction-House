@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class ItemNoteStorage {
 
-    public static void createNote(Player p, ItemStack item, int price) {
+    public static void createNote(Player p, ItemStack item, int price, boolean isBINAuction) {
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
-        JsonNoteStorage.createNote(p, item, price);
+        JsonNoteStorage.createNote(p, item, price, isBINAuction);
     }
 
     public static void saveNotes() throws IOException {
@@ -57,6 +57,13 @@ public class ItemNoteStorage {
     public static void setPrice(ItemNote note, double amount) {
         //if(r()) RedisNoteStorage.updateField(note.getNoteID(), "price", amount); else
         note.setPrice(amount);
+    }
+    public static void addBid(ItemNote note, Player player, double amount) {
+        note.addBid(player, amount);
+    }
+    public static void removeBid(Player player, ItemNote note) {
+        note.removeBid(player);
+        AuctionHouseStorage.removeBid(player.getUniqueId(), note.getNoteID());
     }
 
     //public static boolean r() {return SettingManager.useRedis;}

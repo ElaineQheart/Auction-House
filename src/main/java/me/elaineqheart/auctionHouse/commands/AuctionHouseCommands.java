@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.commands;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CancelAuctionGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 // https://github.com/VelixDevelopments/Imperat
 
@@ -71,7 +73,12 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.sell")) && SettingManager.BINAuctions) {
                 p.sendMessage(Messages.getFormatted("command-feedback.usage"));
             }
-            if((strings.length==2 || strings.length==3) && strings[0].equals(Messages.getFormatted("commands.sell"))) {
+            if(strings.length==1 && strings[0].equals(Messages.getFormatted("commands.bid")) && SettingManager.BIDAuctions) {
+                p.sendMessage(Messages.getFormatted("command-feedback.bid-usage"));
+            }
+            if((strings.length==2 || strings.length==3) &&
+                    (strings[0].equals(Messages.getFormatted("commands.sell")) && SettingManager.BINAuctions
+                            || strings[0].equals(Messages.getFormatted("commands.bid")) && SettingManager.BIDAuctions)) {
                 if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
@@ -85,41 +92,22 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     p.sendMessage(Messages.getFormatted("command-feedback.no-item-in-hand"));
                     return true;
                 }
-                int price;
-                try{
-                    price = Integer.parseInt(strings[1]);
-                } catch (Exception e) {
-                    try{
-                        price = Integer.parseInt(strings[1].substring(0, strings[1].length()-1));
-                        String suffix = strings[1].substring(strings[1].length()-1).toLowerCase();
-                        switch (suffix) {
-                            case "k":
-                                price *= 1000;
-                                break;
-                            case "m":
-                                price *= 1000000;
-                                break;
-                            default:
-                                p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
-                                return true;
-                        }
-                    } catch (Exception f) {
-                        p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
-                        return true;
-                    }
-
+                int price = StringUtils.parsePositiveNumber(strings[1]);
+                if (price == -1) {
+                    p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
+                    return true;
                 }
-                if(price<=0){
+                if (price == 0) {
                     p.sendMessage(Messages.getFormatted("command-feedback.invalid-number2"));
                     return true;
                 }
                 if (strings[0].equals(Messages.getFormatted("commands.sell")) && price < SettingManager.minBINPrice) {
                     p.sendMessage(Messages.getFormatted("command-feedback.min-bin",
-                            "%price%", SettingManager.minBINPrice + Messages.getFormatted("placeholders.currency-symbol")));
+                            "%price%", StringUtils.formatNumberPlain(SettingManager.minBINPrice) + Messages.getFormatted("placeholders.currency-symbol")));
                     return true;
                 } else if (strings[0].equals(Messages.getFormatted("commands.bid")) && price < SettingManager.minBIDPrice) {
                     p.sendMessage(Messages.getFormatted("command-feedback.min-bid",
-                            "%price%", SettingManager.minBIDPrice + Messages.getFormatted("placeholders.currency-symbol")));
+                            "%price%", StringUtils.formatNumberPlain(SettingManager.minBIDPrice) + Messages.getFormatted("placeholders.currency-symbol")));
                     return true;
                 }
                 int amount = item.getAmount();
@@ -139,23 +127,25 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 ItemStack inputItem = item.clone();
                 inputItem.setAmount(amount);
-                ItemNoteStorage.createNote(p, inputItem, price);
+                ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(Messages.getFormatted("commands.sell")));
                 item.setAmount(item.getAmount() - amount);
                 p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
                 
                 // Announce the new auction to all players who have announcements enabled
                 if(SettingManager.auctionAnnouncementsEnabled) {
-                    String itemName = StringUtils.getItemName(inputItem, p.getWorld());
+                    String itemName = StringUtils.getItemName(inputItem);
                     String announcement = Messages.getFormatted("chat.auction-announcement",
                             "%player%", p.getDisplayName(),
                             "%item%", itemName,
                             "%amount%", String.valueOf(amount),
                             "%price%", StringUtils.formatPrice(price));
-                    for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        if(PlayerPreferencesManager.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
-                            onlinePlayer.sendMessage(announcement);
+                    Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+                        for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            if(PlayerPreferencesManager.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
+                                onlinePlayer.sendMessage(announcement);
+                            }
                         }
-                    }
+                    }, SettingManager.auctionSetupTime * 20);
                 }
 
             }
@@ -170,14 +160,16 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 return true;
             }
             if(strings.length == 2 && strings[0].equals("view")) {
-                String noteId = strings[1];
-                ItemNote note = AuctionHouseStorage.getNote(noteId);
+                ItemNote note = AuctionHouseStorage.getNote(UUID.fromString(strings[1]));
                 if(note == null
-                    || !note.getPlayerUUID().equals(p.getUniqueId())
-                    || note.getBuyerName() == null || note.getBuyerName().isEmpty()) return true;
+                    || !note.getPlayerUUID().equals(p.getUniqueId()) && !note.isOnAuction()
+                    || note.getPlayerUUID().equals(p.getUniqueId()) && (note.getBuyerName() == null || note.getBuyerName().isEmpty())) return true;
                 Sounds.click(p);
-                AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
-                if(!note.isSold()) {
+                AhConfiguration configuration = AhConfiguration.getInstance(p).setPlayer(p.getUniqueId());
+                configuration.setShouldClose(true);
+                if(!note.getPlayerUUID().equals(p.getUniqueId())) {
+                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, configuration, 0, AhConfiguration.View.AUCTION_HOUSE), p);
+                } else if(!note.isSold()) {
                     AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, configuration), p);
                 } else {
                     AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, configuration), p);
@@ -309,6 +301,11 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     return true;
                 } else if (strings.length == 3 && strings[0].equals(Messages.getFormatted("commands.blacklist"))
                         && strings[1].equals(Messages.getFormatted("commands.add"))) {
+                     if (strings[2].equals(Messages.getFormatted("commands.all"))) {
+                        Blacklist.addAll();
+                        p.sendMessage(Messages.getFormatted("command-feedback.blacklist-all"));
+                        return true;
+                    }
                     if (strings[2].equals(Messages.getFormatted("commands.exact")) || strings[2].equals(Messages.getFormatted("commands.material"))
                             || strings[2].equals(Messages.getFormatted("commands.item_model"))) {
                         ItemStack item = p.getInventory().getItemInMainHand();
@@ -371,12 +368,10 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
         List<String> params = new ArrayList<>();
         if(strings.length==1) {
             //check for every item if it's half typed out, then add accordingly to the params list
-            List<String> assetParams = new ArrayList<>(List.of(new String[]{
-                    Messages.getFormatted("commands.sell")
-            }));
             List<String> assetParams = new ArrayList<>();
             assetParams.add(Messages.getFormatted("commands.about"));
             if(SettingManager.BINAuctions) assetParams.add(Messages.getFormatted("commands.sell"));
+            if(SettingManager.BIDAuctions) assetParams.add(Messages.getFormatted("commands.bid"));
             if(SettingManager.auctionAnnouncementsEnabled) assetParams.add(Messages.getFormatted("commands.announce"));
             if(commandSender.hasPermission(SettingManager.permissionModerate)) {
                 assetParams.add(Messages.getFormatted("commands.admin"));
@@ -441,7 +436,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
             List<String> displayTypes = new ArrayList<>(List.of(new String[]{Messages.getFormatted("commands.exact"),
                     Messages.getFormatted("commands.material"), Messages.getFormatted("commands.name_contains"),
                     Messages.getFormatted("commands.contains_lore"), Messages.getFormatted("commands.item_model"),
-                    Messages.getFormatted("commands.custom_model_data")}));
+                    Messages.getFormatted("commands.custom_model_data"), Messages.getFormatted("commands.all")}));
             for (String p : displayTypes) {
                 if (p.indexOf(strings[2]) == 0){
                     params.add(p);

@@ -3,7 +3,6 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
-import me.elaineqheart.auctionHouse.GUI.other.AnvilSearchGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
@@ -21,15 +20,15 @@ public class AdminConfirmGUI extends InventoryGUI{
 
     private final ItemNote note;
     private final String reason;
-    private final AnvilSearchGUI.SearchType type;
+    private final boolean delete;
     private final AhConfiguration c;
 
-    public AdminConfirmGUI(String reason, ItemNote note, AnvilSearchGUI.SearchType type, AhConfiguration configuration) {
+    public AdminConfirmGUI(String reason, ItemNote note, boolean delete, AhConfiguration configuration) {
         super();
         this.note = note;
         this.c = configuration;
         this.reason = reason;
-        this.type = type;
+        this.delete = delete;
     }
 
     @Override
@@ -44,10 +43,10 @@ public class AdminConfirmGUI extends InventoryGUI{
                 "# # . # . # . # #",
                 "# # # # # # # # #"
         },fillerItem());
-        if(type == AnvilSearchGUI.SearchType.ITEM_EXPIRE_MESSAGE) {
+        if(!delete) {
             this.addButton(11, confirmExpireItem());
             this.addButton(13, expireItem());
-        } else if (type == AnvilSearchGUI.SearchType.ITEM_DELETE_MESSAGE) {
+        } else {
             this.addButton(11, confirmDeleteItem());
             this.addButton(13, deleteItem());
         }
@@ -87,7 +86,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.confirm)
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
                         p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);
@@ -123,7 +122,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         return;
                     }
                     //check if the item hasn't been sold yet
-                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
                         p.sendMessage(Messages.getFormatted("chat.non-existent"));
                         Sounds.villagerDeny(event);
@@ -154,7 +153,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                 .creator(player -> ItemManager.cancel)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.currentPlayer);
+                    AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer());
                 });
     }
 

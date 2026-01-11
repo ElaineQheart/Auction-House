@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.json;
 
 import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.entity.Player;
@@ -10,15 +11,16 @@ import org.bukkit.inventory.ItemStack;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 public class JsonNoteStorage {
 
     //This class is where the Note objects are managed
     //gson is used to convert the Note objects into json Strings and backwards
 
-    public static void createNote(Player p, ItemStack item, int price){
+    public static void createNote(Player p, ItemStack item, int price, boolean isBINAuction){
 
-        ItemNote itemNote = new ItemNote(p, item, price);
+        ItemNote itemNote = new ItemNote(p, item, price, isBINAuction);
         AuctionHouseStorage.add(itemNote);
 
         try {
@@ -55,7 +57,7 @@ public class JsonNoteStorage {
     }
 
     public static void loadNotes() throws IOException {
-        backwardsCompatibility();
+        if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
         Gson gson = new Gson();
         File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
         if(file.exists()){

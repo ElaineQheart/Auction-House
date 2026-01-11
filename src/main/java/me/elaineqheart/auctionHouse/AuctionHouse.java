@@ -2,13 +2,13 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
-import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIListener;
-import me.elaineqheart.auctionHouse.commands.AuctionHouseCommands;
+import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIManager;
 import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
-import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.PlayerPreferencesManager;
+import me.elaineqheart.auctionHouse.listeners.AhConfigurationListener;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.KillListener;
@@ -25,8 +25,10 @@ public final class AuctionHouse extends JavaPlugin {
 
     private static AuctionHouse instance;
     private static GUIManager guiManager;
+    private static AnvilGUIManager anvilManager;
     public static AuctionHouse getPlugin() {return instance;}
     public static GUIManager getGuiManager() {return guiManager;}
+    public static AnvilGUIManager getAnvilManager() {return anvilManager;}
 
     @Override
     public void onEnable() {
@@ -34,8 +36,9 @@ public final class AuctionHouse extends JavaPlugin {
         instance = this;
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);
+        anvilManager = new AnvilGUIManager();
         Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(new AnvilGUIListener(), this);
+        Bukkit.getPluginManager().registerEvents(anvilManager, this);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -46,6 +49,7 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
+        Bukkit.getPluginManager().registerEvents(new AhConfigurationListener(), this);
         KillListener.register();
 
         //Setup config.yml
@@ -67,7 +71,7 @@ public final class AuctionHouse extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-        SettingManager.backwardsCompatibility();
+        PlayerPreferencesManager.setup();
 
         DynamicCommandRegisterer.init();
         UpdateDisplay.init();
@@ -78,6 +82,7 @@ public final class AuctionHouse extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        PlayerPreferencesManager.disable();
         guiManager.forceCloseAll();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }

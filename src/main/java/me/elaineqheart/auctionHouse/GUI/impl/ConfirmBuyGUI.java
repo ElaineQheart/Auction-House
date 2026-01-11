@@ -4,7 +4,6 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
-import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.Messages;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
@@ -41,7 +40,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
 
     @Override
     protected Inventory createInventory() {
-        return Bukkit.createInventory(null,3*9, Messages.getFormatted("inventory-titles.auction-house"));
+        return Bukkit.createInventory(null,3*9, Messages.getFormatted("inventory-titles.auction-view"));
     }
 
     @Override
@@ -79,7 +78,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
     }
     private InventoryButton confirm(){
         return new InventoryButton()
-                .creator(player -> ItemManager.createConfirm(StringUtils.formatNumber(price)))
+                .creator(player -> ItemManager.createConfirm(price))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     //check if inventory is full
@@ -90,7 +89,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     }
                     String itemName = note.getItemName();
 
-                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID().toString());
+                    ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
                         p.sendMessage(Messages.getFormatted("chat.non-existent2"));
                         Sounds.villagerDeny(event);
@@ -112,7 +111,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     Sounds.experience(event);
                     p.getInventory().addItem(item);
                     ItemNoteStorage.setSold(note, true);
-                    ItemNoteStorage.setBuyerName(note, p.getName());
+                    ItemNoteStorage.setBuyerName(note, p.getDisplayName());
                     if (price != note.getPrice()) {
                         if (note.getPartiallySoldAmountLeft() == 0) {
                             ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
@@ -125,20 +124,20 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    p.sendMessage(Messages.getFormatted("chat.purchase-auction", "%player%", note.getPlayerName()));
+                    p.sendMessage(Messages.getFormatted("chat.purchase-auction",
+                            "%player%", note.getPlayerName(),
+                            "%item%", note.getItemName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerName());
                     if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
                         if(SettingManager.autoCollect) {
-                            seller.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect",
-                                    "%player%", p.getName(),
+                            seller.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect", price,
+                                    "%player%", p.getDisplayName(),
                                     "%item%", itemName,
-                                    "%price%", StringUtils.formatPrice(price),
                                     "%amount%", String.valueOf(item.getAmount())));
                         } else {
-                            TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix",
-                                    "%player%", p.getName(),
+                            TextComponent component = new TextComponent(Messages.getFormatted("chat.sold-message.prefix", price,
+                                    "%player%", p.getDisplayName(),
                                     "%item%", itemName,
-                                    "%price%", StringUtils.formatPrice(price),
                                     "%amount%", String.valueOf(item.getAmount())));
                             TextComponent click = new TextComponent(Messages.getFormatted("chat.sold-message.interaction"));
                             click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
@@ -147,7 +146,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     }
                     if (SettingManager.autoCollect && Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(note.getPlayerUUID()))) {
                         Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
-                                (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID().toString(), item.getAmount(), note.getSoldPrice())
+                                (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
                         );
                     }
                 });
