@@ -133,6 +133,8 @@ public class ConfirmBidGUI extends InventoryGUI {
                         if(AuctionViewGUI.currentGUIs.get(bidder) == null) continue;
                         AuctionViewGUI.currentGUIs.get(bidder).update();
                     }
+                    Player itemOwner = Bukkit.getPlayer(note.getPlayerUUID());
+                    if(itemOwner != null && AuctionViewGUI.currentGUIs.get(itemOwner) != null) AuctionViewGUI.currentGUIs.get(itemOwner).update();
                 });
     }
     private InventoryButton cancel(){

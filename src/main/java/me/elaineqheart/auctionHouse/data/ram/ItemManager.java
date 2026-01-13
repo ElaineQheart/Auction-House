@@ -348,15 +348,15 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         List<String> lore = meta.getLore();
-        if(lore==null) lore = new ArrayList<>();
-        if(isShulkerBox(item)) {
+        if (lore==null) lore = new ArrayList<>();
+        if (isShulkerBox(item)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.shulker-preview"));
         }
-        if(note.isBINAuction()) {
+        if (!note.isBIDAuction()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.default", ownAuction ? note.getPrice() : note.getCurrentPrice(),
                     "%player%", note.getPlayerName()));
         } else {
-            if(note.getBidHistoryList().isEmpty()) {
+            if (note.getBidHistoryList().isEmpty()) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.default-starting-bid", note.getPrice(),
                         "%player%", note.getPlayerName()));
             } else {
@@ -366,10 +366,10 @@ public class ItemManager {
                         "%bidder%", note.getLastBidderName()));
             }
         }
-        if(Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
+        if (Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
             lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         }
-        if(note.isExpired() && note.getAdminMessage()!=null && !note.getAdminMessage().isEmpty()) {
+        if (note.isExpired() && note.getAdminMessage()!=null && !note.getAdminMessage().isEmpty()) {
             if (note.getItem().equals(createDirt())) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.admin-deleted"));
             } else {
@@ -378,8 +378,8 @@ public class ItemManager {
             lore.addAll(Messages.getLoreList("items.auction.lore.admin-message",
                     "%reason%", note.getAdminMessage()));
             lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
-        }else if(note.isSold() && note.isOnAuction()) {
-            if(ownAuction) {
+        } else if (note.isSold() && note.isOnAuction()) {
+            if (ownAuction) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.partially-sold",
                         "%sold%", String.valueOf(note.getItem().getAmount() - note.getPartiallySoldAmountLeft()),
                         "%total%", String.valueOf(note.getItem().getAmount()),
@@ -387,25 +387,25 @@ public class ItemManager {
             } else {
                 item.setAmount(note.getPartiallySoldAmountLeft());
             }
-            if(!note.isExpired()) {
+            if (!note.isExpired()) {
                 lore.addAll(Messages.getLoreList("items.auction.lore.active",
                         "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
             } else {
                 lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
             }
-        }else if(note.isExpired() && (!note.isSold() && note.isBINAuction() || !note.hasBidHistory() && !note.isBINAuction())) {
+        } else if (note.isExpired() && (!note.isSold() && !note.isBIDAuction() || !note.hasBidHistory() && note.isBIDAuction())) {
             lore.addAll(Messages.getLoreList("items.auction.lore.expired"));
-        }else if (!note.isBINAuction() && note.hasBidHistory() && note.isExpired()) {
+        } else if (note.isBIDAuction() && note.hasBidHistory() && note.isExpired()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.ended"));
-        }else if(note.isSold() && !note.isOnAuction()) {
+        } else if (note.isSold() && !note.isOnAuction()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.sold",
                     "%buyer%", note.getBuyerName()));
-        }else if(note.isOnWaitingList()) {
+        } else if (note.isOnWaitingList()) {
             lore.addAll(Messages.getLoreList("items.auction.lore.waiting-list",
                     "%time%", StringUtils.getTime(
-                            note.getTimeLeft() - Permissions.getAuctionDuration(p, note.isBINAuction()), true
+                            note.getTimeLeft() - Permissions.getAuctionDuration(p, note.isBIDAuction()), true
                     )));
-        }else{
+        } else {
             lore.addAll(Messages.getLoreList("items.auction.lore.active",
                     "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
         }
@@ -423,7 +423,7 @@ public class ItemManager {
                 "%player%", note.getPlayerName()));
         lore.addAll(Messages.getLoreList("items.auction.lore.own-auction"));
         lore.addAll(Messages.getLoreList("items.auction.lore.sold",
-                "%buyer%", note.getLastBidderName()));
+                "%buyer%", note.getBuyerName()));
         item.setAmount(item.getAmount() - note.getPartiallySoldAmountLeft());
 
         meta.setLore(lore);

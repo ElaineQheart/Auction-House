@@ -25,7 +25,6 @@ public class AnvilGUIManager implements Listener {
 
     // This is used to pass the note to the next GUI (AnvilGUIListener)
     // an item Note linked to the player
-    public static HashMap<Player, ItemNote> activeNoteMap = new HashMap<>();
     public static HashMap<AnvilView, AhConfiguration> activeAnvils = new HashMap<>();
     private static final Map<Inventory, AnvilHandler> activeInventories = new HashMap<>();
 

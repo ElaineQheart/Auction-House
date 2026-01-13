@@ -105,7 +105,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
     public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
         ItemNote note = AuctionHouseStorage.getNote(noteID);
         if(note == null) return false;
-        if(!note.isBINAuction() && note.isSold()) return false;
+        if(note.isBIDAuction() && note.isSold()) return false;
         Economy eco = VaultHook.getEconomy();
         eco.depositPlayer(p, getProfit(price));
         if (note.getPartiallySoldAmountLeft() != 0) {
@@ -119,7 +119,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 ItemNoteStorage.setBuyerName(note, null);
             }
         } else {
-            if(note.isBINAuction()) ItemNoteStorage.deleteNote(note);
+            if (!note.isBIDAuction()) ItemNoteStorage.deleteNote(note);
             else {
                 note.setSold(true);
                 AuctionHouseStorage.checkRemove(noteID);

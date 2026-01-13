@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class ItemNoteStorage {
 
-    public static void createNote(Player p, ItemStack item, int price, boolean isBINAuction) {
+    public static void createNote(Player p, ItemStack item, double price, boolean isBINAuction) {
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
         JsonNoteStorage.createNote(p, item, price, isBINAuction);
     }

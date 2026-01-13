@@ -101,12 +101,12 @@ public class StringUtils {
         return ChatColor.RESET + name;
     }
 
-    public static int parsePositiveNumber(String input) {
+    public static double parsePositiveNumber(String input) {
         try{
             return Math.max(Integer.parseInt(input), 0);
         } catch (Exception e) {
             try{
-                int price = Integer.parseInt(input.substring(0, input.length()-1));
+                double price = Double.parseDouble(input.substring(0, input.length()-1));
                 String suffix = input.substring(input.length()-1).toLowerCase();
                 switch (suffix) {
                     case "k":
@@ -118,6 +118,7 @@ public class StringUtils {
                     default:
                         return -1;
                 }
+                if(price % 1 != 0) throw new RuntimeException();
                 return Math.max(price, 0);
             } catch (Exception f) {
                 return -1;

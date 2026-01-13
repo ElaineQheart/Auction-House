@@ -79,10 +79,10 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         List<ItemNote> returnList;
         switch (c.getMyCurrentSort()){
             case SOLD_ITEMS -> returnList = myAuctions.stream()
-                        .filter(note -> note.isSold() || !note.isBINAuction() && note.hasBidHistory() && note.isExpired())
+                        .filter(note -> note.isSold() || note.isBIDAuction() && note.hasBidHistory() && note.isExpired())
                         .collect(Collectors.toList());
             case EXPIRED_ITEMS -> returnList = myAuctions.stream()
-                        .filter(note -> note.isExpired() && (note.isBINAuction() && !note.isSold() || !note.isBINAuction() && !note.hasBidHistory()))
+                        .filter(note -> note.isExpired() && (!note.isBIDAuction() && !note.isSold() || note.isBIDAuction() && !note.hasBidHistory()))
                         .collect(Collectors.toList());
             case ACTIVE_AUCTIONS -> returnList = myAuctions.stream()
                         .filter(note -> !note.isExpired() && note.isOnAuction())
@@ -131,7 +131,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     } else if (note.isExpired()) {
                         AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), c.getPlayer());
                     } else {
-                        if(note.isBINAuction()) AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.getPlayer());
+                        if(!note.isBIDAuction()) AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.getPlayer());
                         else AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, AhConfiguration.View.MY_AUCTIONS), c.getPlayer());
                     }
                 });

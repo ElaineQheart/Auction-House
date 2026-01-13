@@ -71,7 +71,7 @@ public class AuctionHouseStorage {
 
     public static void remove(ItemNote item) {
         removeFromLists(item.getNoteID());
-        if(item.isBINAuction() || !item.hasBidHistory()) notes.remove(item.getNoteID());
+        if(!item.isBIDAuction() || !item.hasBidHistory()) notes.remove(item.getNoteID());
     }
 
     public static boolean canCollectBid(ItemNote item, UUID player) {return !item.getClaimedPlayers().contains(player);}
@@ -84,7 +84,7 @@ public class AuctionHouseStorage {
         }
     }
     public static void checkRemove(UUID noteID) {
-        if(notes.get(noteID).isBINAuction()) return;
+        if(!notes.get(noteID).isBIDAuction()) return;
         if(sortedPlayers.get(noteID).isEmpty() && notes.get(noteID).isSold()) {
             sortedPlayers.remove(noteID);
             sortedBids.remove(notes.get(noteID).getPlayerUUID());
@@ -112,8 +112,8 @@ public class AuctionHouseStorage {
                         .anyMatch(s -> s.contains(search.toLowerCase())))
                 .filter(note -> switch (binFilter) {
                     case ALL -> true;
-                    case AUCTIONS_ONLY -> !note.isBINAuction();
-                    case BIN_ONLY ->  note.isBINAuction();
+                    case AUCTIONS_ONLY -> note.isBIDAuction();
+                    case BIN_ONLY ->  !note.isBIDAuction();
                 })
                 .collect(Collectors.toList());
     }
@@ -129,7 +129,7 @@ public class AuctionHouseStorage {
         return itemNotes.stream()
                 .map(notes::get)
                 .filter(note -> Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()), p))
-                .filter(note -> note.isBINAuction() || !note.isSold())
+                .filter(note -> !(note.isBIDAuction() && note.isSold()))
                 .toList(); // toList() makes it unmodifiable
     }
 

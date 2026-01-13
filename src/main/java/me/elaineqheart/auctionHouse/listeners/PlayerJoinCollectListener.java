@@ -27,7 +27,7 @@ public class PlayerJoinCollectListener implements Listener {
     }
 
     public static void sell(ItemNote note, Player p) {
-        if (!note.isSold() && !(!note.isBINAuction() && note.hasBidHistory() && note.isExpired())) return;
+        if (!note.isSold() && !(note.isBIDAuction() && note.hasBidHistory() && note.isExpired())) return;
         int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
         if(CollectSoldItemGUI.collect(p, note.getNoteID(), amount, note.getSoldPrice())
             && SettingManager.soldMessageEnabled) p.sendMessage(Messages.getFormatted("chat.sold-message.auto-collect", note.getSoldPrice(),

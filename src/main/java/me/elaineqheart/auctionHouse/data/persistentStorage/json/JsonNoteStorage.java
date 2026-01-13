@@ -18,7 +18,7 @@ public class JsonNoteStorage {
     //This class is where the Note objects are managed
     //gson is used to convert the Note objects into json Strings and backwards
 
-    public static void createNote(Player p, ItemStack item, int price, boolean isBINAuction){
+    public static void createNote(Player p, ItemStack item, double price, boolean isBINAuction){
 
         ItemNote itemNote = new ItemNote(p, item, price, isBINAuction);
         AuctionHouseStorage.add(itemNote);

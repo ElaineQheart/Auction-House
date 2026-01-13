@@ -92,7 +92,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                     p.sendMessage(Messages.getFormatted("command-feedback.no-item-in-hand"));
                     return true;
                 }
-                int price = StringUtils.parsePositiveNumber(strings[1]);
+                double price = StringUtils.parsePositiveNumber(strings[1]);
                 if (price == -1) {
                     p.sendMessage(Messages.getFormatted("command-feedback.invalid-number"));
                     return true;
@@ -127,7 +127,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 }
                 ItemStack inputItem = item.clone();
                 inputItem.setAmount(amount);
-                ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(Messages.getFormatted("commands.sell")));
+                ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(Messages.getFormatted("commands.bid")));
                 item.setAmount(item.getAmount() - amount);
                 p.sendMessage(Messages.getFormatted("command-feedback.auction", "%price%", StringUtils.formatPrice(price)));
                 

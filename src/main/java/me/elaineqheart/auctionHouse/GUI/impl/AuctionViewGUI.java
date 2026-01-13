@@ -78,8 +78,8 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         },fillerItem());
         this.addButton(13, buyingItem());
 
-        if(note.isBINAuction()) decorateBIN(player);
-        else decorateBID(player);
+        if(note.isBIDAuction()) decorateBID(player);
+        else decorateBIN(player);
 
         if(c.shouldKeepOpen()) this.addButton(49, back());
         super.decorate(player);
@@ -92,12 +92,16 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
             return;
         }
         double increase = bid - note.getBid(player);
+        if(note.getPlayerUUID().equals(player.getUniqueId())) {
+            if(!note.hasBidHistory()) this.addButton(31, cancelAuction());
+            this.addButton(29, submitBid());
+            return;
+        }
         if(VaultHook.getEconomy().getBalance(player) < increase) {
             this.addButton(29, cannotAffordBid());
         }else{
             this.addButton(29, submitBid());
-            if(!note.getPlayerUUID().equals(player.getUniqueId())) this.addButton(31, bidExplanation());
-            else if(!note.hasBidHistory()) this.addButton(31, cancelAuction());
+            this.addButton(31, bidExplanation());
         }
     }
 
@@ -224,7 +228,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     AnvilHandler handler = new AnvilHandler() {
                         public void execute(Player p, String typedText) {
-                            int amount = StringUtils.parsePositiveNumber(typedText);
+                            double amount = StringUtils.parsePositiveNumber(typedText);
                             if (amount <= bid) {
                                 p.sendMessage(Messages.getFormatted("chat.invalid-amount"));
                                 Sounds.villagerDeny(event);
