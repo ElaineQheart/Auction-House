@@ -63,7 +63,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
 
         this.addButton(13, buyingItem());
         this.addButton(33, bidHistory());
-        if(topBid) {
+        if(topBid && note.getAdminMessage() == null) {
             this.addButton(29, collectItem());
         } else {
             this.addButton(29, collectCoins());
