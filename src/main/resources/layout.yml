@@ -12,11 +12,13 @@ my-ah-layout:
   - '# . . . . . . . #'
   - '# # # # # # # # #'
   - 'b o # p r n # d i'
-filler-item:
+'#':
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
   id: minecraft:black_stained_glass_pane
   count: 1
+  components:
+    minecraft:tooltip_display: '{hide_tooltip:1b}'
   schema_version: 1
 s:
   ==: org.bukkit.inventory.ItemStack

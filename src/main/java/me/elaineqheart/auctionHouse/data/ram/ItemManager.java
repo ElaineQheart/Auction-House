@@ -83,7 +83,7 @@ public class ItemManager {
     }
 
     private static ItemStack createFillerItem(){
-        ItemStack item = Layout.getItem("filler-item");
+        ItemStack item = Layout.getItem("#");
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
         meta.setHideTooltip(true);
