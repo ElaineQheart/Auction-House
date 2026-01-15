@@ -98,11 +98,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     private void createButtonsForAuctionItems(ItemNoteStorage.SortMode mode, List<Integer> itemSlots){
         List<ItemNote> auctions;
-        if(c.getWhitelist() == null) {
-            auctions = AuctionHouseStorage.getSortedList(mode, c.getCurrentSearch(), c.getBinFilter());
-        } else {
-            auctions = AuctionHouseStorage.getSortedList(mode, c.getCurrentSearch(), c.getBinFilter(), c.getWhitelist());
-        }
+        auctions = AuctionHouseStorage.getSortedList(mode, c.getCurrentSearch(), c.getBinFilter());
+        if(c.getWhitelist() != null) AuctionHouseStorage.applyWhitelist(auctions, c.getWhitelist());
         noteSize = auctions.size();
         screenSize = itemSlots.size();
         int start = c.getCurrentPage() * screenSize;

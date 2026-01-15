@@ -75,7 +75,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private void fillOutItems(Player p, List<Integer> itemSlots){
-        List<ItemNote> myAuctions = AuctionHouseStorage.getMySortedDateCreated(p);
+        List<ItemNote> myAuctions = AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId());
         List<ItemNote> returnList;
         switch (c.getMyCurrentSort()){
             case SOLD_ITEMS -> returnList = myAuctions.stream()

@@ -82,7 +82,7 @@ public class AuctionHouseCommands implements CommandExecutor, TabCompleter {
                 if(BannedPlayersUtil.checkIsBannedSendMessage(p)) {
                     return true;
                 }
-                if(AuctionHouseStorage.getNumberOfAuctions(p) >= Permissions.getAuctionSlots(p)) {
+                if(AuctionHouseStorage.getNumberOfAuctions(p.getUniqueId()) >= Permissions.getAuctionSlots(p)) {
                     p.sendMessage(Messages.getFormatted("command-feedback.reached-max-auctions",
                             "%limit%", String.valueOf(Permissions.getAuctionSlots(p))));
                     return true;

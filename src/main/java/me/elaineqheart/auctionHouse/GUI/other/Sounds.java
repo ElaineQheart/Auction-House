@@ -1,15 +1,10 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
-import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-
-import java.util.Objects;
 
 public class Sounds {
 

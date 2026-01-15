@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 
 public class JsonNoteStorage {
 

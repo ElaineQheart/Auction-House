@@ -2,8 +2,6 @@ package me.elaineqheart.auctionHouse.data.ram;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.Blacklist;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +18,7 @@ public class AuctionHouseStorage {
     private static final HashMap<List<Map<?, ?>>, List<UUID>> categories = new HashMap<>();
 
     private static void addToLists(ItemNote note) {
+        notes.put(note.getNoteID(), note);
         itemNotes.add(note.getNoteID());
         if(note.isOnAuction() && !note.isExpired()) {
             sortedHighestPrice.add(note.getNoteID());
@@ -30,12 +29,13 @@ public class AuctionHouseStorage {
             });
         }
     }
-    private static void removeFromLists(UUID id) {
-        itemNotes.remove(id);
-        sortedHighestPrice.remove(id);
-        sortedTimeLeft.remove(id);
-        sortedAlphabetical.remove(id);
-        categories.forEach((maps, uuids) -> uuids.remove(id));
+    private static void removeFromLists(UUID noteID) {
+        notes.remove(noteID);
+        itemNotes.remove(noteID);
+        sortedHighestPrice.remove(noteID);
+        sortedTimeLeft.remove(noteID);
+        sortedAlphabetical.remove(noteID);
+        categories.forEach((maps, uuids) -> uuids.remove(noteID));
     }
     private static void addWhiteList(List<Map<?, ?>> whitelist) {
         categories.put(whitelist, itemNotes.stream()
@@ -43,19 +43,17 @@ public class AuctionHouseStorage {
                 .collect(Collectors.toList()));
     }
 
-    public static void add(ItemNote item) {
-        addToLists(item);
-        notes.put(item.getNoteID(), item);
+    public static void add(ItemNote note) {
+        addToLists(note);
         updateSortedLists();
     }
 
-    public static void set(ItemNote[] items) {
+    public static void set(ItemNote[] notes) {
         clear();
         //Arrays.asList() links them
-        for(ItemNote note : items) {
+        for(ItemNote note : notes) {
             if(note == null) continue;
             addToLists(note);
-            notes.put(note.getNoteID(), note);
         }
         updateBids();
         updateSortedLists();
@@ -89,7 +87,6 @@ public class AuctionHouseStorage {
             sortedPlayers.remove(noteID);
             sortedBids.remove(notes.get(noteID).getPlayerUUID());
             removeFromLists(noteID);
-            notes.remove(noteID);
         }
     }
 
@@ -118,31 +115,25 @@ public class AuctionHouseStorage {
                 .collect(Collectors.toList());
     }
 
-    public static List<ItemNote> getSortedList(ItemNoteStorage.SortMode mode, String search, AhConfiguration.BINFilter binFilter, List<Map<?, ?>> whitelist){
-        List<ItemNote> returnList = getSortedList(mode, search, binFilter);
+    public static void applyWhitelist(List<ItemNote> notes, List<Map<?, ?>> whitelist) {
         if(!categories.containsKey(whitelist)) {addWhiteList(whitelist);}
-        returnList.removeIf(note -> categories.get(whitelist).contains(note.getNoteID()));
-        return returnList;
+        notes.removeIf(note -> categories.get(whitelist).contains(note.getNoteID()));
     }
 
-    public static List<ItemNote> getMySortedDateCreated(Player p){ //use only for online players
+    public static List<ItemNote> getMySortedDateCreated(UUID playerID){ //use only for online players
         return itemNotes.stream()
                 .map(notes::get)
-                .filter(note -> Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()), p))
+                .filter(note -> Objects.equals(note.getPlayerUUID(), playerID))
                 .filter(note -> !(note.isBIDAuction() && note.isSold()))
                 .toList(); // toList() makes it unmodifiable
     }
 
-    public static int getNumberOfAuctions(Player p) {
-        return getMySortedDateCreated(p).size();
+    public static int getNumberOfAuctions(UUID playerID) {
+        return getMySortedDateCreated(playerID).size();
     }
 
     public static ItemNote getNote(UUID noteID) {
-        return itemNotes.stream()
-                .filter(id -> id.equals(noteID))
-                .map(notes::get)
-                .findFirst()
-                .orElse(null);
+        return notes.get(noteID);
     }
 
     public static List<ItemNote> getMyBids(UUID playerID) {

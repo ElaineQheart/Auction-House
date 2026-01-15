@@ -19,9 +19,7 @@ public class PlayerJoinCollectListener implements Listener {
         if(!SettingManager.autoCollect) return;
         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Player p = event.getPlayer();
-            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p)) {
-                sell(note, p);
-            }
+            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) sell(note, p);
         }, 1);
 
     }

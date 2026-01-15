@@ -68,6 +68,7 @@ public final class AuctionHouse extends JavaPlugin {
         try {
             ItemNoteStorage.loadNotes();
         } catch (IOException e) {
+            getLogger().severe("Failed to load Auction House item data");
             throw new RuntimeException(e);
         }
 
