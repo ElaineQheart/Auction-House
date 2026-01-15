@@ -75,14 +75,15 @@ public class SettingManager {
         bidIncreaseRatio = c.getDouble("bid-increase-percent", 25) / 100;
         minBINPrice = c.getDouble("min-bin", 1);
         minBIDPrice = c.getDouble("min-bid", 1);
-        soundClick = c.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");
-        soundOpenEnderchest = c.getString("sounds.open-enderchest", "BLOCK_ENDER_CHEST_OPEN");
-        soundCloseEnderchest = c.getString("sounds.close-enderchest", "BLOCK_ENDER_CHEST_CLOSE");
-        soundBreakWood = c.getString("sounds.break-wood", "BLOCK_WOOD_BREAK");
-        soundExperience = c.getString("sounds.experience", "ENTITY_EXPERIENCE_ORB_PICKUP");
-        soundVillagerDeny = c.getString("sounds.villager-deny", "ENTITY_VILLAGER_NO");
-        soundOpenShulker = c.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
-        soundCloseShulker = c.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
+        FileConfiguration layout = ConfigManager.layout.get();
+        soundClick = layout.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");
+        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "BLOCK_ENDER_CHEST_OPEN");
+        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "BLOCK_ENDER_CHEST_CLOSE");
+        soundBreakWood = layout.getString("sounds.break-wood", "BLOCK_WOOD_BREAK");
+        soundExperience = layout.getString("sounds.experience", "ENTITY_EXPERIENCE_ORB_PICKUP");
+        soundVillagerDeny = layout.getString("sounds.villager-deny", "ENTITY_VILLAGER_NO");
+        soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
+        soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
         if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
     }
 

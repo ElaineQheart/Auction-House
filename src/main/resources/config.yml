@@ -16,13 +16,3 @@ bid-auction-duration: 7200                  # the time a bidding auction lasts i
 min-bid: 1                                  # the minimum bid price
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
-
-sounds:
-  click: "UI_STONECUTTER_SELECT_RECIPE"
-  open-enderchest: "BLOCK_ENDER_CHEST_OPEN"
-  close-enderchest: "BLOCK_ENDER_CHEST_CLOSE"
-  break-wood: "BLOCK_WOOD_BREAK"
-  experience: "ENTITY_EXPERIENCE_ORB_PICKUP"
-  villager-deny: "ENTITY_VILLAGER_NO"
-  open-shulker: "BLOCK_SHULKER_BOX_OPEN"
-  close-shulker: "BLOCK_SHULKER_BOX_CLOSE"
