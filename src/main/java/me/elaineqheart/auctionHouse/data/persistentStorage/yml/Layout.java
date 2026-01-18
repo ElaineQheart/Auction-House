@@ -1,11 +1,17 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml;
 
+import com.google.gson.Gson;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
+import me.elaineqheart.auctionHouse.data.persistentStorage.json.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +52,11 @@ public class Layout {
     }
 
     public static ItemStack getItem(String path) {
-        return Objects.requireNonNull(ConfigManager.layout.get().getItemStack(path)).clone();
+        ItemStack item = ConfigManager.layout.get().getItemStack(path);
+        if(item == null) {
+            throw new RuntimeException("The provided item at " + path + " is not serializable.");
+        }
+        return Objects.requireNonNull(item).clone();
     }
 
     public static void saveItem(ItemStack item) {

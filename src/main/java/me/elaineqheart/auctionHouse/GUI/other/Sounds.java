@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.yml.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.data.ConfigManager;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -34,22 +35,39 @@ public class Sounds {
     }
 
     public static void click(Player p) {
-        p.playSound(p.getLocation(), Sound.valueOf(SettingManager.soundClick), 0.2f,1);
+        p.playSound(p.getLocation(), getSound(SettingManager.soundClick), 0.2f,1);
     }
 
 
     private static void playSound(InventoryClickEvent event, String soundName, float volume, float pitch) {
         try {
-            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.valueOf(soundName), volume, pitch);
+            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), getSound(soundName), volume, pitch);
         } catch (IllegalArgumentException e) {
             // Invalid sound
         }
     }
     private static void playSound(InventoryCloseEvent event, String soundName, float volume, float pitch) {
         try {
-            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), Sound.valueOf(soundName), volume, pitch);
+            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), getSound(soundName), volume, pitch);
         } catch (IllegalArgumentException e) {
             // Invalid sound
         }
+    }
+
+    private static Sound getSound(String name) {
+        if(!
+                ConfigManager.oldVersion21()) return Sound.valueOf(name);
+        Sound sound;
+        switch (name) {
+            case "BLOCK_ENDER_CHEST_OPEN" -> sound = Sound.BLOCK_ENDER_CHEST_OPEN;
+            case "BLOCK_ENDER_CHEST_CLOSE" -> sound = Sound.BLOCK_ENDER_CHEST_CLOSE;
+            case "BLOCK_WOOD_BREAK" -> sound = Sound.BLOCK_WOOD_BREAK;
+            case "ENTITY_EXPERIENCE_ORB_PICKUP" -> sound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+            case "ENTITY_VILLAGER_NO" -> sound = Sound.ENTITY_VILLAGER_NO;
+            case "BLOCK_SHULKER_BOX_OPEN" -> sound = Sound.BLOCK_SHULKER_BOX_OPEN;
+            case "BLOCK_SHULKER_BOX_CLOSE" -> sound = Sound.BLOCK_SHULKER_BOX_CLOSE;
+            default -> sound = Sound.UI_STONECUTTER_SELECT_RECIPE;
+        }
+        return sound;
     }
 }

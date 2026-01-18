@@ -31,6 +31,7 @@ public class ItemStackConverter {
     }
 
     public static ItemStack decode(String data) {
+        if(data == null) return null;
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decode(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);

@@ -45,6 +45,10 @@ public class Config {
         return customFile;
     }
 
+    public File getFile() {
+        return file;
+    }
+
     public void save(){
         try {
             customFile.save(file);

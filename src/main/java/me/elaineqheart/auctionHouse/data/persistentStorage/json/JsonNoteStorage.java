@@ -16,6 +16,7 @@ public class JsonNoteStorage {
 
     //This class is where the Note objects are managed
     //gson is used to convert the Note objects into json Strings and backwards
+    private static Gson gson;
 
     public static void createNote(Player p, ItemStack item, double price, boolean isBINAuction){
 
@@ -41,14 +42,13 @@ public class JsonNoteStorage {
 
     public static void saveNotes() throws IOException {
 
-        Gson gson = new Gson();
         File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
         //if the parent file of the plugin doesn't exist, it has to be created
         file.getParentFile().mkdir();
         file.createNewFile();
         //if append is true, it will append the json text and not overwrite the file
         Writer writer = new FileWriter(file, false);
-        gson.toJson(AuctionHouseStorage.getAll(), writer);
+        getGson().toJson(AuctionHouseStorage.getAll(), writer);
         //flush = write data
         writer.flush();
         writer.close();
@@ -57,11 +57,10 @@ public class JsonNoteStorage {
 
     public static void loadNotes() throws IOException {
         if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
-        Gson gson = new Gson();
         File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
         if(file.exists()){
             Reader reader = new FileReader(file);
-            ItemNote[] items = gson.fromJson(reader, ItemNote[].class);
+            ItemNote[] items = getGson().fromJson(reader, ItemNote[].class);
             AuctionHouseStorage.set(items);
         }
     }
@@ -85,4 +84,8 @@ public class JsonNoteStorage {
         }
     }
 
+    public static Gson getGson() {
+        if(gson == null) gson = new Gson();
+        return gson;
+    }
 }

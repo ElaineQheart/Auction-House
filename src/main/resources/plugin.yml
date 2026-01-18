@@ -1,5 +1,5 @@
 name: AuctionHouse
-version: '1.4'
+version: '1.4.1'
 main: me.elaineqheart.auctionHouse.AuctionHouse
 api-version: '1.21'
 authors: [ ElaineQheart ]

@@ -261,7 +261,8 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                         ItemManager.createOwnBid(bid) : ItemManager.createSubmitBid(bid, note.getBid(player)))
                 .consumer(event -> {
                     Sounds.click(event);
-                    if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
+
+                    if(note.getPlayerUUID().equals(event.getWhoClicked().getUniqueId())) {
                         event.getWhoClicked().sendMessage(Messages.getFormatted("chat.own-auction"));
                         return;
                     }

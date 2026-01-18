@@ -1,8 +1,11 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.yml.data;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.yml.OldLayout;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +29,14 @@ public class ConfigManager {
         blacklist.setup("blacklist", false, "/data");
         categories.setup("categories", false, "/data");
         playerPreferences.setup("playerPreferences", false, "/data");
-        layout.setup("layout", true, "");
+        //compatibility to version 1.21.4
+        if(!oldVersion21()) {
+            layout.setup("layout", true, "");
+        } else {
+            layout.setup("layout", false, "");
+
+            if (!layout.get().getBoolean("old-layout")) OldLayout.saveOldLayout();
+        }
         permissionsSetup();
     }
 
@@ -83,6 +93,15 @@ public class ConfigManager {
             }
         }
         displays.save();
+    }
+
+    public static boolean oldVersion21() {
+        String version = Bukkit.getServer().getVersion();
+        List<String> oldVersions = List.of("1.21.4", "1.21.3", "1.21.2", "1.21.1");
+        for(String oldVersion : oldVersions) {
+            if(version.contains(oldVersion)) return true;
+        }
+        return false;
     }
 
 }

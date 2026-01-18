@@ -31,7 +31,6 @@ public class BannedPlayersUtil {
         Date banEndDate = (Date) customFile.get(path + ".Date");
         if (banEndDate == null) return false;
         long currentTime = new Date().getTime();
-        System.out.println(currentTime);
         if (currentTime > banEndDate.getTime()){
             customFile.set(path, null);
             ConfigManager.bannedPlayers.save();

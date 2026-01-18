@@ -91,7 +91,7 @@ public class AuctionHouseStorage {
     }
 
     public static List<ItemNote> getAll() {
-        return itemNotes.stream().map(notes::get).toList();
+        return itemNotes.stream().map(notes::get).toList(); //keep order
     }
 
     public static List<ItemNote> getSortedList(ItemNoteStorage.SortMode mode, String search, AhConfiguration.BINFilter binFilter){

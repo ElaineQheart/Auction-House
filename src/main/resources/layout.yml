@@ -14,12 +14,12 @@ my-ah-layout:
   - 'b o # p r n # d i'
 '#':
   ==: org.bukkit.inventory.ItemStack
-  DataVersion: 4325
-  id: minecraft:black_stained_glass_pane
-  count: 1
-  components:
-    minecraft:tooltip_display: '{hide_tooltip:1b}'
-  schema_version: 1
+  v: 3955
+  type: BLACK_STAINED_GLASS_PANE
+  meta:
+    ==: ItemMeta
+    meta-type: UNSPECIFIC
+    hide-tool-tip: true
 s:
   ==: org.bukkit.inventory.ItemStack
   DataVersion: 4325
