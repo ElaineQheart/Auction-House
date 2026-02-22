@@ -1,0 +1,13 @@
+name: AuctionHouse
+version: '1.4.3'
+main: me.elaineqheart.auctionHouse.AuctionHouse
+api-version: '1.21'
+authors: [ ElaineQheart ]
+website: https://www.youtube.com/@elaineqheart
+depend: [ Vault ]
+softdepend: [ PlaceholderAPI, Locale-API ]
+permissions:
+  auctionhouse.ah:
+    description: allows the player to use /ah
+    default: true
+

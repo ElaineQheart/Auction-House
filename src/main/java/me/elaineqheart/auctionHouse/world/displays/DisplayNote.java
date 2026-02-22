@@ -12,7 +12,7 @@ public class DisplayNote {
     public BlockDisplay glassBlock;
     public String type;
     public ItemStack itemStack;
-    public Item itemEntity;
+    public org.bukkit.entity.ItemDisplay itemDisplay;
     public TextDisplay text;
     public String itemName;
     public String playerName;

@@ -9,6 +9,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SettingManager {
 
@@ -20,11 +24,11 @@ public class SettingManager {
     public static boolean soldMessageEnabled;
     public static String permissionModerate;
     public static boolean partialSelling;
-    //public static boolean useRedis;
-    //public static String redisHost;
-    //public static String redisUsername;
-    //public static String redisPassword;
-    //public static int redisPort;
+    // public static boolean useRedis;
+    // public static String redisHost;
+    // public static String redisUsername;
+    // public static String redisPassword;
+    // public static int redisPort;
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
@@ -46,6 +50,12 @@ public class SettingManager {
     public static String soundCloseShulker;
     public static String soundNPCClick;
 
+    // displays
+    public static final Set<Material> displayMaterials = new HashSet<>();
+    public static final Map<String, Material> displayGlassMap = new HashMap<>();
+    public static final Map<String, Material> displayBaseMap = new HashMap<>();
+    public static final Map<String, Material> displaySignMap = new HashMap<>();
+
     static {
         loadData();
     }
@@ -61,11 +71,12 @@ public class SettingManager {
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         partialSelling = c.getBoolean("partial-selling", false);
-//        useRedis = c.getBoolean("multi-server-database.redis", false);
-//        redisHost = c.getString("multi-server-database.redis-host", "");
-//        redisUsername = c.getString("multi-server-database.redis-username", "default");
-//        redisPassword = c.getString("multi-server-database.redis-password", "");
-//        redisPort = c.getInt("multi-server-database.redis-port", 0);
+        // useRedis = c.getBoolean("multi-server-database.redis", false);
+        // redisHost = c.getString("multi-server-database.redis-host", "");
+        // redisUsername = c.getString("multi-server-database.redis-username",
+        // "default");
+        // redisPassword = c.getString("multi-server-database.redis-password", "");
+        // redisPort = c.getInt("multi-server-database.redis-port", 0);
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
@@ -87,34 +98,87 @@ public class SettingManager {
         soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
         soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
         soundNPCClick = layout.getString("sounds.npc-click", "UI_STONECUTTER_SELECT_RECIPE");
-        if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
+
+        loadDisplays(c);
+
+        if (ConfigManager.backwardsCompatibility())
+            backwardsCompatibility();
     }
 
-//    multi-server-database:
-//    redis: false                              # if Redis as a database should be used. Needed for multiserver support
-//    redis-host: ""                            # this is the host/link that points to your database, something like "redis-xxxxx.cXXX.eu-central-1-1.ec2.redns.redis-cloud.com"
-//    redis-username: "default"                 # usually it's just "default"
-//    redis-password: ""
-//    redis-port:                               # the port is the last thing in your public endpoint
+    // multi-server-database:
+    // redis: false # if Redis as a database should be used. Needed for multiserver
+    // support
+    // redis-host: "" # this is the host/link that points to your database,
+    // something like "redis-xxxxx.cXXX.eu-central-1-1.ec2.redns.redis-cloud.com"
+    // redis-username: "default" # usually it's just "default"
+    // redis-password: ""
+    // redis-port: # the port is the last thing in your public endpoint
+
+    private static void loadDisplays(FileConfiguration c) {
+        displayMaterials.clear();
+        displayGlassMap.clear();
+        displayBaseMap.clear();
+        displaySignMap.clear();
+
+        if (c.getConfigurationSection("displays") != null) {
+            for (String sortType : c.getConfigurationSection("displays").getKeys(false)) {
+                for (String rankOrDef : c.getConfigurationSection("displays." + sortType).getKeys(false)) {
+                    String baseKey = "displays." + sortType + "." + rankOrDef + ".";
+
+                    Material glass = Material.matchMaterial(c.getString(baseKey + "glass", "GLASS"));
+                    if (glass == null)
+                        glass = Material.GLASS;
+                    displayGlassMap.put(sortType + "-" + rankOrDef, glass);
+
+                    Material base = Material.matchMaterial(c.getString(baseKey + "base", "CHISELED_TUFF_BRICKS"));
+                    if (base == null)
+                        base = Material.CHISELED_TUFF_BRICKS;
+                    displayBaseMap.put(sortType + "-" + rankOrDef, base);
+                    displayMaterials.add(base);
+
+                    Material sign = Material.matchMaterial(c.getString(baseKey + "sign", "DARK_OAK_WALL_SIGN"));
+                    if (sign == null)
+                        sign = Material.DARK_OAK_WALL_SIGN;
+                    displaySignMap.put(sortType + "-" + rankOrDef, sign);
+                    displayMaterials.add(sign);
+                }
+            }
+        }
+    }
+
+    public static Material getDisplayGlass(String type, int rank) {
+        return displayGlassMap.getOrDefault(type + "-" + rank,
+                displayGlassMap.getOrDefault(type + "-default", Material.GLASS));
+    }
+
+    public static Material getDisplayBase(String type, int rank) {
+        return displayBaseMap.getOrDefault(type + "-" + rank,
+                displayBaseMap.getOrDefault(type + "-default", Material.CHISELED_TUFF_BRICKS));
+    }
+
+    public static Material getDisplaySign(String type, int rank) {
+        return displaySignMap.getOrDefault(type + "-" + rank,
+                displaySignMap.getOrDefault(type + "-default", Material.DARK_OAK_WALL_SIGN));
+    }
 
     private static void backwardsCompatibility() {
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
         c.set("plugin-version", AuctionHouse.getPlugin().getDescription().getVersion());
         FileConfiguration messageFile = M.get();
-        if(c.contains("currency")) {
+        if (c.contains("currency")) {
             messageFile.set("placeholders.currency-symbol", c.getString("currency"));
             c.set("currency", null);
             c.set("currency-symbol", "has been moved to messages.yml");
         }
-        if(c.contains("currency-before-number")) {
+        if (c.contains("currency-before-number")) {
             messageFile.set("placeholders.price", "%currency-symbol%%number%");
             c.set("currency-before-number", null);
         }
-        if(c.contains("format-numbers")) {
+        if (c.contains("format-numbers")) {
             messageFile.set("placeholders.format-numbers", c.getString("format-numbers"));
             c.set("format-numbers", null);
         }
-        if(c.contains("format-time-characters")) {
+        if (c.contains("format-time-characters")) {
             messageFile.set("placeholders.format-time-characters", c.getString("format-time-characters"));
             c.set("format-time-characters", null);
         }
@@ -131,7 +195,8 @@ public class SettingManager {
             c.set("auction-duration", null);
         }
         if (ConfigManager.permissions.getCustomFile().contains("auction-duration")) {
-            ConfigManager.permissions.getCustomFile().set("bin-auction-duration", ConfigManager.permissions.getCustomFile().get("auction-duration"));
+            ConfigManager.permissions.getCustomFile().set("bin-auction-duration",
+                    ConfigManager.permissions.getCustomFile().get("auction-duration"));
             ConfigManager.permissions.getCustomFile().set("auction-duration", null);
             ConfigManager.permissions.save();
             ConfigManager.permissions.reload();
@@ -143,15 +208,37 @@ public class SettingManager {
             messageFile.set("world.displays.line-3", messageFile.get("world.displays.sign-interaction"));
             messageFile.set("world.displays.sign-interaction", null);
             String by = messageFile.getString("world.displays.by-player");
-            if(by != null && !by.contains("%player%")) {
+            if (by != null && !by.contains("%player%")) {
                 messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
             }
+        }
+        if (!c.contains("displays")) {
+            // Write defaults directly to config
+            c.set("displays.highest_price.1.glass", "GOLD_BLOCK");
+            c.set("displays.highest_price.1.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.highest_price.1.sign", "DARK_OAK_WALL_SIGN");
+            c.set("displays.highest_price.2.glass", "OBSIDIAN");
+            c.set("displays.highest_price.2.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.highest_price.2.sign", "DARK_OAK_WALL_SIGN");
+            c.set("displays.highest_price.default.glass", "LODESTONE");
+            c.set("displays.highest_price.default.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.highest_price.default.sign", "DARK_OAK_WALL_SIGN");
+
+            c.set("displays.ending_soon.1.glass", "GOLD_BLOCK");
+            c.set("displays.ending_soon.1.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.ending_soon.1.sign", "DARK_OAK_WALL_SIGN");
+            c.set("displays.ending_soon.2.glass", "OBSIDIAN");
+            c.set("displays.ending_soon.2.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.ending_soon.2.sign", "DARK_OAK_WALL_SIGN");
+            c.set("displays.ending_soon.default.glass", "LODESTONE");
+            c.set("displays.ending_soon.default.base", "CHISELED_TUFF_BRICKS");
+            c.set("displays.ending_soon.default.sign", "DARK_OAK_WALL_SIGN");
+            loadDisplays(c);
         }
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
         AuctionHouse.getPlugin().saveConfig();
         AuctionHouse.getPlugin().reloadConfig();
     }
-
 
 }
