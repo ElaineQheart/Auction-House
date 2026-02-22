@@ -39,7 +39,7 @@ public class UpdateDisplay implements Runnable {
             int rank = data.glassBlock.getPersistentDataContainer()
                     .get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
 
-            if (!loc.getBlock().getType().equals(SettingManager.getDisplayBase(data.type, rank)))
+            if (!loc.getBlock().getBlockData().matches(SettingManager.getDisplayBase(data.type, rank)))
                 CreateDisplay.placeBlocks(loc, rank, data.type);
             Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> {
                 ItemNote note = getNote(data.type, rank);

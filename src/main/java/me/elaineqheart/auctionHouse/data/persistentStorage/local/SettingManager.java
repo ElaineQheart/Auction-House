@@ -3,7 +3,9 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,9 +54,9 @@ public class SettingManager {
 
     // displays
     public static final Set<Material> displayMaterials = new HashSet<>();
-    public static final Map<String, Material> displayGlassMap = new HashMap<>();
-    public static final Map<String, Material> displayBaseMap = new HashMap<>();
-    public static final Map<String, Material> displaySignMap = new HashMap<>();
+    public static final Map<String, BlockData> displayGlassMap = new HashMap<>();
+    public static final Map<String, BlockData> displayBaseMap = new HashMap<>();
+    public static final Map<String, BlockData> displaySignMap = new HashMap<>();
 
     static {
         loadData();
@@ -114,6 +116,21 @@ public class SettingManager {
     // redis-password: ""
     // redis-port: # the port is the last thing in your public endpoint
 
+    private static BlockData parseBlockData(String input, Material defaultMaterial) {
+        if (input == null || input.isEmpty())
+            return Bukkit.createBlockData(defaultMaterial);
+        try {
+            Material mat = Material.matchMaterial(input);
+            if (mat != null && mat.isBlock()) {
+                return Bukkit.createBlockData(mat);
+            }
+            return Bukkit.createBlockData(input);
+        } catch (IllegalArgumentException e) {
+            AuctionHouse.getPlugin().getLogger().warning("Invalid block data: " + input + ". Using default.");
+            return Bukkit.createBlockData(defaultMaterial);
+        }
+    }
+
     private static void loadDisplays(FileConfiguration c) {
         displayMaterials.clear();
         displayGlassMap.clear();
@@ -125,40 +142,34 @@ public class SettingManager {
                 for (String rankOrDef : c.getConfigurationSection("displays." + sortType).getKeys(false)) {
                     String baseKey = "displays." + sortType + "." + rankOrDef + ".";
 
-                    Material glass = Material.matchMaterial(c.getString(baseKey + "glass", "GLASS"));
-                    if (glass == null)
-                        glass = Material.GLASS;
+                    BlockData glass = parseBlockData(c.getString(baseKey + "glass"), Material.GLASS);
                     displayGlassMap.put(sortType + "-" + rankOrDef, glass);
 
-                    Material base = Material.matchMaterial(c.getString(baseKey + "base", "CHISELED_TUFF_BRICKS"));
-                    if (base == null)
-                        base = Material.CHISELED_TUFF_BRICKS;
+                    BlockData base = parseBlockData(c.getString(baseKey + "base"), Material.CHISELED_TUFF_BRICKS);
                     displayBaseMap.put(sortType + "-" + rankOrDef, base);
-                    displayMaterials.add(base);
+                    displayMaterials.add(base.getMaterial());
 
-                    Material sign = Material.matchMaterial(c.getString(baseKey + "sign", "DARK_OAK_WALL_SIGN"));
-                    if (sign == null)
-                        sign = Material.DARK_OAK_WALL_SIGN;
+                    BlockData sign = parseBlockData(c.getString(baseKey + "sign"), Material.DARK_OAK_WALL_SIGN);
                     displaySignMap.put(sortType + "-" + rankOrDef, sign);
-                    displayMaterials.add(sign);
+                    displayMaterials.add(sign.getMaterial());
                 }
             }
         }
     }
 
-    public static Material getDisplayGlass(String type, int rank) {
+    public static BlockData getDisplayGlass(String type, int rank) {
         return displayGlassMap.getOrDefault(type + "-" + rank,
-                displayGlassMap.getOrDefault(type + "-default", Material.GLASS));
+                displayGlassMap.getOrDefault(type + "-default", Bukkit.createBlockData(Material.GLASS)));
     }
 
-    public static Material getDisplayBase(String type, int rank) {
+    public static BlockData getDisplayBase(String type, int rank) {
         return displayBaseMap.getOrDefault(type + "-" + rank,
-                displayBaseMap.getOrDefault(type + "-default", Material.CHISELED_TUFF_BRICKS));
+                displayBaseMap.getOrDefault(type + "-default", Bukkit.createBlockData(Material.CHISELED_TUFF_BRICKS)));
     }
 
-    public static Material getDisplaySign(String type, int rank) {
+    public static BlockData getDisplaySign(String type, int rank) {
         return displaySignMap.getOrDefault(type + "-" + rank,
-                displaySignMap.getOrDefault(type + "-default", Material.DARK_OAK_WALL_SIGN));
+                displaySignMap.getOrDefault(type + "-default", Bukkit.createBlockData(Material.DARK_OAK_WALL_SIGN)));
     }
 
     private static void backwardsCompatibility() {

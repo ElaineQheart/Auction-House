@@ -38,7 +38,7 @@ public class CreateDisplay {
         }
         BlockDisplay glass = (BlockDisplay) world.spawnEntity(loc, EntityType.BLOCK_DISPLAY); // creating a block
                                                                                               // display
-        glass.setBlock(SettingManager.getDisplayGlass(sortType, rank).createBlockData());
+        glass.setBlock(SettingManager.getDisplayGlass(sortType, rank));
         glass.setBrightness(new org.bukkit.entity.Display.Brightness(15, 15));
         // Set scale to 0.6
         Vector3f scale = new Vector3f(0.6f, 0.6f, 0.6f);
@@ -71,36 +71,42 @@ public class CreateDisplay {
     }
 
     public static void placeBlocks(Location loc, int rank, String sortType) {
-        Material base = SettingManager.getDisplayBase(sortType, rank);
-        Material signMat = SettingManager.getDisplaySign(sortType, rank);
+        org.bukkit.block.data.BlockData baseData = SettingManager.getDisplayBase(sortType, rank);
+        org.bukkit.block.data.BlockData signData = SettingManager.getDisplaySign(sortType, rank);
 
-        loc.getBlock().setType(base, false);
-        loc.add(1, 0, 0).getBlock().setType(signMat);
-        loc.add(-2, 0, 0).getBlock().setType(signMat);
-        loc.add(1, 0, -1).getBlock().setType(signMat);
-        loc.add(0, 0, 2).getBlock().setType(signMat);
-        Sign east = (Sign) loc.add(1, 0, -1).getBlock().getState();
+        loc.getBlock().setBlockData(baseData, false);
+
+        org.bukkit.block.data.BlockData eastData = signData.clone();
+        if (eastData instanceof Directional dir)
+            dir.setFacing(BlockFace.EAST);
+        loc.clone().add(1, 0, 0).getBlock().setBlockData(eastData, false);
+        Sign east = (Sign) loc.clone().add(1, 0, 0).getBlock().getState();
         east.setWaxed(true);
         east.update();
-        Directional eastData = (Directional) east.getBlockData();
-        eastData.setFacing(BlockFace.EAST);
-        loc.getBlock().setBlockData(eastData);
-        Sign west = (Sign) loc.add(-2, 0, 0).getBlock().getState();
+
+        org.bukkit.block.data.BlockData westData = signData.clone();
+        if (westData instanceof Directional dir)
+            dir.setFacing(BlockFace.WEST);
+        loc.clone().add(-1, 0, 0).getBlock().setBlockData(westData, false);
+        Sign west = (Sign) loc.clone().add(-1, 0, 0).getBlock().getState();
         west.setWaxed(true);
         west.update();
-        Directional westData = (Directional) west.getBlockData();
-        westData.setFacing(BlockFace.WEST);
-        loc.getBlock().setBlockData(westData);
-        Sign north = (Sign) loc.add(1, 0, -1).getBlock().getState(); // default is north
+
+        org.bukkit.block.data.BlockData northData = signData.clone();
+        if (northData instanceof Directional dir)
+            dir.setFacing(BlockFace.NORTH);
+        loc.clone().add(0, 0, -1).getBlock().setBlockData(northData, false);
+        Sign north = (Sign) loc.clone().add(0, 0, -1).getBlock().getState();
         north.setWaxed(true);
         north.update();
-        Sign south = (Sign) loc.add(0, 0, 2).getBlock().getState();
+
+        org.bukkit.block.data.BlockData southData = signData.clone();
+        if (southData instanceof Directional dir)
+            dir.setFacing(BlockFace.SOUTH);
+        loc.clone().add(0, 0, 1).getBlock().setBlockData(southData, false);
+        Sign south = (Sign) loc.clone().add(0, 0, 1).getBlock().getState();
         south.setWaxed(true);
         south.update();
-        Directional southData = (Directional) south.getBlockData();
-        southData.setFacing(BlockFace.SOUTH);
-        loc.getBlock().setBlockData(southData);
-        loc.add(0, 0, -1);
     }
 
     public static boolean notEnoughSpace(Location loc) {

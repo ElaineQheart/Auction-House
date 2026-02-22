@@ -19,27 +19,27 @@ bid-increase-percent: 25                    # how much each bid has to increase 
 displays:
   highest_price:
     1:
-      glass: "GOLD_BLOCK"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "RESPAWN_ANCHOR"
       sign: "DARK_OAK_WALL_SIGN"
     2:
-      glass: "OBSIDIAN"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "RESPAWN_ANCHOR"
       sign: "DARK_OAK_WALL_SIGN"
     default:
-      glass: "LODESTONE"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "LODESTONE"
       sign: "DARK_OAK_WALL_SIGN"
   ending_soon:
     1:
-      glass: "GOLD_BLOCK"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "GOLD_BLOCK"
       sign: "DARK_OAK_WALL_SIGN"
     2:
-      glass: "OBSIDIAN"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "GOLD_BLOCK"
       sign: "DARK_OAK_WALL_SIGN"
     default:
-      glass: "LODESTONE"
-      base: "CHISELED_TUFF_BRICKS"
+      glass: "WHITE_STAINED_GLASS"
+      base: "LODESTONE"
       sign: "DARK_OAK_WALL_SIGN"

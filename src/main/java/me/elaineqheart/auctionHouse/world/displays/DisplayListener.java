@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -66,6 +67,60 @@ public class DisplayListener implements Listener {
                 throw new RuntimeException("The display type is null. This should never happen.");
             int rank = event.getRightClicked().getPersistentDataContainer()
                     .get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
+            ItemNote note = UpdateDisplay.getNote(type, rank);
+            if (note != null) {
+                p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE, 0.2f, 1);
+                AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p,
+                        false);
+                AuctionHouse.getGuiManager()
+                        .openGUI(new AuctionViewGUI(note, configuration, 0, AhConfiguration.View.AUCTION_HOUSE), p);
+            }
+        }
+    }
+
+    @EventHandler // open the auction house when interacting directly with the blocks of the
+                  // display
+    public void onBlockInteract(PlayerInteractEvent event) {
+        if (event.getClickedBlock() == null)
+            return;
+        if (!SettingManager.displayMaterials.contains(event.getClickedBlock().getType()))
+            return;
+
+        Location loc = event.getClickedBlock().getLocation();
+        Location displayLoc = isProtected(loc);
+        if (displayLoc == null)
+            return;
+
+        event.setCancelled(true);
+
+        Player p = event.getPlayer();
+        if (p.isSneaking() && p.getGameMode() == GameMode.CREATIVE
+                && p.hasPermission(SettingManager.permissionModerate)) {
+            return; // allow them to break it or edit it in creative mode
+        }
+
+        // Find the block display entity to get type and rank
+        Integer rank = null;
+        String type = null;
+        assert displayLoc.getWorld() != null;
+        for (Entity test : displayLoc.getWorld().getNearbyEntities(displayLoc, 1, 1, 1)) {
+            if (UpdateDisplay.isDisplayGlass(test)) {
+                if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"),
+                        PersistentDataType.INTEGER)) {
+                    type = "highest_price";
+                    rank = test.getPersistentDataContainer().get(
+                            new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER);
+                } else if (test.getPersistentDataContainer()
+                        .has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER)) {
+                    type = "ending_soon";
+                    rank = test.getPersistentDataContainer().get(
+                            new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER);
+                }
+                break;
+            }
+        }
+
+        if (type != null && rank != null) {
             ItemNote note = UpdateDisplay.getNote(type, rank);
             if (note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE, 0.2f, 1);
