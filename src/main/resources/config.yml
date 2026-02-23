@@ -20,11 +20,11 @@ displays:
   highest_price:
     1:
       glass: "WHITE_STAINED_GLASS"
-      base: "RESPAWN_ANCHOR"
+      base: "RESPAWN_ANCHOR:4"
       sign: "DARK_OAK_WALL_SIGN"
     2:
       glass: "WHITE_STAINED_GLASS"
-      base: "RESPAWN_ANCHOR"
+      base: "RESPAWN_ANCHOR:2"
       sign: "DARK_OAK_WALL_SIGN"
     default:
       glass: "WHITE_STAINED_GLASS"

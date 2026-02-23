@@ -120,12 +120,30 @@ public class SettingManager {
         if (input == null || input.isEmpty())
             return Bukkit.createBlockData(defaultMaterial);
         try {
+            if (input.contains(":")) {
+                String[] parts = input.split(":", 2);
+                Material mat = Material.matchMaterial(parts[0]);
+                if (mat != null && mat.isBlock()) {
+                    BlockData data = Bukkit.createBlockData(mat);
+                    int value = Integer.parseInt(parts[1]);
+                    if (data instanceof org.bukkit.block.data.type.RespawnAnchor anchor) {
+                        anchor.setCharges(Math.min(value, anchor.getMaximumCharges()));
+                    } else if (data instanceof org.bukkit.block.data.Levelled levelled) {
+                        levelled.setLevel(Math.min(value, levelled.getMaximumLevel()));
+                    } else if (data instanceof org.bukkit.block.data.Ageable ageable) {
+                        ageable.setAge(Math.min(value, ageable.getMaximumAge()));
+                    } else if (data instanceof org.bukkit.block.data.Lightable lightable) {
+                        lightable.setLit(value > 0);
+                    }
+                    return data;
+                }
+            }
             Material mat = Material.matchMaterial(input);
             if (mat != null && mat.isBlock()) {
                 return Bukkit.createBlockData(mat);
             }
             return Bukkit.createBlockData(input);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             AuctionHouse.getPlugin().getLogger().warning("Invalid block data: " + input + ". Using default.");
             return Bukkit.createBlockData(defaultMaterial);
         }

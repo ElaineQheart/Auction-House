@@ -443,6 +443,7 @@ world:
     line-2: ""
     line-3: "§d[CLICK]"
     by-player: "by: %player%"
+    break-instruction: "§cTo remove the display, switch to creative mode and sneak + break the base block."
 
 commands:
   ah: "ah"

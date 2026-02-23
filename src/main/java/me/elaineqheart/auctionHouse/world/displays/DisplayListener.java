@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.*;
@@ -27,9 +28,6 @@ public class DisplayListener implements Listener {
 
     @EventHandler
     public void onDisplayBreak(BlockBreakEvent event) {
-        if (!SettingManager.displayMaterials.contains(event.getBlock().getType())) {
-            return; // Not a display block
-        }
         Location loc = event.getBlock().getLocation();
         Player p = event.getPlayer();
         Location displayLoc = isProtected(loc);
@@ -37,21 +35,40 @@ public class DisplayListener implements Listener {
             return; // Not a display location
         }
 
-        if (!p.getGameMode().equals(GameMode.CREATIVE) || !p.hasPermission(SettingManager.permissionModerate)) {
+        boolean isBaseBlock = (loc.getBlockX() == displayLoc.getBlockX() &&
+                loc.getBlockY() == displayLoc.getBlockY() &&
+                loc.getBlockZ() == displayLoc.getBlockZ());
+
+        if (isBaseBlock) {
+            if (p.getGameMode() == GameMode.CREATIVE && p.hasPermission(SettingManager.permissionModerate)
+                    && p.isSneaking()) {
+                event.setCancelled(true);
+                UpdateDisplay.removeDisplay(displayLoc, true);
+            } else {
+                event.setCancelled(true);
+                if (p.hasPermission(SettingManager.permissionModerate)) {
+                    p.sendMessage(M.getFormatted("world.displays.break-instruction"));
+                }
+            }
+        } else { // Sign block
             event.setCancelled(true);
-            return;
+            if (p.hasPermission(SettingManager.permissionModerate)) {
+                p.sendMessage(M.getFormatted("world.displays.break-instruction"));
+            }
         }
-        UpdateDisplay.removeDisplay(displayLoc, true);
     }
 
-    private Location isProtected(Location loc) {
-        for (Location loc2 : UpdateDisplay.locations.keySet()) {
-            if (loc.equals(loc2) || loc.add(0, 0, 1).equals(loc2) || loc.add(0, 0, -2).equals(loc2)
-                    || loc.add(1, 0, 1).equals(loc2) || loc.add(-2, 0, 0).equals(loc2)) {
-                loc.add(1, 0, 0);
-                return loc2;
+    private Location isProtected(Location inputLoc) {
+        for (Location baseLoc : UpdateDisplay.locations.keySet()) {
+            if (inputLoc.getWorld() != baseLoc.getWorld())
+                continue;
+            if (inputLoc.getBlockY() != baseLoc.getBlockY())
+                continue;
+            int dx = Math.abs(inputLoc.getBlockX() - baseLoc.getBlockX());
+            int dz = Math.abs(inputLoc.getBlockZ() - baseLoc.getBlockZ());
+            if (dx + dz <= 1) { // Base block and adjacent blocks
+                return baseLoc;
             }
-            loc.add(1, 0, 0); // Reset the location to the original
         }
         return null;
     }
@@ -60,6 +77,7 @@ public class DisplayListener implements Listener {
     public void onDisplayClick(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked().getPersistentDataContainer()
                 .has(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING)) {
+            event.setCancelled(true);
             Player p = event.getPlayer();
             String type = event.getRightClicked().getPersistentDataContainer()
                     .get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
@@ -81,9 +99,9 @@ public class DisplayListener implements Listener {
     @EventHandler // open the auction house when interacting directly with the blocks of the
                   // display
     public void onBlockInteract(PlayerInteractEvent event) {
-        if (event.getClickedBlock() == null)
+        if (event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK)
             return;
-        if (!SettingManager.displayMaterials.contains(event.getClickedBlock().getType()))
+        if (event.getClickedBlock() == null)
             return;
 
         Location loc = event.getClickedBlock().getLocation();
@@ -94,10 +112,6 @@ public class DisplayListener implements Listener {
         event.setCancelled(true);
 
         Player p = event.getPlayer();
-        if (p.isSneaking() && p.getGameMode() == GameMode.CREATIVE
-                && p.hasPermission(SettingManager.permissionModerate)) {
-            return; // allow them to break it or edit it in creative mode
-        }
 
         // Find the block display entity to get type and rank
         Integer rank = null;
