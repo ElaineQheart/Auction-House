@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
@@ -26,7 +27,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class DisplayListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDisplayBreak(BlockBreakEvent event) {
         Location loc = event.getBlock().getLocation();
         Player p = event.getPlayer();
@@ -73,7 +74,7 @@ public class DisplayListener implements Listener {
         return null;
     }
 
-    @EventHandler // open the auction house when the display is clicked
+    @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when the display is clicked
     public void onDisplayClick(PlayerInteractAtEntityEvent event) {
         if (event.getRightClicked().getPersistentDataContainer()
                 .has(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING)) {
@@ -96,8 +97,9 @@ public class DisplayListener implements Listener {
         }
     }
 
-    @EventHandler // open the auction house when interacting directly with the blocks of the
-                  // display
+    @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when interacting directly with the blocks
+                                                    // of the
+    // display
     public void onBlockInteract(PlayerInteractEvent event) {
         if (event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK)
             return;
@@ -147,7 +149,7 @@ public class DisplayListener implements Listener {
     }
 
     // prevent the tuff block to be moved by pistons
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPiston(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
@@ -160,7 +162,7 @@ public class DisplayListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPiston(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
@@ -174,7 +176,7 @@ public class DisplayListener implements Listener {
     }
 
     // protect the tuff block from explosions
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplosion(EntityExplodeEvent event) {
         event.blockList().removeIf(block -> {
             Location loc = block.getLocation();
@@ -182,7 +184,7 @@ public class DisplayListener implements Listener {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onExplosion(BlockExplodeEvent event) {
         event.blockList().removeIf(block -> {
             Location loc = block.getLocation();
@@ -190,7 +192,7 @@ public class DisplayListener implements Listener {
         });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(EntityTeleportEvent event) {
         Entity entity = event.getEntity();
         if (UpdateDisplay.isDisplayGlass(entity) || UpdateDisplay.isDisplayInteraction(entity)) {
