@@ -246,3 +246,33 @@ sounds:
   open-shulker: "BLOCK_SHULKER_BOX_OPEN"
   close-shulker: "BLOCK_SHULKER_BOX_CLOSE"
   npc-click: "UI_STONECUTTER_SELECT_RECIPE"
+
+# you can add as many displays as you want
+# in order to destroy a spawned display, just shift+Lclick on the base block during creative mode (requires permission)
+displays:
+  highest_price:
+    1:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF" #base: "RESPAWN_ANCHOR:4" #Supports any block with a data value
+      sign: "DARK_OAK_WALL_SIGN"
+    2:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF"
+      sign: "DARK_OAK_WALL_SIGN"
+    default:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF"
+      sign: "DARK_OAK_WALL_SIGN"
+  ending_soon:
+    1:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF"
+      sign: "DARK_OAK_WALL_SIGN"
+    2:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF"
+      sign: "DARK_OAK_WALL_SIGN"
+    default:
+      glass: "WHITE_STAINED_GLASS"
+      base: "CHISELED_TUFF"
+      sign: "DARK_OAK_WALL_SIGN"

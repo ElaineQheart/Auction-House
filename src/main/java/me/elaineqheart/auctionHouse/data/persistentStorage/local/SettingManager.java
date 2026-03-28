@@ -100,8 +100,7 @@ public class SettingManager {
         soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
         soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
         soundNPCClick = layout.getString("sounds.npc-click", "UI_STONECUTTER_SELECT_RECIPE");
-
-        loadDisplays(c);
+        loadDisplays(layout);
 
         if (ConfigManager.backwardsCompatibility())
             backwardsCompatibility();
@@ -241,29 +240,17 @@ public class SettingManager {
                 messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
             }
         }
-        if (!c.contains("displays")) {
-            // Write defaults directly to config
-            c.set("displays.highest_price.1.glass", "GOLD_BLOCK");
-            c.set("displays.highest_price.1.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.highest_price.1.sign", "DARK_OAK_WALL_SIGN");
-            c.set("displays.highest_price.2.glass", "OBSIDIAN");
-            c.set("displays.highest_price.2.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.highest_price.2.sign", "DARK_OAK_WALL_SIGN");
-            c.set("displays.highest_price.default.glass", "LODESTONE");
-            c.set("displays.highest_price.default.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.highest_price.default.sign", "DARK_OAK_WALL_SIGN");
 
-            c.set("displays.ending_soon.1.glass", "GOLD_BLOCK");
-            c.set("displays.ending_soon.1.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.ending_soon.1.sign", "DARK_OAK_WALL_SIGN");
-            c.set("displays.ending_soon.2.glass", "OBSIDIAN");
-            c.set("displays.ending_soon.2.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.ending_soon.2.sign", "DARK_OAK_WALL_SIGN");
-            c.set("displays.ending_soon.default.glass", "LODESTONE");
-            c.set("displays.ending_soon.default.base", "CHISELED_TUFF_BRICKS");
-            c.set("displays.ending_soon.default.sign", "DARK_OAK_WALL_SIGN");
-            loadDisplays(c);
-        }
+//        if (!ConfigManager.layout.getCustomFile().contains("displays")) {
+//            String[] paths = {"displays.highest_price.1", "displays.highest_price.2", "displays.highest_price.default",
+//                    "displays.ending_soon.1", "displays.ending_soon.2", "displays.ending_soon.default"};
+//            for (String path : paths) {
+//                ConfigManager.layout.getCustomFile().set(path + ".glass", "WHITE_STAINED_GLASS");
+//                ConfigManager.layout.getCustomFile().set(path + ".base", "CHISELED_TUFF_BRICKS");
+//                ConfigManager.layout.getCustomFile().set(path + ".sign", "DARK_OAK_WALL_SIGN");
+//            }
+//            loadDisplays(ConfigManager.layout.getCustomFile());
+//        }
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
         AuctionHouse.getPlugin().saveConfig();
