@@ -7,8 +7,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class ItemNoteStorage {
+
+    private static HashMap<UUID, ItemStack> items = new HashMap<>();
+    public static ItemStack getItem(UUID itemNoteID) {
+        return items.get(itemNoteID);
+    }
+    public static void addItem(UUID itemNoteID, ItemStack item) {
+        items.put(itemNoteID, item);
+    }
+    public static void removeItem(UUID itemNoteID) {
+        items.remove(itemNoteID);
+    }
 
     public static void createNote(Player p, ItemStack item, double price, boolean isBIDAuction) {
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
@@ -28,6 +41,7 @@ public class ItemNoteStorage {
     public static void deleteNote(ItemNote note) {
         //if(r()) RedisNoteStorage.deleteNote(note.getNoteID()); else
         JsonNoteStorage.deleteNote(note);
+        removeItem(note.getNoteID());
     }
 
     public static void setBuyerName(ItemNote note, String buyerName) {

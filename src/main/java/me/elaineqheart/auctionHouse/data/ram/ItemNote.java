@@ -1,7 +1,9 @@
 package me.elaineqheart.auctionHouse.data.ram;
 
 import de.unpixelt.locale.Translate;
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
@@ -51,10 +53,14 @@ public class ItemNote {
         this.auctionTime = ConfigManager.permissions.getAuctionDuration(player, isBIDAuction);
         this.itemName = StringUtils.getItemName(item);
         this.isBIDAuction = isBIDAuction;
+        ItemNoteStorage.addItem(noteID, ItemStackConverter.decode(itemData));
     }
 
     public ItemStack getItem(){
-        return ItemStackConverter.decode(itemData);
+        if (ItemNoteStorage.getItem(noteID) != null) return ItemNoteStorage.getItem(noteID).clone();
+        ItemStack myItem = ItemStackConverter.decode(itemData);
+        ItemNoteStorage.addItem(noteID, myItem);
+        return myItem.clone();
     }
     public long getTimeLeft(){
         // +30 seconds [auctionSetupTime] wait time until the item is up on auction
