@@ -6,16 +6,16 @@ import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIManager;
 import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
+import me.elaineqheart.auctionHouse.pluginDependencies.AuctionHousePAPIExpansion;
 import me.elaineqheart.auctionHouse.listeners.AhConfigurationListener;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
-import me.elaineqheart.auctionHouse.vault.LocaleAPIExtension;
+import me.elaineqheart.auctionHouse.pluginDependencies.LocaleAPIExtension;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.KillListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCListener;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,13 +29,11 @@ public final class AuctionHouse extends JavaPlugin {
     public static AuctionHouse getPlugin() {return instance;}
     public static GUIManager getGuiManager() {return guiManager;}
     public static AnvilGUIManager getAnvilManager() {return anvilManager;}
-    public static boolean localeAPI;
 
     @Override
     public void onEnable() {
         long start = System.currentTimeMillis();
-        Plugin localeAPIPlugin = Bukkit.getPluginManager().getPlugin("Locale-API");
-        if(localeAPIPlugin != null && localeAPIPlugin.isEnabled()) localeAPI = true;
+        LocaleAPIExtension.setup();
         instance = this;
         guiManager = new GUIManager();
         GUIListener guiListener = new GUIListener(guiManager);

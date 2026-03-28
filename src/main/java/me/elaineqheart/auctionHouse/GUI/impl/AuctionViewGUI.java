@@ -14,7 +14,7 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.Bid;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.vault.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;

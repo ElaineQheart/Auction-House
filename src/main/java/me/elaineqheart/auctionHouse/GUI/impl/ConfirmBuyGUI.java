@@ -12,7 +12,7 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.vault.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;

@@ -1,11 +1,11 @@
 package me.elaineqheart.auctionHouse.data.ram;
 
 import de.unpixelt.locale.Translate;
-import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
+import me.elaineqheart.auctionHouse.pluginDependencies.LocaleAPIExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.enchantments.Enchantment;
@@ -85,7 +85,7 @@ public class ItemNote {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
         ArrayList<String> index = new ArrayList<>(Collections.singleton(item.toString().toLowerCase()));
-        if(AuctionHouse.localeAPI) {
+        if(LocaleAPIExtension.enabled) {
             List<ItemStack> translateItems = new ArrayList<>(List.of(item));
             if(meta != null) {
                 if (meta instanceof BundleMeta bundleMeta) translateItems.addAll(bundleMeta.getItems());

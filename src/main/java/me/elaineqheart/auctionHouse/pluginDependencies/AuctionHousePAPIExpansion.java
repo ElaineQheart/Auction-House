@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.vault;
+package me.elaineqheart.auctionHouse.pluginDependencies;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.elaineqheart.auctionHouse.AuctionHouse;

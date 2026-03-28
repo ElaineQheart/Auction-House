@@ -1,4 +1,4 @@
-package me.elaineqheart.auctionHouse.vault;
+package me.elaineqheart.auctionHouse.pluginDependencies;
 
 //import net.milkbowl.vault.chat.Chat;
 

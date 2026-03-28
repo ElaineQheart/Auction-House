@@ -11,7 +11,7 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.vault.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
