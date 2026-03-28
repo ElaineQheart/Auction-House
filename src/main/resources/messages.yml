@@ -495,7 +495,7 @@ command-feedback:
   auction: "§eYou have put up an auction for %price%"
   announcements-enabled: "§aAuction announcements enabled! §7You will now see when players put items on auction."
   announcements-disabled: "§cAuction announcements disabled! §7You will no longer see when players put items on auction."
-  ban-usage: "$eUsage: /ah ban <player> <time in days> <reason>"
+  ban-usage: "§eUsage: /ah ban <player> <time in days> <reason>"
   pardon-usage: "§eUsage: /ah pardon <player>"
   player-not-found: "§eThat player is not online"
   ban: "§b-------------------------------------------------
