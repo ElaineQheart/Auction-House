@@ -8,6 +8,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.listeners.AhConfigurationListener;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
+import me.elaineqheart.auctionHouse.vault.LocaleAPIExtension;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.KillListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
@@ -69,6 +70,12 @@ public final class AuctionHouse extends JavaPlugin {
         DynamicCommandRegisterer.init();
         UpdateDisplay.init();
         //NoteStorage.purge();
+
+        // Register PlaceholderAPI expansion
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new AuctionHousePAPIExpansion().register();
+            getLogger().info("PlaceholderAPI expansion registered.");
+        }
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
