@@ -6,10 +6,14 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
@@ -27,9 +31,19 @@ public class ConfigManager {
 
     public static void setupConfigs() {
         //Setup config.yml
-        AuctionHouse.getPlugin().reloadConfig();
+        saveDefaultConfig();
+//        if (!Files.exists(Path.of(AuctionHouse.getPlugin().getDataFolder().getPath() + ".config.yml"))) {
+//            AuctionHouse.getPlugin().saveResource("config.yml", false);
+//        }
+        //AuctionHouse.getPlugin().saveResource("config.yml", false);
+//        System.out.println(Files.exists(Path.of(AuctionHouse.getPlugin().getDataFolder().getPath() + ".config.yml")));
+//        System.out.println(Path.of(AuctionHouse.getPlugin().getDataFolder().getPath() + ".config.yml"));
+        //Config defaultConfig = new Config();
+        //defaultConfig.setup("config.yml", true, "");
+        //AuctionHouse.getPlugin().reloadConfig();
         AuctionHouse.getPlugin().getConfig().options().copyDefaults(true);
         AuctionHouse.getPlugin().saveConfig();
+
         messages.setup("messages.yml", true, "");
         displays.setup("displays.yml", false, "/data");
         bannedPlayers.setup("bannedPlayers.yml", false, "/data");
@@ -46,6 +60,36 @@ public class ConfigManager {
         transactionLogger.setup(transactionLogger.getName(), false, "/logs");
         Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
+    }
+
+    private static void saveDefaultConfig() {
+        String resourcePath = "config.yml";
+        InputStream in = AuctionHouse.getPlugin().getResource(resourcePath);
+        //FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        File outFile = new File(AuctionHouse.getPlugin().getDataFolder(), resourcePath);
+
+        try {
+            if (!outFile.exists()) {
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            }
+        } catch (IOException ex) {
+            AuctionHouse.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+        }
+//        AuctionHouse.getPlugin().getConfig().options().copyDefaults(true);
+//        String[] keyList = {"tax", "auction-setup-time", "default-max-auctions", "sold-message", "auto-collect", "partial-selling",
+//                "admin-permission", "display-update", "auction-announcements", "bin-auctions", "bin-auction-duration", "min-bin",
+//                "bid-auctions", "bid-auction-duration", "min-bid", "last-bid-extra-time", "bid-increase-percent"};
+//        for (String key : keyList) {
+//            if (!c.contains(key)) c.set();
+//        }
+//        System.out.println(test);
     }
 
     public static boolean backwardsCompatibility() {

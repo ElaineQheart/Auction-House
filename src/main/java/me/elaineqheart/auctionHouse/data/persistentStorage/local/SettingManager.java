@@ -125,14 +125,15 @@ public class SettingManager {
                 if (mat != null && mat.isBlock()) {
                     BlockData data = Bukkit.createBlockData(mat);
                     int value = Integer.parseInt(parts[1]);
-                    if (data instanceof org.bukkit.block.data.type.RespawnAnchor anchor) {
-                        anchor.setCharges(Math.min(value, anchor.getMaximumCharges()));
-                    } else if (data instanceof org.bukkit.block.data.Levelled levelled) {
-                        levelled.setLevel(Math.min(value, levelled.getMaximumLevel()));
-                    } else if (data instanceof org.bukkit.block.data.Ageable ageable) {
-                        ageable.setAge(Math.min(value, ageable.getMaximumAge()));
-                    } else if (data instanceof org.bukkit.block.data.Lightable lightable) {
-                        lightable.setLit(value > 0);
+                    switch (data) {
+                        case org.bukkit.block.data.type.RespawnAnchor anchor ->
+                                anchor.setCharges(Math.min(value, anchor.getMaximumCharges()));
+                        case org.bukkit.block.data.Levelled levelled ->
+                                levelled.setLevel(Math.min(value, levelled.getMaximumLevel()));
+                        case org.bukkit.block.data.Ageable ageable ->
+                                ageable.setAge(Math.min(value, ageable.getMaximumAge()));
+                        case org.bukkit.block.data.Lightable lightable -> lightable.setLit(value > 0);
+                        default -> {}
                     }
                     return data;
                 }
@@ -241,16 +242,6 @@ public class SettingManager {
             }
         }
 
-//        if (!ConfigManager.layout.getCustomFile().contains("displays")) {
-//            String[] paths = {"displays.highest_price.1", "displays.highest_price.2", "displays.highest_price.default",
-//                    "displays.ending_soon.1", "displays.ending_soon.2", "displays.ending_soon.default"};
-//            for (String path : paths) {
-//                ConfigManager.layout.getCustomFile().set(path + ".glass", "WHITE_STAINED_GLASS");
-//                ConfigManager.layout.getCustomFile().set(path + ".base", "CHISELED_TUFF_BRICKS");
-//                ConfigManager.layout.getCustomFile().set(path + ".sign", "DARK_OAK_WALL_SIGN");
-//            }
-//            loadDisplays(ConfigManager.layout.getCustomFile());
-//        }
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
         AuctionHouse.getPlugin().saveConfig();

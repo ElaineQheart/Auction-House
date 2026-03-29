@@ -34,7 +34,7 @@ public class Config {
         customFile = YamlConfiguration.loadConfiguration(file);
 
         if(copyDefaults) {
-            final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(parent + fileName);
+            final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(fileName);
             if (defConfigStream != null) {
                 customFile.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
                 customFile.options().copyDefaults(true);
@@ -45,7 +45,7 @@ public class Config {
         setup();
     }
 
-    public void setup() {}
+    public void setup() {} //overwrite method
 
     public FileConfiguration getCustomFile(){
         return customFile;
