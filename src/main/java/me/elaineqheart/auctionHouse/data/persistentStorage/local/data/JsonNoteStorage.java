@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local.data;
 
 import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.entity.Player;
@@ -80,6 +81,7 @@ public class JsonNoteStorage {
         try {
             saveNotes();
             loadNotes();
+            ItemNoteStorage.reload();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

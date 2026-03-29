@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ItemNoteStorage {
 
-    private static final HashMap<UUID, ItemStack> items = new HashMap<>();
+    private static HashMap<UUID, ItemStack> items = new HashMap<>();
     public static ItemStack getItem(UUID itemNoteID) {
         return items.get(itemNoteID);
     }
@@ -93,6 +93,10 @@ public class ItemNoteStorage {
     public static void purge() {
         //if(r()) RedisNoteStorage.purge();else
         JsonNoteStorage.purge();
+    }
+
+    public static void reload() {
+        items = new HashMap<>();
     }
 
 }

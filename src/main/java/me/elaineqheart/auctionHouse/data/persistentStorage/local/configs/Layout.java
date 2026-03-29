@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class Layout extends Config {
 
     public List<String> ahLayout;
     public List<String> myAhLayout;
+    private HashMap<String, ItemStack> items = new HashMap<>();
 
     @Override
     public void setup() {
@@ -44,11 +46,11 @@ public class Layout extends Config {
     }
 
     public ItemStack getItem(String path) {
+        if (items.get(path) != null) return items.get(path).clone();
         ItemStack item = ConfigManager.layout.getCustomFile().getItemStack(path);
-        if(item == null) {
-            throw new RuntimeException("The provided item at " + path + " is not serializable.");
-        }
-        return Objects.requireNonNull(item).clone();
+        assert item != null : "The provided item at " + path + " is not serializable.";
+        items.put(path, item);
+        return item.clone();
     }
 
     public void saveItem(ItemStack item) {
@@ -60,5 +62,6 @@ public class Layout extends Config {
     public void reloadChild() {
         setup();
         ItemManager.reload();
+        items = new HashMap<>();
     }
 }

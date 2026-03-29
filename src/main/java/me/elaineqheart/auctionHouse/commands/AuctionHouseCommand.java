@@ -471,6 +471,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
         ConfigManager.reloadConfigs();
         try {
             ItemNoteStorage.loadNotes();
+            ItemNoteStorage.reload();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
