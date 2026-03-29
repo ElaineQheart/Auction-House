@@ -543,7 +543,8 @@ command-feedback:
 placeholders:
   number: "§6%input%§r"
   price: "%number%%currency-symbol%"
-  currency-symbol: " coins"
+  price-trim: "%price%"
+  currency-symbol: "§6 coins"
   format-numbers: "#,###.##"
   format-time-characters: "dhms"
   player: "%player_name%"

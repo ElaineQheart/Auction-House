@@ -80,14 +80,9 @@ public class StringUtils {
         return M.getFormatted("placeholders.number", "%input%", number);
     }
 
-    public static String formatPrice(double price) {
+    public static String formatPrice(double price, boolean trimmed) {
         return M.getFormatted("placeholders.price",
-                "%number%", formatNumber(price),
-                "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
-    }
-    public static String formatPrice(String price) {
-        return M.getFormatted("placeholders.price",
-                "%number%", formatNumber(price),
+                "%number%", formatNumber(trimmed ? StringUtils.getPriceTrimmed(price) : String.valueOf(price)),
                 "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
     }
 

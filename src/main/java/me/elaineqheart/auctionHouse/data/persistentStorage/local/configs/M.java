@@ -75,12 +75,12 @@ public class M extends Config {
     }
 
     public static String replace(String message, double... prices) {
-        message = message.replace("%price%", StringUtils.formatPrice(prices[0]));
-        message = message.replace("%price-trim%", StringUtils.formatPrice(StringUtils.getPriceTrimmed(prices[0])));
+        message = message.replace("%price%", StringUtils.formatPrice(prices[0], false));
+        message = message.replace("%price-trim%", StringUtils.formatPrice(prices[0], true));
         message = message.replace("%number%", StringUtils.formatNumber(prices[0]));
         for(int i = 2; i-1 < prices.length; i++) {
-            message = message.replace("%price"+i+"%", StringUtils.formatPrice(prices[i-1]));
-            message = message.replace("%price-trim"+i+"%", StringUtils.formatPrice(StringUtils.getPriceTrimmed(prices[i-1])));
+            message = message.replace("%price"+i+"%", StringUtils.formatPrice(prices[i-1], false));
+            message = message.replace("%price-trim"+i+"%", StringUtils.formatPrice(prices[i-1], true));
             message = message.replace("%number"+i+"%", StringUtils.formatNumber(prices[i-1]));
         }
         return message;
