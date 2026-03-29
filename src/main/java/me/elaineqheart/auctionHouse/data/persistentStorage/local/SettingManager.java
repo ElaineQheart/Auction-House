@@ -43,6 +43,7 @@ public class SettingManager {
     public static double bidIncreaseRatio;
     public static double minBINPrice;
     public static double minBIDPrice;
+    public static boolean useAdventureAPIMessages;
     public static String soundClick;
     public static String soundOpenEnderchest;
     public static String soundCloseEnderchest;
@@ -93,6 +94,7 @@ public class SettingManager {
         bidIncreaseRatio = c.getDouble("bid-increase-percent", 25) / 100;
         minBINPrice = c.getDouble("min-bin", 1);
         minBIDPrice = c.getDouble("min-bid", 1);
+        useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", false);
         FileConfiguration layout = ConfigManager.layout.getCustomFile();
         soundClick = layout.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");
         soundOpenEnderchest = layout.getString("sounds.open-enderchest", "BLOCK_ENDER_CHEST_OPEN");

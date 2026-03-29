@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.elaineqheart.auctionHouse.data.StringUtils;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import net.kyori.adventure.text.Component;
@@ -113,6 +114,7 @@ public class M extends Config {
     }
 
     private static String adventureApi(String input) {
+        if (!SettingManager.useAdventureAPIMessages) return input;
         Component comp;
         try {
             comp = mm.deserialize(input);

@@ -15,3 +15,4 @@ bid-auction-duration: 7200                  # the time a bidding auction lasts i
 min-bid: 1                                  # the minimum bid price
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
+use-adventure-text-minimessages: true           # I found that not using it is a little bit lag friendlier
