@@ -47,14 +47,11 @@ public class CreateDisplay {
         // No rotation
         AxisAngle4f zeroRotation = new AxisAngle4f(0, 0, 0, 0);
         glass.setTransformation(new Transformation(translation, zeroRotation, scale, zeroRotation));
-        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), sortType),
-                PersistentDataType.INTEGER, rank);
+        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER, rank);
 
         Interaction interaction = (Interaction) world.spawnEntity(loc.clone().add(0.5, 1, 0.5), EntityType.INTERACTION);
-        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "rank"),
-                PersistentDataType.INTEGER, rank); // rank #
-        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "type"),
-                PersistentDataType.STRING, sortType); // sort type
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER, rank); // rank #
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING, sortType); // sort type
         interaction.setInteractionHeight(0.8f);
         interaction.setInteractionWidth(0.6f);
         interaction.setResponsive(true);
@@ -62,8 +59,7 @@ public class CreateDisplay {
         placeBlocks(loc, rank, sortType);
 
         int displayID = 1; // default
-        if (!UpdateDisplay.displays.isEmpty())
-            displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; // new display ID
+        if (!UpdateDisplay.displays.isEmpty()) displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; // new display ID
         assert UpdateDisplay.getYmlData() != null;
         UpdateDisplay.getYmlData().set(String.valueOf(displayID), loc); // save the location in the config
         ConfigManager.displays.save();
@@ -110,16 +106,12 @@ public class CreateDisplay {
     }
 
     public static boolean notEnoughSpace(Location loc) {
-        if (!loc.getBlock().isEmpty())
-            return true;
-        if (!loc.add(0, 0, 1).getBlock().isEmpty())
-            return true;
-        if (!loc.add(0, 0, -2).getBlock().isEmpty())
-            return true;
-        if (!loc.add(1, 0, 1).getBlock().isEmpty())
-            return true;
-        if (!loc.add(-2, 0, 0).getBlock().isEmpty())
-            return true;
+        if (!loc.getBlock().isEmpty()
+                || !loc.add(0, 0, 1).getBlock().isEmpty()
+                || !loc.add(0, 0, -2).getBlock().isEmpty()
+                || !loc.add(1, 0, 1).getBlock().isEmpty()
+                || !loc.add(-2, 0, 0).getBlock().isEmpty()
+        ) return true;
         return !loc.add(1, 1, 0).getBlock().isEmpty();
     }
 
