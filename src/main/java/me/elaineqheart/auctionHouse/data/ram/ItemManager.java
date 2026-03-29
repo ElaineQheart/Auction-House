@@ -353,16 +353,16 @@ public class ItemManager {
         }
         if (!note.isBIDAuction()) {
             lore.addAll(M.getLoreList("items.auction.lore.default", ownAuction ? note.getPrice() : note.getCurrentPrice(),
-                    "%player%", note.getPlayerName()));
+                    "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID())));
         } else {
             if (note.getBidHistoryList().isEmpty()) {
                 lore.addAll(M.getLoreList("items.auction.lore.default-starting-bid", note.getPrice(),
-                        "%player%", note.getPlayerName()));
+                        "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID())));
             } else {
                 lore.addAll(M.getLoreList("items.auction.lore.default-bid", note.getPrice(),
-                        "%player%", note.getPlayerName(),
+                        "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                         "%amountOfBids%", String.valueOf(note.getBidHistoryList().size()),
-                        "%bidder%", note.getLastBidderName()));
+                        "%buyer%", M.formatBuyer(note.getLastBidderName(), note.getLastBidder())));
             }
         }
         if (Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
@@ -382,7 +382,7 @@ public class ItemManager {
                 lore.addAll(M.getLoreList("items.auction.lore.partially-sold",
                         "%sold%", String.valueOf(note.getItem().getAmount() - note.getPartiallySoldAmountLeft()),
                         "%total%", String.valueOf(note.getItem().getAmount()),
-                        "%buyer%", note.getBuyerName()));
+                        "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID())));
             } else {
                 item.setAmount(note.getPartiallySoldAmountLeft());
             }
@@ -398,7 +398,7 @@ public class ItemManager {
             lore.addAll(M.getLoreList("items.auction.lore.ended"));
         } else if (note.isSold() && !note.isOnAuction()) {
             lore.addAll(M.getLoreList("items.auction.lore.sold",
-                    "%buyer%", note.getBuyerName()));
+                    "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID())));
         } else if (note.isOnWaitingList()) {
             lore.addAll(M.getLoreList("items.auction.lore.waiting-list",
                     "%time%", StringUtils.getTime(
@@ -419,10 +419,10 @@ public class ItemManager {
         List<String> lore = meta.getLore();
         if (lore == null) lore = new ArrayList<>();
         lore.addAll(M.getLoreList("items.auction.lore.default", note.getSoldPrice(),
-                "%player%", note.getPlayerName()));
+                "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID())));
         lore.addAll(M.getLoreList("items.auction.lore.own-auction"));
         lore.addAll(M.getLoreList("items.auction.lore.sold",
-                "%buyer%", note.getBuyerName()));
+                "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID())));
         item.setAmount(item.getAmount() - note.getPartiallySoldAmountLeft());
 
         meta.setLore(lore);
@@ -446,7 +446,7 @@ public class ItemManager {
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
         lore.addAll(M.getLoreList("items.admin-expire-item.lore", note.getPrice(),
-                "%player%", note.getPlayerName(),
+                "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -459,7 +459,7 @@ public class ItemManager {
         List<String> lore = meta.getLore();
         if(lore==null) lore = new ArrayList<>();
         lore.addAll(M.getLoreList("items.admin-delete-item.lore", note.getPrice(),
-                "%player%", note.getPlayerName(),
+                "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                 "%reason%", reason));
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -513,7 +513,7 @@ public class ItemManager {
         for(int i = 0; i < Math.min(bidHistory.size(), 6); i++) {
             Bid bid = bidHistory.get(bidHistory.size()-1-i);
             lore.addAll(M.getLoreList("items.bid-history.bid", bid.getPrice(),
-                    "%player%", bid.getPlayerName(),
+                    "%player%", M.formatPlayer(bid.getPlayerName(), bid.getPlayerID()),
                     "%time%", bid.getTimeAgo()));
         }
         if(bidHistory.size() - 6 > 0) {
@@ -614,7 +614,7 @@ public class ItemManager {
         assert meta != null;
         meta.setItemName(M.getFormatted("items.collect-coins.name"));
         List<String> lore = M.getLoreList("items.collect-coins.lore", note.getBidHistoryList().getLast().getPrice(),
-                "%player%", note.getLastBidderName());
+                "%player%", M.formatPlayer(note.getLastBidderName(), note.getLastBidder()));
         lore.replaceAll(s -> M.replace(s, note.getBidHistoryList().getLast().getPrice(), note.getBid(p)));
         meta.setLore(lore);
         item.setItemMeta(meta);

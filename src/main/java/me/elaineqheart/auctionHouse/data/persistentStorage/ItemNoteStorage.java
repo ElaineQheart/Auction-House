@@ -44,9 +44,9 @@ public class ItemNoteStorage {
         removeItem(note.getNoteID());
     }
 
-    public static void setBuyerName(ItemNote note, String buyerName) {
+    public static void setBuyerName(ItemNote note, String buyerName, UUID playerID) {
         //if(r()) RedisNoteStorage.updateField(note.getNoteID(), "buyerName", buyerName); else
-        note.setBuyerName(buyerName);
+        note.setBuyerName(buyerName, playerID);
     }
     public static void setSold(ItemNote note, boolean isSold) {
         //if(r()) RedisNoteStorage.updateField(note.getNoteID(), "isSold", isSold); else

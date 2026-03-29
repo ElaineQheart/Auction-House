@@ -59,12 +59,12 @@ chat:
     &n§eYou collected an auction for %price%!
     &n§b-------------------------------------------------"
   purchase-auction: "§b-------------------------------------------------
-    &n§eYou purchased %item% from §7%player%§e's auction
+    &n§eYou purchased %item% from §7%seller%§e's auction
     &n§b-------------------------------------------------"
   sold-message:
-    prefix: "§6[Auction] §7%player%§e bought %item%§e for %price% "
+    prefix: "§6[Auction] §7%buyer%§e bought %item%§e for %price% "
     interaction: "§f§l[CLICK]"
-    auto-collect: "§6[Auction] §7%player%§e bought %item%§e! §6+%price%"
+    auto-collect: "§6[Auction] §7%buyer%§e bought %item%§e! §6+%price%"
   auction-announcement: "§6[Auction] §7%player%§e is selling %item%§e x%amount% for %price%"
   invalid-amount: "§cThat is not a valid amount!"
   placed-bid: "§eBid of %price%§e placed for %item%§e!"
@@ -73,7 +73,7 @@ chat:
     interaction: "§f§l[CLICK]"
   already-top-bid: "§aYou already have the top bid on this auction!"
   claim-auction: "§b-------------------------------------------------
-    &n§eYou claimed %item%§e from §7%player%§e's auction
+    &n§eYou claimed %item%§e from §7%seller%§e's auction
     &n§b-------------------------------------------------"
   collect-coins: "§b-------------------------------------------------
     &n§eYou collected %price%§e back from an auction
@@ -284,19 +284,19 @@ items:
   auction:
     lore:
       default: "§8------------------
-        &n§7Seller: %player%
+        &n§7Seller: %seller%
         &n§7Buy it now: %price%
         &n "
       default-starting-bid: "§8------------------
-        &n§7Seller: %player%
+        &n§7Seller: %seller%
         &n§7Starting Bid: %price%
         &n "
       default-bid: "§8------------------
-        &n§7Seller: %player%
+        &n§7Seller: %seller%
         &n§7Bids: §a%amountOfBids% bids
         &n 
         &n§7Top bid: %price%
-        &n§7Bidder: %bidder%
+        &n§7Bidder: %buyer%
         &n "
       own-auction: "§aThis is your own item!
         &n "
@@ -316,14 +316,14 @@ items:
       shulker-preview: "§f§oRight-Click to preview!"
   admin-expire-item:
     lore: "§8------------------
-      &n§7Seller: %player%
+      &n§7Seller: %seller%
       &n§7Price: %price%
       &n
       &n§cExpired by a moderator!
       &n§7Reason: %reason%"
   admin-delete-item:
     lore: "§8------------------
-      &n§7Seller: %player%
+      &n§7Seller: %seller%
       &n§7Price: %price%
       &n
       &n§cDeleted by a moderator!
@@ -546,3 +546,6 @@ placeholders:
   currency-symbol: " coins"
   format-numbers: "#,###.##"
   format-time-characters: "dhms"
+  player: "%player_name%"
+  seller: "%player_name%"
+  buyer: "%player_name%"

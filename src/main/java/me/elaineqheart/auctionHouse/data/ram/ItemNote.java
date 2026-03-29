@@ -27,6 +27,7 @@ public class ItemNote {
 
     private final String playerName;
     private String buyerName;
+    private UUID buyerUUID;
     private final UUID playerUUID;
     private double price;
     private final Date dateCreated;
@@ -45,6 +46,7 @@ public class ItemNote {
         this.noteID = UUID.randomUUID();
         this.playerName = player.getDisplayName();
         this.buyerName = null;
+        this.buyerUUID = null;
         this.playerUUID = player.getUniqueId();
         this.dateCreated = new Date();
         this.itemData = ItemStackConverter.encode(item);
@@ -133,6 +135,8 @@ public class ItemNote {
     //Getters and Setters
     public String getPlayerName() {return playerName;}
     public String getBuyerName() {return isBIDAuction ? getLastBidderName() : buyerName;}
+    public UUID getBuyerUUID() {return isBIDAuction ? getLastBidder() :
+            (buyerUUID != null ? buyerUUID : Bukkit.getOfflinePlayer(buyerName).getUniqueId());} //offline player backwards compatibility
     public UUID getPlayerUUID() {return playerUUID;}
     public Date getDateCreated() {return dateCreated;}
     public double getPrice() {return price;}
@@ -171,8 +175,9 @@ public class ItemNote {
     }
     public boolean canClaimBid(UUID playerID) {return !getClaimedPlayers().contains(playerID);}
 
-    public void setBuyerName(String buyerName) {
+    public void setBuyerName(String buyerName, UUID id) {
         this.buyerName = buyerName;
+        this.buyerUUID = id;
     }
     public void addBid(Player player, double bid) {
         this.bidHistory.add(new Bid(player, new Date(), bid));

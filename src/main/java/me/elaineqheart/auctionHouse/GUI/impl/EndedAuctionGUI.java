@@ -140,7 +140,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                     p.getInventory().addItem(note.getItem());
                     p.sendMessage(M.getFormatted("chat.claim-auction",
                             "%item%", note.getItemName(),
-                            "%player%", note.getPlayerName()));
+                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID())));
                     Sounds.experience(event);
 
                     ItemNoteStorage.removeBid(p, note);

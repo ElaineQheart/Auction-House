@@ -144,7 +144,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 if(SettingManager.auctionAnnouncementsEnabled) {
                     String itemName = StringUtils.getItemName(inputItem);
                     String announcement = M.getFormatted("chat.auction-announcement", price,
-                            "%player%", p.getDisplayName(),
+                            "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                             "%item%", itemName,
                             "%amount%", String.valueOf(amount));
                     Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
@@ -214,7 +214,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                         }
                         ConfigManager.bannedPlayers.saveBannedPlayer(targetPlayer, duration, reason.toString());
                         p.sendMessage(M.getFormatted("command-feedback.ban",
-                                "%player%", targetPlayer.getDisplayName(),
+                                "%player%", M.formatPlayer(targetPlayer.getDisplayName(), targetPlayer.getUniqueId()),
                                 "%duration%", String.valueOf(duration),
                                 "%reason%", reason.toString()));
                     } catch (Exception e) {
@@ -236,7 +236,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             ConfigManager.bannedPlayers.getCustomFile().set("BannedPlayers." + key, null);
                             ConfigManager.bannedPlayers.save();
                             p.sendMessage(M.getFormatted("command-feedback.pardon",
-                                    "%player%", playerName));
+                                    "%player%", M.formatPlayer(playerName, UUID.fromString(key))));
                             return true;
                         }
                     }

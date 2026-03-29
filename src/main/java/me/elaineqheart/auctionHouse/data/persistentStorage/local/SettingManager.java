@@ -241,11 +241,26 @@ public class SettingManager {
                 messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
             }
         }
+        backwardsCompatibilityForPlaceholderAPI(messageFile);
 
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
         AuctionHouse.getPlugin().saveConfig();
         AuctionHouse.getPlugin().reloadConfig();
+    }
+
+    private static void backwardsCompatibilityForPlaceholderAPI(FileConfiguration c) {
+        String[] sellers = {"chat.purchase-auction", "chat.claim-auction", "items.auction.lore.default", "items.auction.lore.default-starting-bid",
+                "items.auction.lore.default-bid", "items.admin-expire-item.lore", "items.admin-delete-item.lore"};
+        String[] buyers = {"chat.sold-message.prefix", "chat.sold-message.auto-collect"};
+        for (String seller : sellers) {
+            c.set(seller, Objects.requireNonNull(c.getString(seller)).replace("%player%", "%seller%"));
+        }
+        for (String buyer : buyers) {
+            c.set(buyer, Objects.requireNonNull(c.getString(buyer)).replace("%player%", "%buyer%"));
+        }
+        c.set("items.auction.lore.default-bid", Objects.requireNonNull(c.getString("items.auction.lore.default-bid"))
+                .replace("%bidder%", "%buyer%"));
     }
 
 }

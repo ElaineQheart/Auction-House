@@ -110,13 +110,13 @@ public class CollectSoldItemGUI extends InventoryGUI {
         eco.depositPlayer(p, getProfit(price));
         if (note.getPartiallySoldAmountLeft() != 0) {
             ItemNoteStorage.setPrice(note, note.getPrice() - price);
-            ItemStack temp = note.getItem().clone();
+            ItemStack temp = note.getItem();
             temp.setAmount(note.getItem().getAmount() - itemAmount);
             ItemNoteStorage.setItem(note, temp);
             if (note.getPartiallySoldAmountLeft() == note.getItem().getAmount()) {
                 ItemNoteStorage.setPartiallySoldAmountLeft(note, 0);
                 ItemNoteStorage.setSold(note, false);
-                ItemNoteStorage.setBuyerName(note, null);
+                ItemNoteStorage.setBuyerName(note, null, null);
             }
         } else {
             if (!note.isBIDAuction()) ItemNoteStorage.deleteNote(note);

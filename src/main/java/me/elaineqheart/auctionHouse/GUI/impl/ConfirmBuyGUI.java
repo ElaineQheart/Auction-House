@@ -112,7 +112,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     Sounds.experience(event);
                     p.getInventory().addItem(item);
                     ItemNoteStorage.setSold(note, true);
-                    ItemNoteStorage.setBuyerName(note, p.getDisplayName());
+                    ItemNoteStorage.setBuyerName(note, p.getDisplayName(), p.getUniqueId());
                     if (price != note.getPrice()) {
                         if (note.getPartiallySoldAmountLeft() == 0) {
                             ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
@@ -126,18 +126,18 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         throw new RuntimeException(e);
                     }
                     p.sendMessage(M.getFormatted("chat.purchase-auction",
-                            "%player%", note.getPlayerName(),
+                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                             "%item%", note.getItemName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerName());
                     if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
                         if(SettingManager.autoCollect) {
                             seller.sendMessage(M.getFormatted("chat.sold-message.auto-collect", price,
-                                    "%player%", p.getDisplayName(),
+                                    "%buyer%", M.formatBuyer(p.getDisplayName(), p.getUniqueId()),
                                     "%item%", itemName,
                                     "%amount%", String.valueOf(item.getAmount())));
                         } else {
                             TextComponent component = new TextComponent(M.getFormatted("chat.sold-message.prefix", price,
-                                    "%player%", p.getDisplayName(),
+                                    "%buyer%", M.formatBuyer(p.getDisplayName(), p.getUniqueId()),
                                     "%item%", itemName,
                                     "%amount%", String.valueOf(item.getAmount())));
                             TextComponent click = new TextComponent(M.getFormatted("chat.sold-message.interaction"));

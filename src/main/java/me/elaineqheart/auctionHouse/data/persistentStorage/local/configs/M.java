@@ -1,16 +1,20 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class M extends Config {
 
@@ -80,6 +84,32 @@ public class M extends Config {
             message = message.replace("%number"+i+"%", StringUtils.formatNumber(prices[i-1]));
         }
         return message;
+    }
+
+    public static String formatPlayer(String playerName, UUID playerID) {
+        return resolveNameTemplate("placeholders.player", playerName, playerID);
+    }
+    public static String formatSeller(String playerName, UUID playerID) {
+        return resolveNameTemplate("placeholders.seller", playerName,playerID);
+    }
+    public static String formatBuyer(String playerName, UUID playerID) {
+        return resolveNameTemplate("placeholders.buyer", playerName, playerID);
+    }
+
+
+    // substitute %player_name% with PAPI when available
+    private static String resolveNameTemplate(String templateKey, String playerName, UUID playerID) {
+        if (playerName == null) return "";
+        String template = get().getString(templateKey, "%player_name%");
+        String result = template.replace("%player_name%", playerName);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            OfflinePlayer target = Bukkit.getOfflinePlayer(playerID);
+            result = PlaceholderAPI.setPlaceholders(target, result);
+        }
+
+        result = ChatColor.translateAlternateColorCodes('&', result);
+        return adventureApi(result);
     }
 
     private static String adventureApi(String input) {

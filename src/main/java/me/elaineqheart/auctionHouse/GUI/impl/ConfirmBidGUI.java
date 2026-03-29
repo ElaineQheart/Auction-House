@@ -125,7 +125,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                         if(bidder == null) continue;
                         double difference = price - note.getBid(bidder);
                         bidder.sendMessage(M.getFormatted("chat.outbid.prefix", difference,
-                                "%player%", p.getDisplayName(),
+                                "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                                 "%item%", note.getItemName()));
                         TextComponent click = new TextComponent(M.getFormatted("chat.outbid.interaction"));
                         click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));

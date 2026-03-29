@@ -7,8 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +63,7 @@ public class ConfigManager {
     private static void saveDefaultConfig() {
         String resourcePath = "config.yml";
         InputStream in = AuctionHouse.getPlugin().getResource(resourcePath);
+        assert in != null;
         //FileConfiguration c = AuctionHouse.getPlugin().getConfig();
         File outFile = new File(AuctionHouse.getPlugin().getDataFolder(), resourcePath);
 
