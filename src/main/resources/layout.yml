@@ -246,6 +246,8 @@ sounds:
   open-shulker: "BLOCK_SHULKER_BOX_OPEN"
   close-shulker: "BLOCK_SHULKER_BOX_CLOSE"
   npc-click: "UI_STONECUTTER_SELECT_RECIPE"
+  open-bundle: "ITEM_BUNDLE_DROP_CONTENTS"
+  close-bundle: "ITEM_BUNDLE_REMOVE_ONE"
 
 # you can add as many displays as you want
 # in order to destroy a spawned display, just shift+Lclick on the base block during creative mode (requires permission)

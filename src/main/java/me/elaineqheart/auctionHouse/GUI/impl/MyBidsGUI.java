@@ -100,8 +100,11 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
                 .creator(player -> item)
                 .consumer(event -> {
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
-                        Sounds.openShulker(event);
                         AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c, AhConfiguration.View.MY_AUCTIONS), c.getPlayer());
+                        return;
+                    }
+                    if (ItemManager.isBundle(item) && event.isRightClick()) {
+                        AuctionHouse.getGuiManager().openGUI(new BundleViewGUI(note,c, AhConfiguration.View.AUCTION_HOUSE), c.getPlayer());
                         return;
                     }
                     Sounds.click(event);

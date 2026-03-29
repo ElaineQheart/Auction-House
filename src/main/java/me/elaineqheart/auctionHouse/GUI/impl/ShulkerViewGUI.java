@@ -23,6 +23,7 @@ public class ShulkerViewGUI extends InventoryGUI {
         c = configuration;
         this.note = note;
         this.goBackTo = goBackTo;
+        Sounds.openShulker(c.getPlayer());
     }
 
     @Override
@@ -30,18 +31,22 @@ public class ShulkerViewGUI extends InventoryGUI {
         Player p = (Player) event.getPlayer();
         Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
             Sounds.closeShulker(event);
-            switch (c.getView()) {
-                case MY_AUCTIONS -> AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-                case AUCTION_HOUSE -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-                case CANCEL_AUCTION -> AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), p);
-                case COLLECT_SOLD_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), p);
-                case COLLECT_EXPIRED_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), p);
-                case CONFIRM_BUY, AUCTION_VIEW -> AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);
-                case ADMIN_CONFIRM, ADMIN_MANAGE_ITEMS -> AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), p);
-                case MY_BIDS -> AuctionHouse.getGuiManager().openGUI(new MyBidsGUI(c, 0), p);
-                case ENDED_AUCTION -> AuctionHouse.getGuiManager().openGUI(new EndedAuctionGUI(note, c, goBackTo), p);
-            }
+            openSwitch(c, note, p, goBackTo);
         },0);
+    }
+
+    public static void openSwitch(AhConfiguration c, ItemNote note, Player p, AhConfiguration.View goBackTo) {
+        switch (c.getView()) {
+            case MY_AUCTIONS -> AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+            case AUCTION_HOUSE -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
+            case CANCEL_AUCTION -> AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), p);
+            case COLLECT_SOLD_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), p);
+            case COLLECT_EXPIRED_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), p);
+            case CONFIRM_BUY, AUCTION_VIEW -> AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);
+            case ADMIN_CONFIRM, ADMIN_MANAGE_ITEMS -> AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), p);
+            case MY_BIDS -> AuctionHouse.getGuiManager().openGUI(new MyBidsGUI(c, 0), p);
+            case ENDED_AUCTION -> AuctionHouse.getGuiManager().openGUI(new EndedAuctionGUI(note, c, goBackTo), p);
+        }
     }
 
     @Override

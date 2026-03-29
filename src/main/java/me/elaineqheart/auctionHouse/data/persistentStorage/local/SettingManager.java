@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -51,6 +52,8 @@ public class SettingManager {
     public static String soundOpenShulker;
     public static String soundCloseShulker;
     public static String soundNPCClick;
+    public static String soundCloseBundle;
+    public static String soundOpenBundle;
 
     // displays
     public static final Set<Material> displayMaterials = new HashSet<>();
@@ -100,6 +103,8 @@ public class SettingManager {
         soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
         soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
         soundNPCClick = layout.getString("sounds.npc-click", "UI_STONECUTTER_SELECT_RECIPE");
+        soundOpenBundle = layout.getString("sounds.open-bundle", "ITEM_BUNDLE_DROP_CONTENTS");
+        soundCloseBundle = layout.getString("sounds.close-bundle", "ITEM_BUNDLE_REMOVE_ONE");
         loadDisplays(layout);
 
         if (ConfigManager.backwardsCompatibility())
@@ -156,8 +161,8 @@ public class SettingManager {
         displaySignMap.clear();
 
         if (c.getConfigurationSection("displays") != null) {
-            for (String sortType : c.getConfigurationSection("displays").getKeys(false)) {
-                for (String rankOrDef : c.getConfigurationSection("displays." + sortType).getKeys(false)) {
+            for (String sortType : Objects.requireNonNull( c.getConfigurationSection("displays")).getKeys(false) ) {
+                for (String rankOrDef : Objects.requireNonNull( c.getConfigurationSection("displays." + sortType)).getKeys(false) ) {
                     String baseKey = "displays." + sortType + "." + rankOrDef + ".";
 
                     BlockData glass = parseBlockData(c.getString(baseKey + "glass"), Material.GLASS);

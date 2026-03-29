@@ -27,11 +27,17 @@ public class Sounds {
     public static void villagerDeny(InventoryClickEvent event) {
         playSound(event, SettingManager.soundVillagerDeny, 0.5f, 1);
     }
-    public static void openShulker(InventoryClickEvent event) {
-        playSound(event, SettingManager.soundOpenShulker, 0.5f, 1);
+    public static void openShulker(Player p) {
+        playSound(p, SettingManager.soundOpenShulker, 0.5f, 1);
     }
     public static void closeShulker(InventoryCloseEvent event) {
         playSound(event, SettingManager.soundCloseShulker, 0.5f, 1);
+    }
+    public static void openBundle(Player p) {
+        playSound(p, SettingManager.soundOpenBundle, 0.5f, 1);
+    }
+    public static void closeBundle(InventoryCloseEvent event) {
+        playSound(event, SettingManager.soundCloseBundle, 0.5f, 1);
     }
 
     public static void click(Player p) {
@@ -42,7 +48,9 @@ public class Sounds {
         p.playSound(p.getLocation(), getSound(SettingManager.soundNPCClick), 0.5f,1);
     }
 
-
+    private static void playSound(Player p, String soundName, float volume, float pitch) {
+        p.playSound(p.getLocation(), getSound(soundName), volume, pitch);
+    }
     private static void playSound(InventoryClickEvent event, String soundName, float volume, float pitch) {
         try {
             ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), getSound(soundName), volume, pitch);

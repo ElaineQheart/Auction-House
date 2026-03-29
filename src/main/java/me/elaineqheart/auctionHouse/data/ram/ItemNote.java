@@ -1,7 +1,6 @@
 package me.elaineqheart.auctionHouse.data.ram;
 
 import de.unpixelt.locale.Translate;
-import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;

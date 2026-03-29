@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ItemNoteStorage {
 
-    private static HashMap<UUID, ItemStack> items = new HashMap<>();
+    private static final HashMap<UUID, ItemStack> items = new HashMap<>();
     public static ItemStack getItem(UUID itemNoteID) {
         return items.get(itemNoteID);
     }
@@ -22,6 +22,7 @@ public class ItemNoteStorage {
     public static void removeItem(UUID itemNoteID) {
         items.remove(itemNoteID);
     }
+
 
     public static void createNote(Player p, ItemStack item, double price, boolean isBIDAuction) {
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
