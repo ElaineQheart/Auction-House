@@ -82,7 +82,7 @@ public class StringUtils {
 
     public static String formatPrice(double price, boolean trimmed) {
         return M.getFormatted("placeholders.price",
-                "%number%", formatNumber(trimmed ? StringUtils.getPriceTrimmed(price) : String.valueOf(price)),
+                "%number%", formatNumber(trimmed ? StringUtils.getPriceTrimmed(price) : formatNumber(price)),
                 "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
     }
 

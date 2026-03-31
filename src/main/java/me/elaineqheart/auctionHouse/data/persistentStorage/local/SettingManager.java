@@ -207,7 +207,9 @@ public class SettingManager {
             c.set("currency-symbol", "has been moved to messages.yml");
         }
         if (c.contains("currency-before-number")) {
-            messageFile.set("placeholders.price", "%currency-symbol%%number%");
+            if (c.getBoolean("currency-before-number")) {
+                messageFile.set("placeholders.price", "%currency-symbol%%number%");
+            }
             c.set("currency-before-number", null);
         }
         if (c.contains("format-numbers")) {
