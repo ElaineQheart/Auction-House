@@ -143,13 +143,15 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 // Announce the new auction to all players who have announcements enabled
                 if(SettingManager.auctionAnnouncementsEnabled) {
                     String itemName = StringUtils.getItemName(inputItem);
-                    String announcement = M.getFormatted("chat.auction-announcement", price,
+                    String announcement = M.getFormatted(
+                            strings[0].equals(M.getFormatted("commands.sell")) ? "chat.auction-announcement" : "chat.bid-announcement",
+                            price,
                             "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                             "%item%", itemName,
                             "%amount%", String.valueOf(amount));
                     Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
                         for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                            if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
+                            if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) ) { //&& !onlinePlayer.equals(p)
                                 onlinePlayer.sendMessage(announcement);
                             }
                         }

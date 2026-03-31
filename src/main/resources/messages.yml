@@ -66,6 +66,7 @@ chat:
     interaction: "§f§l[CLICK]"
     auto-collect: "§6[Auction] §7%buyer%§e bought %item%§e! §6+%price%"
   auction-announcement: "§6[Auction] §7%player%§e is selling %item%§e x%amount% for %price%"
+  bid-announcement: "§6[Auction] §7%player%§e is auctioning %item%§e x%amount% for %price%"
   invalid-amount: "§cThat is not a valid amount!"
   placed-bid: "§eBid of %price%§e placed for %item%§e!"
   outbid:
@@ -543,6 +544,7 @@ command-feedback:
 placeholders:
   number: "§6%input%§r"
   price: "%number%%currency-symbol%"
+  price-trim: "%price%"
   currency-symbol: "§6 coins"
   format-numbers: "#,###.##"
   format-time-characters: "dhms"
