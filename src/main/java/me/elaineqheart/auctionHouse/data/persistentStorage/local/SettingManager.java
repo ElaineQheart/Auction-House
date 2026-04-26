@@ -38,6 +38,8 @@ public class SettingManager {
     public static double bidIncreaseRatio;
     public static double minBINPrice;
     public static double minBIDPrice;
+    public static double maxBINPrice;
+    public static double maxBIDPrice;
     public static boolean useAdventureAPIMessages;
     public static String soundClick;
     public static String soundOpenEnderchest;
@@ -89,6 +91,8 @@ public class SettingManager {
         bidIncreaseRatio = c.getDouble("bid-increase-percent", 25) / 100;
         minBINPrice = c.getDouble("min-bin", 1);
         minBIDPrice = c.getDouble("min-bid", 1);
+        maxBINPrice = c.getDouble("max-bin", -1);
+        maxBIDPrice = c.getDouble("max-bid", -1);
         useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", false);
         FileConfiguration layout = ConfigManager.layout.getCustomFile();
         soundClick = layout.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");

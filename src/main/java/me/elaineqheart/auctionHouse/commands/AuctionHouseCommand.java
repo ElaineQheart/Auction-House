@@ -119,6 +119,13 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(M.getFormatted("command-feedback.min-bid", SettingManager.minBIDPrice));
                     return true;
                 }
+                if (SettingManager.maxBINPrice > -1 && strings[0].equals(M.getFormatted("commands.sell")) && price > SettingManager.maxBINPrice) {
+                    p.sendMessage(M.getFormatted("command-feedback.max-bin", SettingManager.maxBINPrice));
+                    return true;
+                } else if (SettingManager.maxBIDPrice > -1 && strings[0].equals(M.getFormatted("commands.bid")) && price > SettingManager.maxBIDPrice) {
+                    p.sendMessage(M.getFormatted("command-feedback.max-bid", SettingManager.maxBIDPrice));
+                    return true;
+                }
                 int amount = item.getAmount();
                 if(strings.length == 3) {
                     try {

@@ -10,9 +10,11 @@ auction-announcements: true                 # announce when someone puts an item
 bin-auctions: true                          # BIN = Buy It Now [/ah sell <amount>]
 bin-auction-duration: 172800                # the time an auction lasts in seconds (60*60*48 = 172800)
 min-bin: 1                                  # the minimum sell price
+max-bin: -1                                 # limit the sell price; set to -1 to disable
 bid-auctions: true                          # enables actual auctions by typing [/ah bid <amount>]
 bid-auction-duration: 7200                  # the time a bidding auction lasts in seconds (60*60*2 = 7200)
 min-bid: 1                                  # the minimum bid price
+max-bid: -1                                 # limit the bid price; set to -1 to disable
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
-use-adventure-text-minimessages: true           # I found that not using it is a little bit lag friendlier
+use-adventure-text-minimessages: true       # setting this to false is a little bit lag friendlier
