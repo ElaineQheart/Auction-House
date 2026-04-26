@@ -99,4 +99,25 @@ public class ItemNoteStorage {
         items = new HashMap<>();
     }
 
+
+    public static boolean removeIfOnAuction(ItemNote note, Player p, int amount, double price) {
+        //check synchronously when using database
+
+        ItemNoteStorage.setSold(note, true);
+        ItemNoteStorage.setBuyerName(note, p.getDisplayName(), p.getUniqueId());
+        if (price != note.getPrice()) {
+            if (note.getPartiallySoldAmountLeft() == 0) {
+                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - amount);
+            } else {
+                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - amount);
+            }
+        }
+        try {
+            ItemNoteStorage.saveNotes();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
 }

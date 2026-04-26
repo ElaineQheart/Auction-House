@@ -88,7 +88,6 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    String itemName = note.getItemName();
 
                     ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
@@ -108,38 +107,36 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    //concurrent check
+                    boolean claimed = ItemNoteStorage.removeIfOnAuction(note, p, item.getAmount(), price);
+                    if (!claimed) {
+                        p.sendMessage(M.getFormatted("chat.already-sold"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
                     eco.withdrawPlayer(p, price);
                     Sounds.experience(event);
                     p.getInventory().addItem(item);
-                    ItemNoteStorage.setSold(note, true);
-                    ItemNoteStorage.setBuyerName(note, p.getDisplayName(), p.getUniqueId());
-                    if (price != note.getPrice()) {
-                        if (note.getPartiallySoldAmountLeft() == 0) {
-                            ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - item.getAmount());
-                        } else {
-                            ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - item.getAmount());
-                        }
-                    }
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+
                     p.sendMessage(M.getFormatted("chat.purchase-auction",
                             "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                             "%item%", note.getItemName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerUUID());
                     if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
+                        String itemName = note.getItemName();
+                        String amount = String.valueOf(item.getAmount());
+                        String buyer = M.formatBuyer(p.getDisplayName(), p.getUniqueId());
                         if(SettingManager.autoCollect) {
                             seller.sendMessage(M.getFormatted("chat.sold-message.auto-collect", price,
-                                    "%buyer%", M.formatBuyer(p.getDisplayName(), p.getUniqueId()),
+                                    "%buyer%", buyer,
                                     "%item%", itemName,
-                                    "%amount%", String.valueOf(item.getAmount())));
+                                    "%amount%", amount));
                         } else {
                             TextComponent component = new TextComponent(M.getFormatted("chat.sold-message.prefix", price,
-                                    "%buyer%", M.formatBuyer(p.getDisplayName(), p.getUniqueId()),
+                                    "%buyer%", buyer,
                                     "%item%", itemName,
-                                    "%amount%", String.valueOf(item.getAmount())));
+                                    "%amount%", amount));
                             TextComponent click = new TextComponent(M.getFormatted("chat.sold-message.interaction"));
                             click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
                             seller.spigot().sendMessage(component, click);
@@ -153,7 +150,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     ConfigManager.transactionLogger.logTransaction(
                             p.getName(),
                             note.getPlayerName(),
-                            itemName,
+                            note.getItemName(),
                             price,
                             item.getAmount(),
                             !note.isBIDAuction());
