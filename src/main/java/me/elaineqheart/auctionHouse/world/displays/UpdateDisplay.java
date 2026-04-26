@@ -113,7 +113,7 @@ public class UpdateDisplay implements Runnable {
                     data.glassBlock.setBrightness(new Display.Brightness(15, 15));
 
                     // get the item name
-                    String name = item.getType().name();
+                    String name = note.getItemName();
                     if (item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
                     // update the text display
                     if (!data.reloaded) {
