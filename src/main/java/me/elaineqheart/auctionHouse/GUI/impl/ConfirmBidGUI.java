@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -91,6 +90,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                     }
                     if(test.isExpired()) {
                         event.getWhoClicked().sendMessage(M.getFormatted("chat.expired"));
+                        Sounds.villagerDeny(event);
                         return;
                     }
                     if ((note.hasBidHistory() ? Bid.nextMinBid(note.getPrice()) : note.getPrice()) > price) {
@@ -105,17 +105,19 @@ public class ConfirmBidGUI extends InventoryGUI {
                         Sounds.villagerDeny(event);
                         return;
                     }
+
+                    boolean success = ItemNoteStorage.addBidIfOnAuction(note, p, price);
+                    if (!success) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
                     eco.withdrawPlayer(p, increase);
                     Sounds.experience(event);
-                    ItemNoteStorage.addBid(note, p, price);
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     p.sendMessage(M.getFormatted("chat.placed-bid", price,
                             "%item%", note.getItemName()));
-                    if(c.shouldKeepOpen()) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackToAuctionHouse ? AhConfiguration.View.AUCTION_HOUSE : AhConfiguration.View.MY_AUCTIONS), p);
+                    if (c.shouldKeepOpen()) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackToAuctionHouse ? AhConfiguration.View.AUCTION_HOUSE : AhConfiguration.View.MY_AUCTIONS), p);
                     else Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), p::closeInventory);
 
                     Set<UUID> bidders = note.getBidders();
@@ -134,7 +136,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                         AuctionViewGUI.currentGUIs.get(bidder).update();
                     }
                     Player itemOwner = Bukkit.getPlayer(note.getPlayerUUID());
-                    if(itemOwner != null && AuctionViewGUI.currentGUIs.get(itemOwner) != null) AuctionViewGUI.currentGUIs.get(itemOwner).update();
+                    if (itemOwner != null && AuctionViewGUI.currentGUIs.get(itemOwner) != null) AuctionViewGUI.currentGUIs.get(itemOwner).update();
                 });
     }
     private InventoryButton cancel(){

@@ -2,7 +2,6 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedWriter;
 import java.io.File;

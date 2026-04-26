@@ -20,7 +20,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -140,25 +139,28 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    p.getInventory().addItem(note.getItem());
-                    p.sendMessage(M.getFormatted("chat.claim-auction",
+                    ItemStack item = note.getItem();
+                    String message = M.getFormatted("chat.claim-auction",
                             "%item%", note.getItemName(),
-                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID())));
-                    Sounds.experience(event);
+                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()));
 
-                    ItemNoteStorage.removeBid(p, note);
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    boolean claimed = ItemNoteStorage.claimEndedAuctionItem(p, note);
+                    if (!claimed) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
                     }
+
+                    p.getInventory().addItem(item);
+                    p.sendMessage(message);
+                    Sounds.experience(event);
                     openGUI(p);
                     ConfigManager.transactionLogger.logTransaction(
                             p.getName(),
                             note.getPlayerName(),
                             note.getItemName(),
                             note.getPrice(),
-                            note.getItem().getAmount(),
+                            item.getAmount(),
                             !note.isBIDAuction());
                 });
     }
@@ -173,18 +175,20 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    String message = M.getFormatted("chat.collect-coins", price,
+                            "%item%", note.getItemName());
+
+                    boolean claimed = ItemNoteStorage.claimEndedAuctionItem(p, note);
+                    if (!claimed) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
                     Economy eco = VaultHook.getEconomy();
                     eco.depositPlayer(p, price);
-                    p.sendMessage(M.getFormatted("chat.collect-coins", price,
-                            "%item%", note.getItemName()));
+                    p.sendMessage(message);
                     Sounds.experience(event);
-
-                    ItemNoteStorage.removeBid(p, note);
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     openGUI(p);
                 });
     }

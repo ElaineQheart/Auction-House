@@ -12,8 +12,7 @@ import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
-import java.io.IOException;
+import org.bukkit.inventory.ItemStack;
 
 public class CollectExpiredItemGUI extends InventoryGUI {
 
@@ -87,28 +86,44 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    Sounds.experience(event);
-                    //expired by a moderator:
-                    if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) {
+                    ItemStack withdrawItem = note.getItem();
+                    boolean collected;
+                    if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) { // expired by a moderator
                         if(note.getItem().equals(ItemManager.createDirt())) {
+                            collected = ItemNoteStorage.collectExpiredAuctionItem(note);
+                            if (!collected) {
+                                p.sendMessage(M.getFormatted("chat.non-existent"));
+                                Sounds.villagerDeny(event);
+                                return;
+                            }
                             p.sendMessage(M.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
+                            p.closeInventory();
+                            Sounds.breakWood(event);
+                            return;
                         }else {
+                            collected = ItemNoteStorage.collectExpiredAuctionItem(note);
+                            if (!collected) {
+                                p.sendMessage(M.getFormatted("chat.non-existent"));
+                                Sounds.villagerDeny(event);
+                                return;
+                            }
                             p.sendMessage(M.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
-                            p.getInventory().addItem(note.getItem());
+                            p.closeInventory();
+                            p.getInventory().addItem(withdrawItem);
+                            Sounds.experience(event);
                         }
-                        ItemNoteStorage.deleteNote(note);
-                        p.closeInventory();
                     } else {
-                        p.getInventory().addItem(note.getItem());
-                        ItemNoteStorage.deleteNote(note); //delete it first, before opening the new GUI!!
+                        collected = ItemNoteStorage.collectExpiredAuctionItem(note); //delete it first, before opening the new GUI!!
+                        if (!collected) {
+                            p.sendMessage(M.getFormatted("chat.non-existent"));
+                            Sounds.villagerDeny(event);
+                            return;
+                        }
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                        p.getInventory().addItem(withdrawItem);
+                        Sounds.experience(event);
                     }
 
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                 });
     }
 

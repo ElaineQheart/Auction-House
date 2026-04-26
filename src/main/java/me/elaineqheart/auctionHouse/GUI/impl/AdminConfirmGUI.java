@@ -13,8 +13,7 @@ import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-
-import java.io.IOException;
+import org.bukkit.inventory.ItemStack;
 
 public class AdminConfirmGUI extends InventoryGUI{
 
@@ -88,7 +87,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                     Player p = (Player) event.getWhoClicked();
                     ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
-                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        p.sendMessage(M.getFormatted("chat.non-existent2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -97,16 +96,16 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    boolean success = ItemNoteStorage.adminConfirmExpireItem(note, reason);
+                    if (!success) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
+                    p.closeInventory();
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    p.closeInventory();
-                    ItemNoteStorage.setAuctionTime(note, -1);
-                    ItemNoteStorage.setAdminMessage(note, reason);
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     p.sendMessage(M.getFormatted("chat.admin-expire-auction", "%reason%", reason));
                 });
     }
@@ -124,7 +123,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                     //check if the item hasn't been sold yet
                     ItemNote test = AuctionHouseStorage.getNote(note.getNoteID());
                     if (test == null) {
-                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        p.sendMessage(M.getFormatted("chat.non-existent2"));
                         Sounds.villagerDeny(event);
                         return;
                     }
@@ -133,18 +132,18 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    ItemStack item = note.getItem();
+                    boolean success = ItemNoteStorage.adminConfirmDeleteItem(note, reason);
+                    if (!success) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
+                    p.getInventory().addItem(item);
                     p.closeInventory();
-                    p.getInventory().addItem(note.getItem());
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    ItemNoteStorage.setAuctionTime(note, -1);
-                    ItemNoteStorage.setAdminMessage(note, reason);
-                    ItemNoteStorage.setItem(note, ItemManager.createDirt());
-                    try {
-                        ItemNoteStorage.saveNotes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                     p.sendMessage(M.getFormatted("chat.admin-delete-auction","%reason%", reason));
                 });
     }

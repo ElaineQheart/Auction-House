@@ -136,8 +136,8 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 }
                 ItemStack inputItem = item.clone();
                 inputItem.setAmount(amount);
-                ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(M.getFormatted("commands.bid")));
                 item.setAmount(item.getAmount() - amount);
+                ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(M.getFormatted("commands.bid")));
                 p.sendMessage(M.getFormatted("command-feedback.auction", price));
                 
                 // Announce the new auction to all players who have announcements enabled

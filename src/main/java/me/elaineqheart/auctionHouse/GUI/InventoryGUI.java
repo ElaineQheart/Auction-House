@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -37,7 +38,7 @@ public abstract class InventoryGUI implements InventoryHandler {
                 this.inventory.setItem(slot, icon);
             });
         } catch (Exception e) {
-            return;
+            AuctionHouse.getPlugin().getLogger().warning("GUI render failed in slot: " + e.getMessage());
         }
     }
 

@@ -9,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class Layout extends Config {
 

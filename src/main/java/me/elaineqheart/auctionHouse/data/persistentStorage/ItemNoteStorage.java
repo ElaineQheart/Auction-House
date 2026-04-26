@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data.persistentStorage;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
+import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -100,24 +101,89 @@ public class ItemNoteStorage {
     }
 
 
-    public static boolean removeIfOnAuction(ItemNote note, Player p, int amount, double price) {
+    public static boolean setSoldIfOnAuction(ItemNote note, Player p, int amount, double price) {
         //check synchronously when using database
 
-        ItemNoteStorage.setSold(note, true);
-        ItemNoteStorage.setBuyerName(note, p.getDisplayName(), p.getUniqueId());
+        setSold(note, true);
+        setBuyerName(note, p.getDisplayName(), p.getUniqueId());
         if (price != note.getPrice()) {
             if (note.getPartiallySoldAmountLeft() == 0) {
-                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getItem().getAmount() - amount);
+                setPartiallySoldAmountLeft(note, note.getItem().getAmount() - amount);
             } else {
-                ItemNoteStorage.setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - amount);
+                setPartiallySoldAmountLeft(note, note.getPartiallySoldAmountLeft() - amount);
             }
         }
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean collectExpiredAuctionItem(ItemNote note) {
+        deleteNote(note);
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean collectSoldAuctionItem(ItemNote note, int itemAmount, double price) {
+        if (note == null) return false;
+        if (note.isBIDAuction() && note.isSold()) return false;
+        if (note.getPartiallySoldAmountLeft() != 0) {
+            setPrice(note, note.getPrice() - price);
+            ItemStack temp = note.getItem();
+            temp.setAmount(note.getItem().getAmount() - itemAmount);
+            setItem(note, temp);
+            if (note.getPartiallySoldAmountLeft() == note.getItem().getAmount()) {
+                setPartiallySoldAmountLeft(note, 0);
+                setSold(note, false);
+                setBuyerName(note, null, null);
+            }
+        } else {
+            if (!note.isBIDAuction()) deleteNote(note);
+            else {
+                note.setSold(true);
+                AuctionHouseStorage.checkRemove(note.getNoteID());
+            }
+        }
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean addBidIfOnAuction(ItemNote note, Player p, double price) {
+        addBid(note, p, price);
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean claimEndedAuctionItem(Player p, ItemNote note) {
+        //check synchronously when using database
+
+        removeBid(p, note);
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean adminConfirmDeleteItem(ItemNote note, String reason) {
+        setAuctionTime(note, -1);
+        setAdminMessage(note, reason);
+        setItem(note, ItemManager.createDirt());
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+    public static boolean adminConfirmExpireItem(ItemNote note, String reason) {
+        setAuctionTime(note, -1);
+        setAdminMessage(note, reason);
+        saveNotesWithoutCheck();
+        return true;
+    }
+
+
+
+    private static void saveNotesWithoutCheck() {
         try {
-            ItemNoteStorage.saveNotes();
+            saveNotes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return true;
     }
 
 }

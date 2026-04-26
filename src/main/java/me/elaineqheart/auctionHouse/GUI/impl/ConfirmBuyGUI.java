@@ -21,8 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
-
 public class ConfirmBuyGUI extends InventoryGUI{
 
     private final ItemNote note;
@@ -100,6 +98,11 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
+                    if (test.isExpired()) {
+                        p.sendMessage(M.getFormatted("chat.expired"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Economy eco = VaultHook.getEconomy();
                     Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
                     if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
@@ -108,7 +111,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     //concurrent check
-                    boolean claimed = ItemNoteStorage.removeIfOnAuction(note, p, item.getAmount(), price);
+                    boolean claimed = ItemNoteStorage.setSoldIfOnAuction(note, p, item.getAmount(), price);
                     if (!claimed) {
                         p.sendMessage(M.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
@@ -142,8 +145,8 @@ public class ConfirmBuyGUI extends InventoryGUI{
                             seller.spigot().sendMessage(component, click);
                         }
                     }
-                    if (SettingManager.autoCollect && Bukkit.getOnlinePlayers().contains(Bukkit.getPlayer(note.getPlayerUUID()))) {
-                        Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
+                    if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {
+                        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
                                 (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
                         );
                     }

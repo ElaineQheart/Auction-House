@@ -19,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public class CollectSoldItemGUI extends InventoryGUI {
@@ -93,43 +92,29 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectSoldItem(getProfit(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                        collect(p, note.getNoteID(), item.getAmount(), price);
-                        Sounds.experience(event);
-                        AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-                        p.sendMessage(M.getFormatted("chat.collect-sold-auction", getProfit(price),
-                                "%amount%", String.valueOf(item.getAmount()),
-                                "%item%", note.getItemName()));
+                    String message = M.getFormatted("chat.collect-sold-auction", getProfit(price),
+                            "%amount%", String.valueOf(item.getAmount()),
+                            "%item%", note.getItemName());
+
+                    boolean success = collect(p, note.getNoteID(), item.getAmount(), price);
+                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+
+                    if (!success) return;
+
+                    Sounds.experience(event);
+                    p.sendMessage(message);
                 });
     }
 
     public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
         ItemNote note = AuctionHouseStorage.getNote(noteID);
-        if(note == null) return false;
-        if(note.isBIDAuction() && note.isSold()) return false;
+        boolean success = ItemNoteStorage.collectSoldAuctionItem(note, itemAmount, price);
+        if (!success) {
+            if (p instanceof Player onlinePlayer) onlinePlayer.sendMessage(M.getFormatted("chat.non-existent"));
+            return false;
+        }
         Economy eco = VaultHook.getEconomy();
         eco.depositPlayer(p, getProfit(price));
-        if (note.getPartiallySoldAmountLeft() != 0) {
-            ItemNoteStorage.setPrice(note, note.getPrice() - price);
-            ItemStack temp = note.getItem();
-            temp.setAmount(note.getItem().getAmount() - itemAmount);
-            ItemNoteStorage.setItem(note, temp);
-            if (note.getPartiallySoldAmountLeft() == note.getItem().getAmount()) {
-                ItemNoteStorage.setPartiallySoldAmountLeft(note, 0);
-                ItemNoteStorage.setSold(note, false);
-                ItemNoteStorage.setBuyerName(note, null, null);
-            }
-        } else {
-            if (!note.isBIDAuction()) ItemNoteStorage.deleteNote(note);
-            else {
-                note.setSold(true);
-                AuctionHouseStorage.checkRemove(noteID);
-            }
-        }
-        try {
-            ItemNoteStorage.saveNotes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         return true;
     }
 

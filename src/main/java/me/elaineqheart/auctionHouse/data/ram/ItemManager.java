@@ -4,10 +4,8 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.data.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -366,19 +364,11 @@ public class ItemManager {
                         "%buyer%", M.formatBuyer(note.getLastBidderName(), note.getLastBidder())));
             }
         }
-        if (Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),p)) {
+        if (Objects.equals(note.getPlayerUUID(),p.getUniqueId())) {
             lore.addAll(M.getLoreList("items.auction.lore.own-auction"));
         }
-        if (note.isExpired() && note.getAdminMessage()!=null && !note.getAdminMessage().isEmpty()) {
-            if (note.getItem().equals(createDirt())) {
-                lore.addAll(M.getLoreList("items.auction.lore.admin-deleted"));
-            } else {
-                lore.addAll(M.getLoreList("items.auction.lore.admin-expired"));
-            }
-            lore.addAll(M.getLoreList("items.auction.lore.admin-message",
-                    "%reason%", note.getAdminMessage()));
-            lore.addAll(M.getLoreList("items.auction.lore.expired"));
-        } else if (note.isSold() && note.isOnAuction()) {
+
+        if (note.isSold() && note.isOnAuction()) {
             if (ownAuction) {
                 lore.addAll(M.getLoreList("items.auction.lore.partially-sold",
                         "%sold%", String.valueOf(note.getItem().getAmount() - note.getPartiallySoldAmountLeft()),
@@ -391,10 +381,10 @@ public class ItemManager {
                 lore.addAll(M.getLoreList("items.auction.lore.active",
                         "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
             } else {
-                lore.addAll(M.getLoreList("items.auction.lore.expired"));
+                addAdminMessageOrExpired(lore, note);
             }
-        } else if (note.isExpired() && (!note.isSold() && !note.isBIDAuction() || !note.hasBidHistory() && note.isBIDAuction())) {
-            lore.addAll(M.getLoreList("items.auction.lore.expired"));
+        } else if (note.isExpired()) {
+            addAdminMessageOrExpired(lore, note);
         } else if (note.isBIDAuction() && note.hasBidHistory() && note.isExpired()) {
             lore.addAll(M.getLoreList("items.auction.lore.ended"));
         } else if (note.isSold() && !note.isOnAuction()) {
@@ -409,9 +399,23 @@ public class ItemManager {
             lore.addAll(M.getLoreList("items.auction.lore.active",
                     "%time%", StringUtils.getTime(note.getTimeLeft(), true)));
         }
+
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
+    }
+    private static void addAdminMessageOrExpired(List<String> lore, ItemNote note) {
+        if (note.getAdminMessage()!=null && !note.getAdminMessage().isEmpty()) {
+            if (note.getItem().equals(createDirt())) {
+                lore.addAll(M.getLoreList("items.auction.lore.admin-deleted"));
+            } else {
+                lore.addAll(M.getLoreList("items.auction.lore.admin-expired"));
+            }
+            lore.addAll(M.getLoreList("items.auction.lore.admin-message",
+                    "%reason%", note.getAdminMessage()));
+        } else if (!note.isSold() && !note.isBIDAuction() || !note.hasBidHistory() && note.isBIDAuction()) {
+            lore.addAll(M.getLoreList("items.auction.lore.expired"));
+        }
     }
     public static ItemStack createCollectingItemFromNote(ItemNote note) {
         ItemStack item = note.getItem();

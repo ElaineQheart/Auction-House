@@ -2,7 +2,6 @@ package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
-import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

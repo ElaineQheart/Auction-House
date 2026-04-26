@@ -174,7 +174,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.createTurtleScute(note.getCurrentPrice()))
                 .consumer(event -> {
                     Sounds.click(event);
-                    if(note.getPlayerName().equals(event.getWhoClicked().getName())) {
+                    if(note.getPlayerUUID().equals(event.getWhoClicked().getUniqueId())) {
                         event.getWhoClicked().sendMessage(M.getFormatted("chat.own-auction"));
                         return;
                     }
@@ -189,7 +189,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    if(note.getPlayerName().equals(p.getName())) {
+                    if(note.getPlayerUUID().equals(event.getWhoClicked().getUniqueId())) {
                         p.sendMessage(M.getFormatted("chat.own-auction"));
                         return;
                     }

@@ -34,6 +34,7 @@ public final class VaultHook {
 //    }
 
     public static Economy getEconomy() {
+        if (econ == null) setupEconomy();
         return econ;
     }
 
