@@ -139,7 +139,11 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         return;
                     }
                     if (Objects.equals(Bukkit.getPlayer(note.getPlayerUUID()),c.getPlayer()) && !note.isBIDAuction()) {
-                        AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.getPlayer());
+                        if (note.isSold()) {
+                            AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), c.getPlayer());
+                        } else {
+                            AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.getPlayer());
+                        }
                         return;
                     }
                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, AhConfiguration.View.AUCTION_HOUSE), c.getPlayer());

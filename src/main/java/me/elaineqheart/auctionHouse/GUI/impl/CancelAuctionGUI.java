@@ -113,7 +113,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                         return;
                     }
                     //ItemNote test = NoteStorage.getNote(note.getNoteID().toString());
-                    if (!note.isOnAuction()) {
+                    if (note.isSold()) {
                         p.sendMessage(M.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;

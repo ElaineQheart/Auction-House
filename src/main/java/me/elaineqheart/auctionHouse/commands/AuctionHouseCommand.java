@@ -151,7 +151,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             "%amount%", String.valueOf(amount));
                     Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
                         for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                            if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) ) { //&& !onlinePlayer.equals(p)
+                            if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
                                 onlinePlayer.sendMessage(announcement);
                             }
                         }

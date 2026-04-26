@@ -189,7 +189,10 @@ public class ItemNote {
     public void removeBid(Player player) {getClaimedPlayers().add(player.getUniqueId());}
     public void setSold(boolean isSold) {this.isSold = isSold;}
     public void setAdminMessage(String adminMessage) {this.adminMessage = adminMessage;}
-    public void setItem(ItemStack item) {this.itemData = ItemStackConverter.encode(item);}
+    public void setItem(ItemStack item) {
+        this.itemData = ItemStackConverter.encode(item);
+        ItemNoteStorage.addItem(noteID, ItemStackConverter.decode(itemData));
+    }
     public void setAuctionTime(long time) {this.auctionTime = time;}
     public void setPartiallySoldAmountLeft(int amount) {this.partiallySoldAmountLeft = amount;}
     public void setPrice(double amount) {this.price = amount;}
