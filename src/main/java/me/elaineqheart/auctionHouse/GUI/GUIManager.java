@@ -36,10 +36,6 @@ public class GUIManager {
     public void handleClick(InventoryClickEvent event) {
         InventoryHandler handler = this.activeInventories.get(event.getInventory());
         if (handler == null) return;
-        if(event.getCurrentItem() != null && event.getCurrentItem().getType() == Material.PAPER && event.getSlot() == 2) {
-            //anvil click
-            return;
-        }
         handler.onClick(event);
     }
 

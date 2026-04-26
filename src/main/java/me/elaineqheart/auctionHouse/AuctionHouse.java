@@ -82,6 +82,7 @@ public final class AuctionHouse extends JavaPlugin {
     public void onDisable() {
         ConfigManager.playerPreferences.disable();
         if(guiManager != null) guiManager.forceCloseAll();
+        if(anvilManager != null) anvilManager.forceCloseAll();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 

@@ -22,9 +22,6 @@ import java.util.Map;
 
 public class AnvilGUIManager implements Listener {
 
-    // This is used to pass the note to the next GUI (AnvilGUIListener)
-    // an item Note linked to the player
-    public static HashMap<AnvilView, AhConfiguration> activeAnvils = new HashMap<>();
     private static final Map<Inventory, AnvilHandler> activeInventories = new HashMap<>();
 
     public enum SearchType {
@@ -56,9 +53,7 @@ public class AnvilGUIManager implements Listener {
         event.setCancelled(true);
         ItemStack paperItem = event.getInventory().getItem(0);
         AnvilView view = (AnvilView) event.getView();
-        view.setRepairCost(0);
-
-        Player player = (Player) event.getWhoClicked();
+        if (event.getSlot() == 1) view.setItem(0, ItemManager.emptyPaper); // this removes the enchantment cost for some reason
         if (event.getSlot() != 2) return;
         ItemStack resultItem = event.getCurrentItem();
         if (resultItem == null) return;
@@ -66,6 +61,7 @@ public class AnvilGUIManager implements Listener {
         if (meta != null && meta.hasDisplayName()) {
             //remove the paper, else it will end up in the players inventory
             assert paperItem != null;
+            Player player = (Player) event.getWhoClicked();
             player.getOpenInventory().getTopInventory().remove(paperItem);
             player.getOpenInventory().getBottomInventory().remove(paperItem);
             String typedText = meta.getDisplayName();
@@ -90,7 +86,6 @@ public class AnvilGUIManager implements Listener {
     public void handleClose(InventoryCloseEvent event) {
         AnvilHandler handler = activeInventories.get(event.getView().getTopInventory());
         if (handler == null) return;
-
         ItemStack paperItem = event.getInventory().getItem(0);
         Player p = (Player) event.getPlayer();
         //remove the paper, else it will end up in the players inventory
@@ -98,6 +93,19 @@ public class AnvilGUIManager implements Listener {
         p.getOpenInventory().getTopInventory().remove(paperItem);
         p.getOpenInventory().getBottomInventory().remove(paperItem);
         handler.onClose(p);
+    }
+
+    public void forceCloseAll() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Inventory inv = player.getOpenInventory().getTopInventory();
+            if(activeInventories.containsKey(inv)) {
+                ItemStack paperItem = inv.getItem(0);
+                assert paperItem != null;
+                player.getOpenInventory().getTopInventory().remove(paperItem);
+                player.getOpenInventory().getBottomInventory().remove(paperItem);
+                player.closeInventory();
+            }
+        }
     }
 
 }
