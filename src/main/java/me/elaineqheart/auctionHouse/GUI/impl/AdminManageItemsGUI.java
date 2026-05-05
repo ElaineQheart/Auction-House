@@ -35,7 +35,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ADMIN_MANAGE_ITEMS);
-        TaskManager.addTaskID(invID, instance.getMorePaperLib().scheduling().globalRegionalScheduler().runAtFixedRate(this, 20, 20).hashCode());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     @Override
