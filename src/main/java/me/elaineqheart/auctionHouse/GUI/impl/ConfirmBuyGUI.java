@@ -27,6 +27,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
     private final ItemStack item;
     private final AhConfiguration c;
     private final double price;
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     public ConfirmBuyGUI(ItemNote note, AhConfiguration configuration, ItemStack item) {
         super();
@@ -104,7 +105,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     Economy eco = VaultHook.getEconomy();
-                    Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
+                    instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
                     if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
                         p.sendMessage(M.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
@@ -146,7 +147,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         }
                     }
                     if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {
-                        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> CollectSoldItemGUI.collect
+                        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> CollectSoldItemGUI.collect
                                 (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
                         );
                     }

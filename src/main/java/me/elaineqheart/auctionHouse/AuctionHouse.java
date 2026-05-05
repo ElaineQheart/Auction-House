@@ -18,6 +18,7 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.morepaperlib.MorePaperLib;
 
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ public final class AuctionHouse extends JavaPlugin {
     public static AuctionHouse getPlugin() {return instance;}
     public static GUIManager getGuiManager() {return guiManager;}
     public static AnvilGUIManager getAnvilManager() {return anvilManager;}
+    private MorePaperLib morePaperLib;
 
     @Override
     public void onEnable() {
@@ -40,6 +42,7 @@ public final class AuctionHouse extends JavaPlugin {
         anvilManager = new AnvilGUIManager();
         Bukkit.getPluginManager().registerEvents(guiListener, this);
         Bukkit.getPluginManager().registerEvents(anvilManager, this);
+        morePaperLib = new MorePaperLib(instance);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
@@ -84,6 +87,14 @@ public final class AuctionHouse extends JavaPlugin {
         if(guiManager != null) guiManager.forceCloseAll();
         if(anvilManager != null) anvilManager.forceCloseAll();
         //if(SettingManager.useRedis) RedisManager.disconnect();
+    }
+
+    public MorePaperLib getMorePaperLib() {
+        return morePaperLib;
+    }
+
+    public static AuctionHouse getInstance() {
+        return instance;
     }
 
 }

@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.OldLayout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.*;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
@@ -26,6 +27,7 @@ public class ConfigManager {
     public static Layout layout = new Layout();
     public static TransactionLogger transactionLogger = new TransactionLogger();
     private static final List<Config> list = new ArrayList<>();
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     public static void setupConfigs() {
         //Setup config.yml
@@ -42,6 +44,8 @@ public class ConfigManager {
         AuctionHouse.getPlugin().getConfig().options().copyDefaults(true);
         AuctionHouse.getPlugin().saveConfig();
 
+        Plugin plugin = AuctionHouse.getPlugin();
+
         messages.setup("messages.yml", true, "");
         displays.setup("displays.yml", false, "/data");
         bannedPlayers.setup("bannedPlayers.yml", false, "/data");
@@ -56,7 +60,7 @@ public class ConfigManager {
             if (!layout.getCustomFile().getBoolean("old-layout")) OldLayout.saveOldLayout();
         }
         transactionLogger.setup(transactionLogger.getName(), false, "/logs");
-        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }
 

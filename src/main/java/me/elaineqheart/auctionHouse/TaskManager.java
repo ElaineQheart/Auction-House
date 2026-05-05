@@ -13,7 +13,7 @@ public class TaskManager {
         if(invID == null) return;
         String key = invID.toString();
         if(taskID.containsKey(key)) {
-            Bukkit.getScheduler().cancelTask(taskID.get(key));
+            Bukkit.getScheduler().cancelTask(taskID.get(key)); // Not folia supported
             taskID.remove(key);
         }
     }

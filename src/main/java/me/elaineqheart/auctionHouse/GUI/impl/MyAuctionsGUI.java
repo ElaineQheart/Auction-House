@@ -47,7 +47,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         super();
         c = configuration;
         c.setView(AhConfiguration.View.MY_AUCTIONS);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         decorate(c.getPlayer());
         TaskManager.cancelTask(invID);
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     private void fillOutItems(Player p, List<Integer> itemSlots){

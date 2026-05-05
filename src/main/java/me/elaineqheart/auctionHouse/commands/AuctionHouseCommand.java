@@ -41,6 +41,9 @@ import java.util.UUID;
 // #don't try to fix what's not broken
 
 public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
+
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(commandSender instanceof ConsoleCommandSender) {
@@ -156,7 +159,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                             "%item%", itemName,
                             "%amount%", String.valueOf(amount));
-                    Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+                    instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
                         for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                             if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
                                 onlinePlayer.sendMessage(announcement);

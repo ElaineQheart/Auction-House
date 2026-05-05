@@ -47,7 +47,7 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
         this.c.setView(AhConfiguration.View.MY_BIDS);
         this.page = page;
         rows = getInventory().getSize()/9;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     @Override
@@ -68,7 +68,7 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
         decorate(c.getPlayer());
         TaskManager.cancelTask(invID);
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {

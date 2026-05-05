@@ -24,6 +24,7 @@ public class ConfirmBidGUI extends InventoryGUI {
     private final AhConfiguration c;
     private final double price;
     private final boolean goBackToAuctionHouse;
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     public ConfirmBidGUI(ItemNote note, AhConfiguration configuration, double bid, boolean goBackToAuctionHouse) {
         super();
@@ -118,7 +119,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                     p.sendMessage(M.getFormatted("chat.placed-bid", price,
                             "%item%", note.getItemName()));
                     if (c.shouldKeepOpen()) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackToAuctionHouse ? AhConfiguration.View.AUCTION_HOUSE : AhConfiguration.View.MY_AUCTIONS), p);
-                    else Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), p::closeInventory);
+                    else instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(p::closeInventory);
 
                     Set<UUID> bidders = note.getBidders();
                     bidders.remove(p.getUniqueId());

@@ -19,6 +19,8 @@ import java.util.UUID;
 
 public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
 
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private final ItemNote note;
     private final AhConfiguration c;
     private final UUID invID = UUID.randomUUID();
@@ -33,7 +35,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ADMIN_MANAGE_ITEMS);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, instance.getMorePaperLib().scheduling().globalRegionalScheduler().runAtFixedRate(this, 20, 20).hashCode());
     }
 
     @Override
@@ -60,7 +62,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
+        TaskManager.cancelTask(invID); // not folia supported
     }
 
     private void fillOutPlaces(String[] places, InventoryButton fillerItem){
@@ -103,7 +105,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, true, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
@@ -121,7 +123,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
