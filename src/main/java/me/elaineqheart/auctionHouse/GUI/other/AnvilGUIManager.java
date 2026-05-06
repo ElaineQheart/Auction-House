@@ -51,8 +51,17 @@ public class AnvilGUIManager implements Listener {
 
         event.setCancelled(true);
         ItemStack paperItem = event.getInventory().getItem(0);
-        AnvilView view = (AnvilView) event.getView();
-        if (event.getSlot() == 1) view.setItem(0, ItemManager.emptyPaper); // this removes the enchantment cost for some reason
+        if (event.getSlot() == 0) {
+            Sounds.breakWood(event);
+            Player player = (Player) event.getWhoClicked();
+            activeInventories.remove(event.getView().getTopInventory());
+            handler.execute(player, "");
+            return;
+        }
+        if (event.getSlot() == 1) {
+            AnvilView view = (AnvilView) event.getView();
+            view.setItem(0, ItemManager.emptyPaper); // this removes the enchantment cost for some reason
+        }
         if (event.getSlot() != 2) return;
         ItemStack resultItem = event.getCurrentItem();
         if (resultItem == null) return;
