@@ -5,7 +5,9 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -250,6 +252,7 @@ public class SettingManager {
             }
         }
         backwardsCompatibilityForPlaceholderAPI(messageFile);
+        soundsBackwardsCompatibility();
 
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
@@ -269,6 +272,35 @@ public class SettingManager {
         }
         c.set("items.auction.lore.default-bid", Objects.requireNonNull(c.getString("items.auction.lore.default-bid"))
                 .replace("%bidder%", "%buyer%"));
+    }
+
+    private static void soundsBackwardsCompatibility() {
+        ConfigurationSection c = ConfigManager.layout.getCustomFile().getConfigurationSection("sounds");
+        assert c != null;
+        if (ConfigManager.oldVersion21()) {
+            c.set("click", "ui.stonecutter.select_recipe");
+            c.set("open-enderchest", "block.ender_chest.open");
+            c.set("close-enderchest", "block.ender_chest.close");
+            c.set("break-wood", "block.wood.break");
+            c.set("experience", "entity.experience_orb.pickup");
+            c.set("villager-deny", "entity.villager.no");
+            c.set("open-shulker", "block.shulker_box.open");
+            c.set("close-shulker", "block.shulker_box.close");
+            c.set("npc-click", "ui.stonecutter.select_recipe");
+            c.set("open-bundle", "item.bundle.drop_contents");
+            c.set("close-bundle", "item.bundle.remove_one");
+        } else {
+            String mainSound = c.getString("click");
+            assert mainSound != null;
+
+            if (Character.isUpperCase(mainSound.charAt(0))) {
+                for (String key : c.getKeys(false)) {
+                    c.set(key, Sound.valueOf(c.getString(key)).getKeyOrNull().getKey());
+                }
+            }
+        }
+        ConfigManager.layout.save();
+        ConfigManager.layout.reload();
     }
 
 }

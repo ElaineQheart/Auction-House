@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.LayoutGenerator;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
@@ -21,7 +22,12 @@ public class Layout extends Config {
         FileConfiguration l = ConfigManager.layout.getCustomFile();
         ahLayout = l.getStringList("ah-layout");
         myAhLayout = l.getStringList("my-ah-layout");
-        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) updateLayout(l);
+        if(ahLayout.isEmpty() || myAhLayout.isEmpty()) {
+            LayoutGenerator.generate(l);
+            ConfigManager.layout.save();
+            ahLayout = l.getStringList("ah-layout");
+            myAhLayout = l.getStringList("my-ah-layout");
+        }
     }
 
     private void updateLayout(FileConfiguration l) {
