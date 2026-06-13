@@ -97,17 +97,17 @@ public class SettingManager {
         maxBIDPrice = c.getDouble("max-bid", -1);
         useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", false);
         FileConfiguration layout = ConfigManager.layout.getCustomFile();
-        soundClick = layout.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");
-        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "BLOCK_ENDER_CHEST_OPEN");
-        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "BLOCK_ENDER_CHEST_CLOSE");
-        soundBreakWood = layout.getString("sounds.break-wood", "BLOCK_WOOD_BREAK");
-        soundExperience = layout.getString("sounds.experience", "ENTITY_EXPERIENCE_ORB_PICKUP");
-        soundVillagerDeny = layout.getString("sounds.villager-deny", "ENTITY_VILLAGER_NO");
-        soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
-        soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
-        soundNPCClick = layout.getString("sounds.npc-click", "UI_STONECUTTER_SELECT_RECIPE");
-        soundOpenBundle = layout.getString("sounds.open-bundle", "ITEM_BUNDLE_DROP_CONTENTS");
-        soundCloseBundle = layout.getString("sounds.close-bundle", "ITEM_BUNDLE_REMOVE_ONE");
+        soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");
+        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "block.ender_chest.open");
+        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "block.ender_chest.close");
+        soundBreakWood = layout.getString("sounds.break-wood", "block.wood.break");
+        soundExperience = layout.getString("sounds.experience", "entity.experience_orb.pickup");
+        soundVillagerDeny = layout.getString("sounds.villager-deny", "entity.villager.no");
+        soundOpenShulker = layout.getString("sounds.open-shulker", "block.shulker_box.open");
+        soundCloseShulker = layout.getString("sounds.close-shulker", "block.shulker_box.close");
+        soundNPCClick = layout.getString("sounds.npc-click", "ui.stonecutter.select_recipe");
+        soundOpenBundle = layout.getString("sounds.open-bundle", "item.bundle.drop_contents");
+        soundCloseBundle = layout.getString("sounds.close-bundle", "item.bundle.remove_one");
         loadDisplays(layout);
 
         if (ConfigManager.backwardsCompatibility())
