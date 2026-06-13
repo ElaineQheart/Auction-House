@@ -448,7 +448,8 @@ world:
 
 commands:
   ah: "ah"
-  alias: "auctionhouse"
+  aliases:
+    - "auctionhouse"
   sell: "sell"
   bid: "bid"
   announce: "announce"

@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.commands;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
@@ -15,8 +16,9 @@ public class DynamicCommandRegisterer {
 
     public static void init() {
         String name = M.getFormatted("commands.ah").toLowerCase();
-        String alias = M.getFormatted("commands.alias").toLowerCase();
-        List<String> aliases = alias.isEmpty() ? List.of() : List.of(alias);
+        List<String> aliases = ConfigManager.messages.getCustomFile().getStringList("commands.aliases");
+        //String alias = M.getFormatted("commands.alias").toLowerCase();
+        //List<String> aliases = alias.isEmpty() ? List.of() : List.of(alias);
         CommandExecutor executor = new AuctionHouseCommand();
         TabCompleter tabCompleter = new AuctionHouseCommand();
 

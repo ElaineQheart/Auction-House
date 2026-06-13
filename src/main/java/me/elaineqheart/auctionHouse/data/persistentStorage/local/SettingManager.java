@@ -251,6 +251,13 @@ public class SettingManager {
                 messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
             }
         }
+        if (messageFile.contains("commands.alias")) {
+            String oldAlias = messageFile.getString("commands.alias");
+            if (oldAlias != null) {
+                messageFile.set("commands.aliases", List.of(oldAlias));
+            }
+            messageFile.set("commands.alias", null);
+        }
         backwardsCompatibilityForPlaceholderAPI(messageFile);
         soundsBackwardsCompatibility();
 
