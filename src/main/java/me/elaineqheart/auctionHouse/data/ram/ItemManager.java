@@ -650,24 +650,8 @@ public class ItemManager {
     public static boolean isBundle(ItemStack item) {
         if (ConfigManager.disableBundles()) return false;
         if (item == null) return false;
-        Material type = item.getType();
-        return type == Material.BUNDLE ||
-                type == Material.BLACK_BUNDLE ||
-                type == Material.BLUE_BUNDLE ||
-                type == Material.BROWN_BUNDLE ||
-                type == Material.CYAN_BUNDLE ||
-                type == Material.GRAY_BUNDLE ||
-                type == Material.GREEN_BUNDLE ||
-                type == Material.LIGHT_BLUE_BUNDLE ||
-                type == Material.LIGHT_GRAY_BUNDLE ||
-                type == Material.LIME_BUNDLE ||
-                type == Material.MAGENTA_BUNDLE ||
-                type == Material.ORANGE_BUNDLE ||
-                type == Material.PINK_BUNDLE ||
-                type == Material.PURPLE_BUNDLE ||
-                type == Material.RED_BUNDLE ||
-                type == Material.WHITE_BUNDLE ||
-                type == Material.YELLOW_BUNDLE;
+        // Colored bundles (BLACK_BUNDLE, etc.) were added in 1.21.2; use name matching for cross-version support.
+        return item.getType().name().endsWith("_BUNDLE");
     }
 
 }
