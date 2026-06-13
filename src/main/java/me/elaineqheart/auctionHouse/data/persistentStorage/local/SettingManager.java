@@ -68,6 +68,10 @@ public class SettingManager {
     public static void loadData() {
         AuctionHouse.getPlugin().reloadConfig();
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+
+        if (ConfigManager.backwardsCompatibility())
+            backwardsCompatibility();
+
         taxRate = c.getDouble("tax", 0.01);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
@@ -109,9 +113,6 @@ public class SettingManager {
         soundOpenBundle = layout.getString("sounds.open-bundle", "item.bundle.drop_contents");
         soundCloseBundle = layout.getString("sounds.close-bundle", "item.bundle.remove_one");
         loadDisplays(layout);
-
-        if (ConfigManager.backwardsCompatibility())
-            backwardsCompatibility();
     }
 
     // multi-server-database:
