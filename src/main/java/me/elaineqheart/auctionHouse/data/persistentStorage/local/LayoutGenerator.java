@@ -1,7 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local;
 
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

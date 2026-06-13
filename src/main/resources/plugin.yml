@@ -1,5 +1,5 @@
 name: AuctionHouse
-version: '1.4.7'
+version: '1.4.8'
 main: me.elaineqheart.auctionHouse.AuctionHouse
 api-version: '1.21'
 authors: [ ElaineQheart ]
@@ -10,4 +10,3 @@ permissions:
   auctionhouse.ah:
     description: allows the player to use /ah
     default: true
-
