@@ -302,7 +302,7 @@ public class SettingManager {
 
             if (Character.isUpperCase(mainSound.charAt(0))) {
                 for (String key : c.getKeys(false)) {
-                    c.set(key, Sound.valueOf(c.getString(key)).getKeyOrNull().getKey());
+                    c.set(key, Sound.valueOf(c.getString(key)).getKey().getKey());
                 }
             }
         }
