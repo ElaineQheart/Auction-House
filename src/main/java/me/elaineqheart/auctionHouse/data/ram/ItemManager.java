@@ -650,7 +650,7 @@ public class ItemManager {
     public static boolean isBundle(ItemStack item) {
         if (item == null) return false;
         // Colored bundles (BLACK_BUNDLE, etc.) were added in 1.21.2; use name matching for cross-version support.
-        return item.getType().name().endsWith("_BUNDLE");
+        return item.getType().name().endsWith("BUNDLE");
     }
 
 }
