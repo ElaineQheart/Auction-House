@@ -43,7 +43,10 @@ public class Sounds {
     }
 
     public static void click(Player p) {
-        p.playSound(p.getLocation(), getSound(SettingManager.soundClick), 0.2f,1);
+        playSound(p, SettingManager.soundClick, 0.2f,1);
+    }
+    public static void breakWood(Player p) {
+        playSound(p, SettingManager.soundBreakWood, 0.5f, 1);
     }
 
     public static void npcClick(Player p) {

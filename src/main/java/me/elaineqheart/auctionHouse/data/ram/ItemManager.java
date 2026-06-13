@@ -648,6 +648,7 @@ public class ItemManager {
                 type == Material.BLACK_SHULKER_BOX;
     }
     public static boolean isBundle(ItemStack item) {
+        if (ConfigManager.disableBundles()) return false;
         if (item == null) return false;
         Material type = item.getType();
         return type == Material.BUNDLE ||

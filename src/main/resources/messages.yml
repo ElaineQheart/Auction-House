@@ -480,10 +480,13 @@ commands:
   save-item-to-layout-file: "saveitemtolayout.yml"
   about: "about"
   help: "help"
+  search: "search"
+  search-cancel: "cancel"
 
 command-feedback:
   usage: "§eUsage: /ah sell <price> <amount>"
   bid-usage: "§eTo sell an item: /ah bid <price> <amount>"
+  search-usage: "§eUsage: /ah search <item>&n§eUsage: /ah search cancel"
   reached-max-auctions: "§eYou can only have %limit% auctions at a time"
   no-item-in-hand: "§eYou need to hold an item in your hand to sell it"
   invalid-number: "That is not a valid number"
@@ -542,6 +545,8 @@ command-feedback:
     summon: "§6/ah summon:§f Summons the auction master npc or the item displays. Remove them by punching them in creative mode while being op"
     test: "§6/ah test:§f Used to save the item from your main hand to the files"
     help: "§6/ah help:§f Shows the help menu"
+    search: "§6/ah search :§f Search an item on the ah"
+  old-version-anvil: "This feature isn't supported in your current minecraft version. Try switching to a newer one or use §6/ah search <item>"
 
 placeholders:
   number: "§6%input%§r"

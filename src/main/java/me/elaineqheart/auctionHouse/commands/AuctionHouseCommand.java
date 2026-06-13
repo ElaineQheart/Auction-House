@@ -87,6 +87,20 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.bid")) && SettingManager.BIDAuctions) {
                 p.sendMessage(M.getFormatted("command-feedback.bid-usage"));
             }
+            if(strings.length==1 && strings[0].equals(M.getFormatted("commands.search"))) {
+                p.sendMessage(M.getFormatted("command-feedback.search-usage"));
+            }
+            if(strings.length==2 && strings[0].equals(M.getFormatted("commands.search"))) {
+                AhConfiguration conf = AhConfiguration.getInstance(p);
+                if (strings[1].equals(M.getFormatted("commands.search-cancel"))) {
+                    conf.setCurrentSearch("");
+                    Sounds.breakWood(p);
+                } else {
+                    conf.setCurrentSearch(strings[1]);
+                    Sounds.click(p);
+                }
+                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(conf), p);
+            }
             if((strings.length==2 || strings.length==3) &&
                     (strings[0].equals(M.getFormatted("commands.sell")) && SettingManager.BINAuctions
                             || strings[0].equals(M.getFormatted("commands.bid")) && SettingManager.BIDAuctions)) {
@@ -392,6 +406,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             List<String> assetParams = new ArrayList<>();
             assetParams.add(M.getFormatted("commands.about"));
             assetParams.add(M.getFormatted("commands.help"));
+            assetParams.add(M.getFormatted("commands.search"));
             if(SettingManager.BINAuctions) assetParams.add(M.getFormatted("commands.sell"));
             if(SettingManager.BIDAuctions) assetParams.add(M.getFormatted("commands.bid"));
             if(SettingManager.auctionAnnouncementsEnabled) assetParams.add(M.getFormatted("commands.announce"));
