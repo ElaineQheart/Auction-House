@@ -143,9 +143,6 @@ public class ConfigManager {
     public static boolean oldVersion21() {
         return oldVersionCheck(List.of("1.21.4-", "1.21.3-", "1.21.2-", "1.21.1-", "1.21-"));
     }
-    public static boolean disableBundles() {
-        return oldVersionCheck(List.of("1.21.1-", "1.21-"));
-    }
 
     private static boolean oldVersionCheck(List<String> versions) {
         String currentVersion = Bukkit.getVersion();
