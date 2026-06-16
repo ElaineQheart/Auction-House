@@ -88,10 +88,10 @@ public class ItemNote {
         return partiallySoldAmountLeft == 0 ? getItem().getAmount() : partiallySoldAmountLeft;
     }
 
-    public String getSearchIndex(Player p) {
+    public List<String> getSearchIndex(Player p) {
         ItemStack item = getItem();
         ItemMeta meta = item.getItemMeta();
-        ArrayList<String> index = new ArrayList<>(Collections.singleton(item.toString().toLowerCase()));
+        List<String> index = new ArrayList<>(Collections.singleton(item.toString().toLowerCase()));
         if(LocaleAPIExtension.enabled) {
             List<ItemStack> translateItems = new ArrayList<>(List.of(item));
             if(meta != null) {
@@ -116,7 +116,8 @@ public class ItemNote {
                 }
             }
         }
-        return index.toString();
+        index.add(itemName.toLowerCase());
+        return index;
     }
 
     private static Translate.@NotNull PotionSort getPotionSort(ItemStack translateItem) {
