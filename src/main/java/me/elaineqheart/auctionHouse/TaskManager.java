@@ -2,25 +2,35 @@ package me.elaineqheart.auctionHouse;
 
 import org.bukkit.Bukkit;
 
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class TaskManager {
 
-    private static final HashMap<String, Integer> taskID = new HashMap<>();
+    private static final HashMap<UUID, Integer> taskID = new HashMap<>();
+    //private static final HashMap<LocalTime, Integer> taskHistory = new HashMap<>();
 
-    public static void cancelTask(UUID invID) {
-        if(invID == null) return;
-        String key = invID.toString();
-        if(taskID.containsKey(key)) {
-            Bukkit.getScheduler().cancelTask(taskID.get(key));
-            taskID.remove(key);
-        }
+    public static void cancelTask(UUID key) {
+        assert key != null;
+        assert taskID.containsKey(key);
+        //taskHistory.put(LocalTime.now(), taskID.get(key));
+        Bukkit.getScheduler().cancelTask(taskID.get(key));
+        taskID.remove(key);
     }
 
     public static void addTaskID(UUID uniqueId, int taskId) {
-        taskID.put(uniqueId.toString(),taskId);
+        taskID.put(uniqueId,taskId);
     }
+
+//    public static void printStackTrace() {
+//        AuctionHouse.getPlugin().getLogger().info("Log size: " + taskHistory.size());
+//        List<LocalTime> timeList = taskHistory.keySet().stream().toList();
+//        for (LocalTime time : timeList.stream().sorted().toList()) {
+//            AuctionHouse.getPlugin().getLogger().info(time.toString() + ": " + taskHistory.get(time));
+//        }
+//    }
 
     // *usage in another class:
 
