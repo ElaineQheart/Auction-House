@@ -15,10 +15,42 @@ import java.util.Date;
 public class TransactionLogger extends Config {
 
     public void logTransaction(String buyer, String seller, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Buyer: %s | Seller: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), buyer, seller, item, amount, price, isBID));
+    }
+
+    public void logSetUpAuction(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Player set up an auction: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    public void logCancelAuction(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Player canceled an auction: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    public void logExpiredAuction(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Player collected an expired auction: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    public void logAdminExpiredAuction(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Player collected an admin expired auction: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    public void logAdminDeletedAuction(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Player collected an admin deleted auction: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    public void logPurge(String player, String item, double price, int amount, boolean isBID) {
+        logAuction(String.format("[%s] Purged by admin. | Player: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
+                getTimeStamp(), player, item, amount, price, isBID));
+    }
+
+    private void logAuction(String logEntry) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(getFile(), true))) {
-            String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-            String logEntry = String.format("[%s] Buyer: %s | Seller: %s | Item: %s | Amount: %d | Price: %.2f | BID: %b",
-                    timestamp, buyer, seller, item, amount, price, isBID);
             writer.write(logEntry);
             writer.newLine();
         } catch (IOException e) {
@@ -26,7 +58,10 @@ public class TransactionLogger extends Config {
         }
     }
 
-    public String getName() {
+    private String getTimeStamp() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    }
+
     public String getNewName() {
         Date date = new Date();
         var localDate = date.toInstant()
@@ -46,7 +81,6 @@ public class TransactionLogger extends Config {
                 if(fileNumber >= number) number = fileNumber+1;
             }
         }
-
         return formattedDate + "-" + number + ".log";
     }
 

@@ -1,5 +1,7 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage;
 
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.TransactionLogger;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
@@ -26,8 +28,16 @@ public class ItemNoteStorage {
 
 
     public static void createNote(Player p, ItemStack item, double price, boolean isBIDAuction) {
+        ItemNote itemNote = new ItemNote(p, item, price, isBIDAuction);
+        ConfigManager.transactionLogger.logSetUpAuction(
+                p.getDisplayName(),
+                itemNote.getItemName(),
+                price,
+                item.getAmount(),
+                isBIDAuction);
+
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
-        JsonNoteStorage.createNote(p, item, price, isBIDAuction);
+        JsonNoteStorage.createNote(itemNote);
     }
 
     public static void saveNotes() throws IOException {
@@ -40,10 +50,48 @@ public class ItemNoteStorage {
         JsonNoteStorage.loadNotes();
     }
 
-    public static void deleteNote(ItemNote note) {
+    private static void deleteNote(ItemNote note) {
         //if(r()) RedisNoteStorage.deleteNote(note.getNoteID()); else
         JsonNoteStorage.deleteNote(note);
         removeItem(note.getNoteID());
+    }
+
+    public static void deleteCancelNote(ItemNote note) {
+        ConfigManager.transactionLogger.logCancelAuction(
+                note.getPlayerName(),
+                note.getItemName(),
+                note.getCurrentPrice(),
+                note.getCurrentAmount(),
+                note.isBIDAuction());
+        deleteNote(note);
+    }
+
+    public static void deleteExpiredNote(ItemNote note) {
+        ConfigManager.transactionLogger.logExpiredAuction(
+                note.getPlayerName(),
+                note.getItemName(),
+                note.getCurrentPrice(),
+                note.getCurrentAmount(),
+                note.isBIDAuction());
+        deleteNote(note);
+    }
+    public static void deleteAdminExpiredNote(ItemNote note) {
+        ConfigManager.transactionLogger.logAdminExpiredAuction(
+                note.getPlayerName(),
+                note.getItemName(),
+                note.getCurrentPrice(),
+                note.getCurrentAmount(),
+                note.isBIDAuction());
+        deleteNote(note);
+    }
+    public static void deleteAdminDeletedNote(ItemNote note) {
+        ConfigManager.transactionLogger.logAdminDeletedAuction(
+                note.getPlayerName(),
+                note.getItemName(),
+                note.getCurrentPrice(),
+                note.getCurrentAmount(),
+                note.isBIDAuction());
+        deleteNote(note);
     }
 
     public static void setBuyerName(ItemNote note, String buyerName, UUID playerID) {
@@ -92,6 +140,15 @@ public class ItemNoteStorage {
     }
 
     public static void purge() {
+        for (ItemNote note : AuctionHouseStorage.getAll()) {
+            ConfigManager.transactionLogger.logPurge(
+                    note.getPlayerName(),
+                    note.getItemName(),
+                    note.getCurrentPrice(),
+                    note.getCurrentAmount(),
+                    note.isBIDAuction()
+            );
+        }
         //if(r()) RedisNoteStorage.purge();else
         JsonNoteStorage.purge();
     }
@@ -114,11 +171,28 @@ public class ItemNoteStorage {
             }
         }
         saveNotesWithoutCheck();
+        ConfigManager.transactionLogger.logTransaction(
+                p.getDisplayName(),
+                note.getPlayerName(),
+                note.getItemName(),
+                price,
+                amount,
+                note.isBIDAuction());
         return true;
     }
 
     public static boolean collectExpiredAuctionItem(ItemNote note) {
-        deleteNote(note);
+        deleteExpiredNote(note);
+        saveNotesWithoutCheck();
+        return true;
+    }
+    public static boolean collectAdminExpiredAuctionItem(ItemNote note) {
+        deleteAdminExpiredNote(note);
+        saveNotesWithoutCheck();
+        return true;
+    }
+    public static boolean collectAdminDeletedAuctionItem(ItemNote note) {
+        deleteAdminDeletedNote(note);
         saveNotesWithoutCheck();
         return true;
     }

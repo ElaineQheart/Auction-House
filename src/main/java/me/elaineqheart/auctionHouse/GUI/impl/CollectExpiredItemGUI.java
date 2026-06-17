@@ -86,39 +86,37 @@ public class CollectExpiredItemGUI extends InventoryGUI {
                         Sounds.villagerDeny(event);
                         return;
                     }
+
                     ItemStack withdrawItem = note.getItem();
+
                     boolean collected;
                     if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) { // expired by a moderator
+                        if (note.getItem().equals(ItemManager.createDirt())) {
+                            collected = ItemNoteStorage.collectAdminDeletedAuctionItem(note);
+                        } else {
+                            collected = ItemNoteStorage.collectAdminExpiredAuctionItem(note);
+                        }
+                    } else {
+                        collected = ItemNoteStorage.collectExpiredAuctionItem(note); // delete it first!!
+                    }
+                    if (!collected) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
+
+                    if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) { // expired by a moderator
                         if(note.getItem().equals(ItemManager.createDirt())) {
-                            collected = ItemNoteStorage.collectExpiredAuctionItem(note);
-                            if (!collected) {
-                                p.sendMessage(M.getFormatted("chat.non-existent"));
-                                Sounds.villagerDeny(event);
-                                return;
-                            }
                             p.sendMessage(M.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.closeInventory();
                             Sounds.breakWood(event);
-                            return;
                         }else {
-                            collected = ItemNoteStorage.collectExpiredAuctionItem(note);
-                            if (!collected) {
-                                p.sendMessage(M.getFormatted("chat.non-existent"));
-                                Sounds.villagerDeny(event);
-                                return;
-                            }
                             p.sendMessage(M.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
                             p.closeInventory();
                             p.getInventory().addItem(withdrawItem);
                             Sounds.experience(event);
                         }
                     } else {
-                        collected = ItemNoteStorage.collectExpiredAuctionItem(note); //delete it first, before opening the new GUI!!
-                        if (!collected) {
-                            p.sendMessage(M.getFormatted("chat.non-existent"));
-                            Sounds.villagerDeny(event);
-                            return;
-                        }
                         AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
                         p.getInventory().addItem(withdrawItem);
                         Sounds.experience(event);

@@ -305,7 +305,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     Sounds.experience(event);
                     Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
-                    ItemNoteStorage.deleteNote(note);
+                    ItemNoteStorage.deleteCancelNote(note);
                     openGUI(p);
                     p.sendMessage(M.getFormatted("chat.auction-canceled"));
                 });
