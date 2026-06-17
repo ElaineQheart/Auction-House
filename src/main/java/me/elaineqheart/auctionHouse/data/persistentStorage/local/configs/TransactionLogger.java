@@ -27,6 +27,7 @@ public class TransactionLogger extends Config {
     }
 
     public String getName() {
+    public String getNewName() {
         Date date = new Date();
         var localDate = date.toInstant()
                 .atZone(ZoneId.systemDefault())

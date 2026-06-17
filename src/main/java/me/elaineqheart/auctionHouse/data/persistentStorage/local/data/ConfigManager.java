@@ -49,7 +49,7 @@ public class ConfigManager {
         categories.setup("categories.yml", false, "/data");
         playerPreferences.setup("playerPreferences.yml", false, "/data");
         layout.setup("layout.yml", true, "");
-        transactionLogger.setup(transactionLogger.getName(), false, "/logs");
+        transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
         Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }
@@ -94,6 +94,7 @@ public class ConfigManager {
     public static void reloadConfigs() {
         AuctionHouse.getPlugin().reloadConfig();
         getList().forEach(Config::reload);
+        transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
     }
 
     private static List<Config> getList() {
