@@ -12,7 +12,7 @@ public class TaskManager {
 
     public static void cancelTask(UUID key) {
         assert key != null;
-        assert taskID.containsKey(key);
+        if (!taskID.containsKey(key)) return;
         //taskHistory.put(LocalTime.now(), taskID.get(key));
         Bukkit.getScheduler().cancelTask(taskID.get(key));
         taskID.remove(key);

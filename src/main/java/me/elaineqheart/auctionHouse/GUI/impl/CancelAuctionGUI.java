@@ -28,6 +28,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
+        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
         this.addButton(13, Item());
         super.decorate(c.getPlayer());
     }
