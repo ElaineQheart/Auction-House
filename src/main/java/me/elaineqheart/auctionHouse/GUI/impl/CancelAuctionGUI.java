@@ -23,7 +23,6 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
     private final ItemNote note;
     private final UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
-    private final ItemStack item;
     private final boolean goBackToAuctionHouse;
 
     @Override
@@ -39,7 +38,6 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         c = configuration;
         goBackToAuctionHouse = c.getView() == AhConfiguration.View.AUCTION_HOUSE;
         c.setView(AhConfiguration.View.CANCEL_AUCTION);
-        this.item = ItemManager.createItemFromNote(note, c.getPlayer(), true);
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
     }
 
@@ -80,6 +78,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {});
     }
     private InventoryButton Item() {
+        ItemStack item = ItemManager.createItemFromNote(note, c.getPlayer(), false);
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
