@@ -1,7 +1,6 @@
 package me.elaineqheart.auctionHouse.world.displays;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
@@ -21,7 +20,6 @@ import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.UUID;
 
 public class UpdateDisplay implements Runnable {
 
@@ -29,8 +27,8 @@ public class UpdateDisplay implements Runnable {
 
     @Override
     public void run() {
-        for (Integer display : displays.keySet()) {
-            DisplayNote data = displays.get(display);
+        for (Integer display : displayItems.keySet()) {
+            DisplayNote data = displayItems.get(display);
             Location loc = data.location;
             if (data.glassBlock == null) {
                 retrieveData(loc, data);
@@ -166,17 +164,8 @@ public class UpdateDisplay implements Runnable {
         return new Sign[] { east, west, north, south };
     }
 
-    public static final HashMap<Integer, DisplayNote> displays = new HashMap<>();
+    public static final HashMap<Integer, DisplayNote> displayItems = new HashMap<>();
     public static final HashMap<Location, Integer> locations = new HashMap<>();
-    private static final ConfigurationSection ymlData = ConfigManager.displays.getCustomFile()
-            .getConfigurationSection("displays");
-
-    public static ConfigurationSection getYmlData() {
-        if (ymlData != null) return ymlData;
-        ConfigManager.displays.getCustomFile().createSection("displays");
-        ConfigManager.displays.save();
-        return ConfigManager.displays.getCustomFile().getConfigurationSection("displays");
-    }
 
     public static void init() {
         reload();
@@ -185,17 +174,17 @@ public class UpdateDisplay implements Runnable {
 
     public static void reload() {
         locations.clear();
-        displays.clear();
-        for (String key : getYmlData().getKeys(false)) { // find the data for each display
-            Location loc = getYmlData().getLocation(key);
+        displayItems.clear();
+        ConfigurationSection c = ConfigManager.displays.getYmlData();
+        for (String key : c.getKeys(false)) {
+            Location loc = c.getLocation(key);
             assert loc != null;
             DisplayNote data = new DisplayNote();
             data.location = loc;
-            // get the block display
             retrieveData(loc, data);
-            if (data.itemEntity != null) data.itemEntity.remove();
+            if (data.itemEntity != null) data.itemEntity.remove(); //reset entities
             locations.put(loc, Integer.parseInt(key));
-            displays.put(Integer.parseInt(key), data);
+            displayItems.put(Integer.parseInt(key), data);
         }
         instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(new UpdateDisplay());
     }
@@ -286,7 +275,7 @@ public class UpdateDisplay implements Runnable {
             AuctionHouse.getInstance().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
             return;
         }
-        DisplayNote data = displays.remove(displayID);
+        DisplayNote data = displayItems.remove(displayID);
         locations.remove(loc);
 
         if (data == null) {
@@ -308,8 +297,7 @@ public class UpdateDisplay implements Runnable {
         safeRemoveGlass(data.glassBlock);
         if (data.text != null) data.text.remove();
         safeRemoveInteraction(loc);
-        getYmlData().set(String.valueOf(displayID), null);
-        ConfigManager.displays.save();
+        ConfigManager.displays.removeDisplay(displayID);
     }
 
     private static void removeBlocks(Location loc) {

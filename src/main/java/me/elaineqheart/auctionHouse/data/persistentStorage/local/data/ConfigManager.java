@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class ConfigManager {
 
     public static M messages = new M();
-    public static Config displays = new Config();
+    public static Displays displays = new Displays();
     public static BannedPlayers bannedPlayers = new BannedPlayers();
     public static Permissions permissions = new Permissions();
     public static Blacklist blacklist = new Blacklist();
@@ -52,7 +52,7 @@ public class ConfigManager {
         playerPreferences.setup("playerPreferences.yml", false, "/data");
         layout.setup("layout.yml", true, "");
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(ConfigManager::displaysBackwardsCompatibility);
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(displays::backwardsCompatibility);
         //old method: Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }
@@ -118,30 +118,6 @@ public class ConfigManager {
             permissions.getCustomFile().createSection("bid-auction-duration");
             permissions.save();
         }
-    }
-
-    private static void displaysBackwardsCompatibility() {
-        Set<Integer> oldSet = null;
-        FileConfiguration customFile = displays.getCustomFile();
-        try {
-            // This method is for backwards compatibility
-            oldSet = customFile.getKeys(false).stream()
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toSet());
-        } catch (NumberFormatException ignored) {}
-
-        //This section of code is needed, even without backwards compatibility
-        if (customFile.getConfigurationSection("displays") == null) {
-            customFile.createSection("displays");
-        }
-
-        if(oldSet != null) {
-            for (Integer displayID : oldSet) {
-                Objects.requireNonNull(customFile.getConfigurationSection("displays")).set(String.valueOf(displayID), customFile.get(String.valueOf(displayID)));
-                customFile.set(String.valueOf(displayID), null); // Remove the old key
-            }
-        }
-        displays.save();
     }
 
     public static boolean oldVersion21() {

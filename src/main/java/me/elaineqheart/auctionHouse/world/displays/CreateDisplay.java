@@ -56,12 +56,9 @@ public class CreateDisplay {
         interaction.setResponsive(true);
 
         placeBlocks(loc, rank, sortType);
-
-        int displayID = 1; // default
-        if (!UpdateDisplay.displays.isEmpty()) displayID = Collections.max(UpdateDisplay.displays.keySet()) + 1; // new display ID
-        assert UpdateDisplay.getYmlData() != null;
-        UpdateDisplay.getYmlData().set(String.valueOf(displayID), loc); // save the location in the config
-        ConfigManager.displays.save();
+        int newID = 1; // default
+        if (!UpdateDisplay.displayItems.isEmpty()) newID = Collections.max(UpdateDisplay.displayItems.keySet()) + 1; // new display ID
+        ConfigManager.displays.addDisplay(newID, loc);
         UpdateDisplay.reload();
     }
 
