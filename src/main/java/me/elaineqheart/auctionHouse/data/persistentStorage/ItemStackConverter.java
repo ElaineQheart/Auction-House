@@ -33,7 +33,7 @@ public class ItemStackConverter {
     public static ItemStack decode(String data) {
         if(data == null) return null;
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getMimeDecoder().decode(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             return (ItemStack) dataInput.readObject();
         } catch (Exception ex) {
