@@ -1,5 +1,10 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.MyBidsGUI;
+import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -22,6 +27,11 @@ public class GUIManager {
     public void openGUI(InventoryGUI gui, Player player) {
         this.registerHandledInventory(gui.getInventory(), gui);
         player.openInventory(gui.getInventory());
+    }
+    public void openGUI(Player p, AhConfiguration c, AhConfiguration.View goBackTo) {
+        if (goBackTo == AhConfiguration.View.AUCTION_HOUSE) openGUI(new AuctionHouseGUI(c), p);
+        else if (goBackTo == AhConfiguration.View.MY_AUCTIONS) openGUI(new MyAuctionsGUI(c), p);
+        else if (goBackTo == AhConfiguration.View.MY_BIDS) openGUI(new MyBidsGUI(c,0), p);
     }
 
     public void registerHandledInventory(Inventory inventory, InventoryHandler handler) {

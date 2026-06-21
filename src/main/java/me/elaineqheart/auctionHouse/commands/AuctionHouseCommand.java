@@ -204,9 +204,9 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 if(!note.getPlayerUUID().equals(p.getUniqueId())) {
                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, configuration, 0, AhConfiguration.View.AUCTION_HOUSE), p);
                 } else if(!note.isSold()) {
-                    AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, configuration), p);
+                    AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, configuration, AhConfiguration.View.MY_AUCTIONS), p);
                 } else {
-                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, configuration), p);
+                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, configuration, AhConfiguration.View.MY_AUCTIONS), p);
                 }
             }
             // /ah admin

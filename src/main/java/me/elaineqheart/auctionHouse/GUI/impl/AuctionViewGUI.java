@@ -154,7 +154,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                         return;
                     }
                     if (ItemManager.isBundle(item) && event.isRightClick()) {
-                        AuctionHouse.getGuiManager().openGUI(new BundleViewGUI(note,c, AhConfiguration.View.AUCTION_HOUSE), c.getPlayer());
+                        AuctionHouse.getGuiManager().openGUI(new BundleViewGUI(note,c, goBackTo), c.getPlayer());
                     }
                 });
     }
@@ -164,7 +164,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    openGUI(p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                 });
     }
     private InventoryButton armadilloScute() {
@@ -309,15 +309,11 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                     Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
                     ItemNoteStorage.deleteCancelNote(note);
-                    openGUI(p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                     p.sendMessage(M.getFormatted("chat.auction-canceled"));
                 });
     }
 
-    private void openGUI(Player p) {
-        if (goBackTo == AhConfiguration.View.AUCTION_HOUSE) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-        else if (goBackTo == AhConfiguration.View.MY_AUCTIONS) AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
-        else if (goBackTo == AhConfiguration.View.MY_BIDS) AuctionHouse.getGuiManager().openGUI(new MyBidsGUI(c,0), p);
-    }
+
 
 }

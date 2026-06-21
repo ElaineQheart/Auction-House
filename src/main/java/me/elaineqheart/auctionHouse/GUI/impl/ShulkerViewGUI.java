@@ -40,8 +40,8 @@ public class ShulkerViewGUI extends InventoryGUI {
         switch (c.getView()) {
             case MY_AUCTIONS -> AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
             case AUCTION_HOUSE -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-            case CANCEL_AUCTION -> AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), p);
-            case COLLECT_SOLD_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), p);
+            case CANCEL_AUCTION -> AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c, goBackTo), p);
+            case COLLECT_SOLD_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c, goBackTo), p);
             case COLLECT_EXPIRED_ITEM -> AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), p);
             case CONFIRM_BUY, AUCTION_VIEW -> AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);
             case ADMIN_CONFIRM, ADMIN_MANAGE_ITEMS -> AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), p);

@@ -27,14 +27,16 @@ public class CollectSoldItemGUI extends InventoryGUI {
     private final ItemStack item;
     private final AhConfiguration c;
     private final double price;
+    private final AhConfiguration.View goBackTo;
 
-    public CollectSoldItemGUI(ItemNote note, AhConfiguration configuration) {
+    public CollectSoldItemGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
         super();
         this.note = note;
         price = note.getSoldPrice();
         item =  ItemManager.createCollectingItemFromNote(note);
         c = configuration;
         c.setView(AhConfiguration.View.COLLECT_SOLD_ITEM);
+        this.goBackTo = goBackTo;
     }
 
     @Override
@@ -84,7 +86,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                 });
     }
     private InventoryButton collectItem() {
@@ -97,7 +99,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                             "%item%", note.getItemName());
 
                     boolean success = collect(p, note.getNoteID(), item.getAmount(), price);
-                    AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
 
                     if (!success) return;
 

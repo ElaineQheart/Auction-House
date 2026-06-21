@@ -23,7 +23,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
     private final ItemNote note;
     private final UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
-    private final boolean goBackToAuctionHouse;
+    private final AhConfiguration.View goBackTo;
     private static final AuctionHouse instance = AuctionHouse.getInstance();
 
 
@@ -34,11 +34,11 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         super.decorate(c.getPlayer());
     }
 
-    public CancelAuctionGUI(ItemNote note, AhConfiguration configuration) {
+    public CancelAuctionGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
         super();
         this.note = note;
         c = configuration;
-        goBackToAuctionHouse = c.getView() == AhConfiguration.View.AUCTION_HOUSE;
+        this.goBackTo = goBackTo;
         c.setView(AhConfiguration.View.CANCEL_AUCTION);
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
@@ -85,11 +85,11 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                 .creator(player -> item)
                 .consumer(event -> {
                     if(ItemManager.isShulkerBox(item) && event.isRightClick()) {
-                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c, AhConfiguration.View.AUCTION_HOUSE), c.getPlayer());
+                        AuctionHouse.getGuiManager().openGUI(new ShulkerViewGUI(note,c, goBackTo), c.getPlayer());
                         return;
                     }
                     if (ItemManager.isBundle(item) && event.isRightClick()) {
-                        AuctionHouse.getGuiManager().openGUI(new BundleViewGUI(note,c, AhConfiguration.View.AUCTION_HOUSE), c.getPlayer());
+                        AuctionHouse.getGuiManager().openGUI(new BundleViewGUI(note,c, goBackTo), c.getPlayer());
                     }
                 });
     }
@@ -99,8 +99,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
                     Sounds.click(event);
-                    if(goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-                    else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                 });
     }
     private InventoryButton collectItem() {
@@ -124,8 +123,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                     Sounds.breakWood(event);
                     p.getInventory().addItem(note.getItem());
                     ItemNoteStorage.deleteCancelNote(note);
-                    if (goBackToAuctionHouse) AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
-                    else AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
+                    AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                     p.sendMessage(M.getFormatted("chat.auction-canceled"));
                 });
     }

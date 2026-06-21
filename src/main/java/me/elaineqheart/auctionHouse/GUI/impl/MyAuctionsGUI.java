@@ -130,11 +130,11 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                     }
                     Sounds.click(event);
                     if(note.isSold() || note.isExpired() && note.hasBidHistory() && note.getAdminMessage() == null) {
-                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c), c.getPlayer());
+                        AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c, AhConfiguration.View.MY_AUCTIONS), c.getPlayer());
                     } else if (note.isExpired()) {
                         AuctionHouse.getGuiManager().openGUI(new CollectExpiredItemGUI(note, c), c.getPlayer());
                     } else {
-                        if(!note.isBIDAuction()) AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c), c.getPlayer());
+                        if(!note.isBIDAuction()) AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, c, AhConfiguration.View.MY_AUCTIONS), c.getPlayer());
                         else AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, AhConfiguration.View.MY_AUCTIONS), c.getPlayer());
                     }
                 });
