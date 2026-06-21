@@ -180,12 +180,12 @@ public class UpdateDisplay implements Runnable {
 
     public static void init() {
         reload();
-        TaskManager.addTaskID(UUID.randomUUID(), Bukkit.getScheduler()
-                .runTaskTimer(AuctionHouse.getInstance(), new UpdateDisplay(), 0, SettingManager.displayUpdateTicks)
-                .getTaskId()); // not folia supported
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runAtFixedRate(new UpdateDisplay(), 0, SettingManager.displayUpdateTicks);
     }
 
     public static void reload() {
+        locations.clear();
+        displays.clear();
         for (String key : getYmlData().getKeys(false)) { // find the data for each display
             Location loc = getYmlData().getLocation(key);
             assert loc != null;
@@ -197,6 +197,7 @@ public class UpdateDisplay implements Runnable {
             locations.put(loc, Integer.parseInt(key));
             displays.put(Integer.parseInt(key), data);
         }
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(new UpdateDisplay());
     }
 
     private static void retrieveData(Location loc, DisplayNote data) {
