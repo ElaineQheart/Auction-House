@@ -3,10 +3,10 @@ package me.elaineqheart.auctionHouse.data.persistentStorage;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Base64;
 
 public class ItemStackConverter {
 
@@ -17,7 +17,7 @@ public class ItemStackConverter {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
             dataOutput.writeObject(item);
-            return new String(Base64Coder.encode(outputStream.toByteArray()));
+            return new String(Base64.getEncoder().encode(outputStream.toByteArray()));
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -33,7 +33,7 @@ public class ItemStackConverter {
     public static ItemStack decode(String data) {
         if(data == null) return null;
         try {
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decode(data));
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getMimeDecoder().decode(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             return (ItemStack) dataInput.readObject();
         } catch (Exception ex) {

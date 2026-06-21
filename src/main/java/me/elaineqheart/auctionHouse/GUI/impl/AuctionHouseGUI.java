@@ -36,6 +36,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void run() {
+        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
         decorate(c.getPlayer());
     }
 
@@ -54,7 +55,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
     public AuctionHouseGUI(Player p) {
         super();
-        this.c = AhConfiguration.getInstance(p).setPlayer(p.getUniqueId());
+        this.c = AhConfiguration.getInstance(p);
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
         TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
@@ -277,6 +278,10 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         c.setCurrentPage(0);
                         update();
                     }else {
+                        if (ConfigManager.oldVersion21()) {
+                            c.getPlayer().sendMessage(M.getFormatted("command-feedback.old-version-anvil"));
+                            return;
+                        }
                         Sounds.click(event);
                         AnvilHandler handler = new AnvilHandler() {
                             public void execute(Player p, String typedText) {

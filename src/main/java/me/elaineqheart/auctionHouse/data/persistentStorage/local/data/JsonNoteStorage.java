@@ -5,8 +5,6 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -18,10 +16,9 @@ public class JsonNoteStorage {
     //gson is used to convert the Note objects into json Strings and backwards
     private static Gson gson;
 
-    public static void createNote(Player p, ItemStack item, double price, boolean isBIDAuction){
+    public static void createNote(ItemNote note){
 
-        ItemNote itemNote = new ItemNote(p, item, price, isBIDAuction);
-        AuctionHouseStorage.add(itemNote);
+        AuctionHouseStorage.add(note);
 
         try {
             saveNotes();

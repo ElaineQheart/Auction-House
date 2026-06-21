@@ -106,7 +106,7 @@ public class AuctionHouseStorage {
         return list.stream()
                 .map(notes::get)
                 .filter(note -> note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList())
-                .filter(note -> search.isEmpty() || note.getSearchIndex(c.getPlayer()).contains(search.toLowerCase()))
+                .filter(note -> search.isEmpty() || note.getSearchIndex(c.getPlayer()).stream().anyMatch(string -> string.contains(search.toLowerCase())))
                 .filter(note -> switch (c.getBinFilter()) {
                     case ALL -> true;
                     case AUCTIONS_ONLY -> note.isBIDAuction();

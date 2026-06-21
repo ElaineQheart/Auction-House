@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.elaineqheart'
-version = '1.4.6'
+version = '1.4.10'
 
 repositories {
     mavenCentral()
@@ -43,7 +43,7 @@ tasks.named('shadowJar') {
     archiveClassifier.set('')
     archiveVersion.set(version)
     destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/windows/1.21.1/plugins"))
+    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/windows/26.1.2/plugins"))
     mergeServiceFiles()
 }
 

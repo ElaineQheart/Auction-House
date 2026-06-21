@@ -1,7 +1,6 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local.data;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.OldLayout;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -53,14 +52,11 @@ public class ConfigManager {
         blacklist.setup("blacklist.yml", false, "/data");
         categories.setup("categories.yml", false, "/data");
         playerPreferences.setup("playerPreferences.yml", false, "/data");
-        if(!oldVersion21()) { //compatibility to version 1.21.4
-            layout.setup("layout.yml", true, "");
-        } else {
-            layout.setup("layout.yml", false, "");
-            if (!layout.getCustomFile().getBoolean("old-layout")) OldLayout.saveOldLayout();
-        }
         transactionLogger.setup(transactionLogger.getName(), false, "/logs");
+        layout.setup("layout.yml", true, "");
+        transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
         instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(ConfigManager::displaysBackwardsCompatibility);
+        //Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }
 
@@ -72,7 +68,7 @@ public class ConfigManager {
         File outFile = new File(AuctionHouse.getPlugin().getDataFolder(), resourcePath);
 
         try {
-            if (!outFile.exists()) {
+            if (outFile.getParentFile().mkdirs() || outFile.createNewFile()) {
                 OutputStream out = new FileOutputStream(outFile);
                 byte[] buf = new byte[1024];
                 int len;
@@ -104,6 +100,7 @@ public class ConfigManager {
     public static void reloadConfigs() {
         AuctionHouse.getPlugin().reloadConfig();
         getList().forEach(Config::reload);
+        transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
     }
 
     private static List<Config> getList() {
@@ -151,10 +148,13 @@ public class ConfigManager {
     }
 
     public static boolean oldVersion21() {
-        String version = Bukkit.getServer().getVersion();
-        List<String> oldVersions = List.of("1.21.4", "1.21.3", "1.21.2", "1.21.1");
-        for(String oldVersion : oldVersions) {
-            if(version.contains(oldVersion)) return true;
+        return oldVersionCheck(List.of("1.21.4-", "1.21.3-", "1.21.2-", "1.21.1-", "1.21-"));
+    }
+
+    private static boolean oldVersionCheck(List<String> versions) {
+        String currentVersion = Bukkit.getVersion();
+        for(String version : versions) {
+            if(currentVersion.contains(version)) return true;
         }
         return false;
     }

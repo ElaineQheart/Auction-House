@@ -33,6 +33,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
+        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
         decorate(c.getPlayer());
     }
 

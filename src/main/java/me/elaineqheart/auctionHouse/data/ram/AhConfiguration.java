@@ -58,7 +58,7 @@ public class AhConfiguration {
     }
 
     public static AhConfiguration getInstance(Player p) {
-        if (currentConfigurations.containsKey(p)) return currentConfigurations.get(p).clone();
+        if (currentConfigurations.containsKey(p)) return currentConfigurations.get(p).clone().setPlayer(p.getUniqueId());
         else return new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
     }
     public static void removeInstance(Player p) {

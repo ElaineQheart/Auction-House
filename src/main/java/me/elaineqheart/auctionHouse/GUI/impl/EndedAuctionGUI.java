@@ -32,6 +32,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
+        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
         decorate(c.getPlayer());
     }
 
@@ -156,12 +157,12 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                     Sounds.experience(event);
                     openGUI(p);
                     ConfigManager.transactionLogger.logTransaction(
-                            p.getName(),
+                            p.getDisplayName(),
                             note.getPlayerName(),
                             note.getItemName(),
                             note.getPrice(),
                             item.getAmount(),
-                            !note.isBIDAuction());
+                            note.isBIDAuction());
                 });
     }
     private InventoryButton collectCoins() {

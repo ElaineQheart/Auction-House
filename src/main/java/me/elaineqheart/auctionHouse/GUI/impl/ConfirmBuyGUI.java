@@ -151,13 +151,6 @@ public class ConfirmBuyGUI extends InventoryGUI{
                                 (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
                         );
                     }
-                    ConfigManager.transactionLogger.logTransaction(
-                            p.getName(),
-                            note.getPlayerName(),
-                            note.getItemName(),
-                            price,
-                            item.getAmount(),
-                            !note.isBIDAuction());
                 });
     }
     private InventoryButton cancel(){

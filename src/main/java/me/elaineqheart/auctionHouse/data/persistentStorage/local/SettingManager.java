@@ -5,7 +5,9 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,6 +68,10 @@ public class SettingManager {
     public static void loadData() {
         AuctionHouse.getPlugin().reloadConfig();
         FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+
+        if (ConfigManager.backwardsCompatibility())
+            backwardsCompatibility();
+
         taxRate = c.getDouble("tax", 0.01);
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
@@ -95,21 +101,18 @@ public class SettingManager {
         maxBIDPrice = c.getDouble("max-bid", -1);
         useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", false);
         FileConfiguration layout = ConfigManager.layout.getCustomFile();
-        soundClick = layout.getString("sounds.click", "UI_STONECUTTER_SELECT_RECIPE");
-        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "BLOCK_ENDER_CHEST_OPEN");
-        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "BLOCK_ENDER_CHEST_CLOSE");
-        soundBreakWood = layout.getString("sounds.break-wood", "BLOCK_WOOD_BREAK");
-        soundExperience = layout.getString("sounds.experience", "ENTITY_EXPERIENCE_ORB_PICKUP");
-        soundVillagerDeny = layout.getString("sounds.villager-deny", "ENTITY_VILLAGER_NO");
-        soundOpenShulker = layout.getString("sounds.open-shulker", "BLOCK_SHULKER_BOX_OPEN");
-        soundCloseShulker = layout.getString("sounds.close-shulker", "BLOCK_SHULKER_BOX_CLOSE");
-        soundNPCClick = layout.getString("sounds.npc-click", "UI_STONECUTTER_SELECT_RECIPE");
-        soundOpenBundle = layout.getString("sounds.open-bundle", "ITEM_BUNDLE_DROP_CONTENTS");
-        soundCloseBundle = layout.getString("sounds.close-bundle", "ITEM_BUNDLE_REMOVE_ONE");
+        soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");
+        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "block.ender_chest.open");
+        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "block.ender_chest.close");
+        soundBreakWood = layout.getString("sounds.break-wood", "block.wood.break");
+        soundExperience = layout.getString("sounds.experience", "entity.experience_orb.pickup");
+        soundVillagerDeny = layout.getString("sounds.villager-deny", "entity.villager.no");
+        soundOpenShulker = layout.getString("sounds.open-shulker", "block.shulker_box.open");
+        soundCloseShulker = layout.getString("sounds.close-shulker", "block.shulker_box.close");
+        soundNPCClick = layout.getString("sounds.npc-click", "ui.stonecutter.select_recipe");
+        soundOpenBundle = layout.getString("sounds.open-bundle", "item.bundle.drop_contents");
+        soundCloseBundle = layout.getString("sounds.close-bundle", "item.bundle.remove_one");
         loadDisplays(layout);
-
-        if (ConfigManager.backwardsCompatibility())
-            backwardsCompatibility();
     }
 
     // multi-server-database:
@@ -249,7 +252,15 @@ public class SettingManager {
                 messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
             }
         }
+        if (messageFile.contains("commands.alias")) {
+            String oldAlias = messageFile.getString("commands.alias");
+            if (oldAlias != null) {
+                messageFile.set("commands.aliases", List.of(oldAlias));
+            }
+            messageFile.set("commands.alias", null);
+        }
         backwardsCompatibilityForPlaceholderAPI(messageFile);
+        soundsBackwardsCompatibility();
 
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
@@ -269,6 +280,35 @@ public class SettingManager {
         }
         c.set("items.auction.lore.default-bid", Objects.requireNonNull(c.getString("items.auction.lore.default-bid"))
                 .replace("%bidder%", "%buyer%"));
+    }
+
+    private static void soundsBackwardsCompatibility() {
+        ConfigurationSection c = ConfigManager.layout.getCustomFile().getConfigurationSection("sounds");
+        assert c != null;
+        if (ConfigManager.oldVersion21()) {
+            c.set("click", "ui.stonecutter.select_recipe");
+            c.set("open-enderchest", "block.ender_chest.open");
+            c.set("close-enderchest", "block.ender_chest.close");
+            c.set("break-wood", "block.wood.break");
+            c.set("experience", "entity.experience_orb.pickup");
+            c.set("villager-deny", "entity.villager.no");
+            c.set("open-shulker", "block.shulker_box.open");
+            c.set("close-shulker", "block.shulker_box.close");
+            c.set("npc-click", "ui.stonecutter.select_recipe");
+            c.set("open-bundle", "item.bundle.drop_contents");
+            c.set("close-bundle", "item.bundle.remove_one");
+        } else {
+            String mainSound = c.getString("click");
+            assert mainSound != null;
+
+            if (Character.isUpperCase(mainSound.charAt(0))) {
+                for (String key : c.getKeys(false)) {
+                    c.set(key, Sound.valueOf(c.getString(key)).getKey().getKey());
+                }
+            }
+        }
+        ConfigManager.layout.save();
+        ConfigManager.layout.reload();
     }
 
 }

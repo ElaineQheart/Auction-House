@@ -53,23 +53,33 @@ public class AnvilGUIManager implements Listener {
 
         event.setCancelled(true);
         ItemStack paperItem = event.getInventory().getItem(0);
-        AnvilView view = (AnvilView) event.getView();
-        if (event.getSlot() == 1) view.setItem(0, ItemManager.emptyPaper); // this removes the enchantment cost for some reason
+        assert paperItem != null;
+        if (event.getSlot() == 0) {
+            Sounds.breakWood(event);
+            openGUI(event, "", handler, paperItem);
+        }
+        if (event.getSlot() == 1) {
+            AnvilView view = (AnvilView) event.getView();
+            view.setItem(0, ItemManager.emptyPaper); // this removes the enchantment cost for some reason
+        }
         if (event.getSlot() != 2) return;
         ItemStack resultItem = event.getCurrentItem();
         if (resultItem == null) return;
         ItemMeta meta = resultItem.getItemMeta();
         if (meta != null && meta.hasDisplayName()) {
-            //remove the paper, else it will end up in the players inventory
-            assert paperItem != null;
-            Player player = (Player) event.getWhoClicked();
-            player.getOpenInventory().getTopInventory().remove(paperItem);
-            player.getOpenInventory().getBottomInventory().remove(paperItem);
-            String typedText = meta.getDisplayName();
             Sounds.click(event);
-            activeInventories.remove(event.getView().getTopInventory());
-            handler.execute(player, typedText);
+            //remove the paper, else it will end up in the players inventory
+            String typedText = meta.getDisplayName();
+            openGUI(event, typedText, handler, paperItem);
         }
+    }
+
+    private void openGUI(InventoryClickEvent event, String typedText, AnvilHandler handler, ItemStack paperItem) {
+        Player player = (Player) event.getWhoClicked();
+        player.getOpenInventory().getTopInventory().remove(paperItem);
+        player.getOpenInventory().getBottomInventory().remove(paperItem);
+        activeInventories.remove(event.getView().getTopInventory());
+        handler.execute(player, typedText);
     }
 
     @EventHandler //also set the name formatted
