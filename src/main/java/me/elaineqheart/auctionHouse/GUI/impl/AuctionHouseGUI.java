@@ -27,6 +27,8 @@ import java.util.function.Consumer;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     public final AhConfiguration c;
     private UUID invID = UUID.randomUUID();
     private int noteSize;
@@ -49,19 +51,19 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         super();
         this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
     public AuctionHouseGUI(Player p) {
         super();
         this.c = AhConfiguration.getInstance(p);
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
     public AuctionHouseGUI(AhConfiguration configuration) {
         super();
         this.c = configuration;
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     @Override
@@ -82,9 +84,9 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
     private void update() {
         TaskManager.cancelTask(invID);
-        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> decorate(c.getPlayer()));
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     private void fillOutItems(Sort sort, List<Integer> itemSlots){
@@ -287,7 +289,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                             }
                             public void onClose(Player p) {
-                                Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                                instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
                                         AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer()),1);
                             }
                         };

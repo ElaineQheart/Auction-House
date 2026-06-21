@@ -14,7 +14,7 @@ public class TaskManager {
         assert key != null;
         if (!taskID.containsKey(key)) return;
         //taskHistory.put(LocalTime.now(), taskID.get(key));
-        Bukkit.getScheduler().cancelTask(taskID.get(key));
+        Bukkit.getScheduler().cancelTask(taskID.get(key)); // Not folia supported
         taskID.remove(key);
     }
 

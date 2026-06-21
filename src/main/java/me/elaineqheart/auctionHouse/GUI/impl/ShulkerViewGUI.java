@@ -17,6 +17,7 @@ public class ShulkerViewGUI extends InventoryGUI {
     private final AhConfiguration c;
     private final ItemNote note;
     private final AhConfiguration.View goBackTo;
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     public ShulkerViewGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
         super(((ShulkerBox) ((BlockStateMeta) note.getItem().getItemMeta()).getBlockState()).getInventory());
@@ -29,7 +30,7 @@ public class ShulkerViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
             Sounds.closeShulker(event);
             openSwitch(c, note, p, goBackTo);
         },0);

@@ -14,10 +14,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoinCollectListener implements Listener {
 
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if(!SettingManager.autoCollect) return;
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
             Player p = event.getPlayer();
             for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) sell(note, p);
         }, 1);

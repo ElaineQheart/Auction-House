@@ -21,6 +21,8 @@ import java.util.Map;
 
 public class AnvilGUIManager implements Listener {
 
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private static final Map<Inventory, AnvilHandler> activeInventories = new HashMap<>();
 
     public enum SearchType {
@@ -88,7 +90,7 @@ public class AnvilGUIManager implements Listener {
         ItemStack result = event.getInventory().getItem(2);
         if (result == null) return;
 
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> event.getView().setRepairCost(0),1);
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
     }
 
     @EventHandler

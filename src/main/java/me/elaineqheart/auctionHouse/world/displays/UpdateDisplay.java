@@ -24,6 +24,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UpdateDisplay implements Runnable {
+
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     @Override
     public void run() {
         for (Integer display : displays.keySet()) {
@@ -41,10 +44,10 @@ public class UpdateDisplay implements Runnable {
 
             if (!loc.getBlock().getBlockData().matches(SettingManager.getDisplayBase(data.type, rank)))
                 CreateDisplay.placeBlocks(loc, rank, data.type);
-            Bukkit.getScheduler().runTaskAsynchronously(AuctionHouse.getPlugin(), () -> {
+            instance.getMorePaperLib().scheduling().asyncScheduler().run(() -> {
                 ItemNote note = getNote(data.type, rank);
 
-                Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> {
+                instance.getMorePaperLib().scheduling().regionSpecificScheduler(loc).run(() -> {
                     Sign[] signs = getSigns(loc, rank, data.type);
                     if (signs == null)
                         return;
@@ -179,7 +182,7 @@ public class UpdateDisplay implements Runnable {
         reload();
         TaskManager.addTaskID(UUID.randomUUID(), Bukkit.getScheduler()
                 .runTaskTimer(AuctionHouse.getPlugin(), new UpdateDisplay(), 0, SettingManager.displayUpdateTicks)
-                .getTaskId());
+                .getTaskId()); // not folia supported
     }
 
     public static void reload() {
@@ -295,7 +298,7 @@ public class UpdateDisplay implements Runnable {
         if (removeBlocks)
             removeBlocks(loc);
         Item itemEntity = data.itemEntity;
-        Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () -> {
+        instance.getMorePaperLib().scheduling().regionSpecificScheduler(loc).runDelayed(() -> {
             if (removeBlocks)
                 removeBlocks(loc); // safety cleanup tick later
             if (itemEntity != null) itemEntity.remove();

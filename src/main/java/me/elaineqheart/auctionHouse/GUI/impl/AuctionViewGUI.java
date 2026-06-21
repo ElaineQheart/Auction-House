@@ -28,6 +28,8 @@ import java.util.UUID;
 
 public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private final ItemNote note;
     private UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
@@ -45,9 +47,9 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     public void update() {
         TaskManager.cancelTask(invID);
-        Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), () -> decorate(c.getPlayer()));
+        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     public AuctionViewGUI(ItemNote note, AhConfiguration configuration, double bid, AhConfiguration.View backTo) {
@@ -56,7 +58,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         c = configuration;
         this.goBackTo = backTo;
         c.setView(AhConfiguration.View.AUCTION_VIEW);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId());
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
         this.bid = bid;
         if(this.bid == 0) this.bid = note.hasBidHistory() ? Bid.nextMinBid(note.getPrice()) : note.getPrice();
         currentGUIs.put(c.getPlayer(), this);
@@ -215,7 +217,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), c.getPlayer()),1);
                         }
                     };
@@ -252,7 +254,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            Bukkit.getScheduler().runTaskLater(AuctionHouse.getPlugin(), () ->
+                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, bid, goBackTo), c.getPlayer()),1);
                         }
                     };

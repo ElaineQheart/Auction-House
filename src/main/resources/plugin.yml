@@ -2,6 +2,7 @@ name: AuctionHouse
 version: '1.4.10'
 main: me.elaineqheart.auctionHouse.AuctionHouse
 api-version: '1.21'
+folia-supported: true
 authors: [ ElaineQheart ]
 website: https://www.youtube.com/@elaineqheart
 depend: [ Vault ]

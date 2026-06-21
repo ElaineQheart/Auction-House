@@ -20,6 +20,7 @@ repositories {
     maven { url = 'https://jitpack.io' }
     maven { url = 'https://repo.example.com/repository/maven-public/' }
     maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+    maven { url = 'https://mvn-repo.arim.space/lesser-gpl3/' }
 }
 
 //alt + ins
@@ -30,6 +31,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     implementation("net.kyori:adventure-text-minimessage:4.25.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.25.0")
+    implementation("space.arim.morepaperlib:morepaperlib:0.4.4")
 }
 
 tasks.named('jar') {
