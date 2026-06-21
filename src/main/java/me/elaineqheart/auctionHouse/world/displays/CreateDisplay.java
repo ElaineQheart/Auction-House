@@ -32,7 +32,7 @@ public class CreateDisplay {
     public static void createDisplay(Location loc, int rank, String sortType) {
         World world = loc.getWorld();
         if (world == null) {
-            AuctionHouse.getPlugin().getLogger().severe("Creating an npc failed. The world is null.");
+            AuctionHouse.getInstance().getLogger().severe("Creating an npc failed. The world is null.");
             return;
         }
         BlockDisplay glass = (BlockDisplay) world.spawnEntity(loc, EntityType.BLOCK_DISPLAY); // creating a block
@@ -46,11 +46,11 @@ public class CreateDisplay {
         // No rotation
         AxisAngle4f zeroRotation = new AxisAngle4f(0, 0, 0, 0);
         glass.setTransformation(new Transformation(translation, zeroRotation, scale, zeroRotation));
-        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), sortType), PersistentDataType.INTEGER, rank);
+        glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), sortType), PersistentDataType.INTEGER, rank);
 
         Interaction interaction = (Interaction) world.spawnEntity(loc.clone().add(0.5, 1, 0.5), EntityType.INTERACTION);
-        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER, rank); // rank #
-        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING, sortType); // sort type
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER, rank); // rank #
+        interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING, sortType); // sort type
         interaction.setInteractionHeight(0.8f);
         interaction.setInteractionWidth(0.6f);
         interaction.setResponsive(true);

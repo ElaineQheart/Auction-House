@@ -38,7 +38,7 @@ public abstract class InventoryGUI implements InventoryHandler {
                 this.inventory.setItem(slot, icon);
             });
         } catch (Exception e) {
-            AuctionHouse.getPlugin().getLogger().warning("GUI render failed in slot: " + e.getMessage());
+            AuctionHouse.getInstance().getLogger().warning("GUI render failed in slot: " + e.getMessage());
         }
     }
 

@@ -40,7 +40,7 @@ public class UpdateDisplay implements Runnable {
                 continue;
             }
             int rank = data.glassBlock.getPersistentDataContainer()
-                    .get(new NamespacedKey(AuctionHouse.getPlugin(), data.type), PersistentDataType.INTEGER);
+                    .get(new NamespacedKey(AuctionHouse.getInstance(), data.type), PersistentDataType.INTEGER);
 
             if (!loc.getBlock().getBlockData().matches(SettingManager.getDisplayBase(data.type, rank)))
                 CreateDisplay.placeBlocks(loc, rank, data.type);
@@ -105,7 +105,7 @@ public class UpdateDisplay implements Runnable {
                         data.itemEntity.setInvulnerable(true);
                         data.itemEntity.setVelocity(new Vector(0,0,0)); //stop the motion of the item
 
-                        data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"),
+                        data.itemEntity.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "display_item"),
                                 PersistentDataType.BOOLEAN, true);
                         data.itemStack = item; // update the item stack in the display data
                     } else if (data.itemEntity.getLocation().distance(loc.clone().add(0.5, 1, 0.5)) > 0.1) {
@@ -135,7 +135,7 @@ public class UpdateDisplay implements Runnable {
                             }
 
                             data.text.getPersistentDataContainer().set(
-                                    new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN, true);
+                                    new NamespacedKey(AuctionHouse.getInstance(), "display_text"), PersistentDataType.BOOLEAN, true);
                             data.text.setAlignment(TextDisplay.TextAlignment.CENTER);
                             data.text.setBillboard(Display.Billboard.CENTER);
                             data.text.setBrightness(new Display.Brightness(15, 15));
@@ -181,7 +181,7 @@ public class UpdateDisplay implements Runnable {
     public static void init() {
         reload();
         TaskManager.addTaskID(UUID.randomUUID(), Bukkit.getScheduler()
-                .runTaskTimer(AuctionHouse.getPlugin(), new UpdateDisplay(), 0, SettingManager.displayUpdateTicks)
+                .runTaskTimer(AuctionHouse.getInstance(), new UpdateDisplay(), 0, SettingManager.displayUpdateTicks)
                 .getTaskId()); // not folia supported
     }
 
@@ -234,37 +234,37 @@ public class UpdateDisplay implements Runnable {
     public static boolean isDisplayGlass(Entity entity) {
         if (entity instanceof BlockDisplay display) {
             return display.getPersistentDataContainer()
-                    .has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER) ||
-                    display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER);
+                    .has(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER) ||
+                    display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "ending_soon"), PersistentDataType.INTEGER);
         }
         return false;
     }
 
     public static boolean isDisplayInteraction(Entity entity) {
         if (entity instanceof Interaction interaction) {
-            return interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER) &&
-                    interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
+            return interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER) &&
+                    interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING);
         }
         return false;
     }
 
     private static boolean isDisplayItem(Entity entity) {
         if (entity instanceof Item item) {
-            return item.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "display_item"), PersistentDataType.BOOLEAN);
+            return item.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "display_item"), PersistentDataType.BOOLEAN);
         }
         return false;
     }
 
     private static boolean isTextDisplay(Entity entity) {
         if (entity instanceof TextDisplay text) {
-            return text.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "display_text"), PersistentDataType.BOOLEAN);
+            return text.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "display_text"), PersistentDataType.BOOLEAN);
         }
         return false;
     }
 
     private static String getType(BlockDisplay display) {
-        if (display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER)) return "highest_price";
-        else if (display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER)) return "ending_soon";
+        if (display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER)) return "highest_price";
+        else if (display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "ending_soon"), PersistentDataType.INTEGER)) return "ending_soon";
         return null;
     }
 
@@ -282,7 +282,7 @@ public class UpdateDisplay implements Runnable {
     public static void removeDisplay(Location loc, boolean removeBlocks) {
         Integer displayID = locations.get(loc);
         if (displayID == null) {
-            AuctionHouse.getPlugin().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
+            AuctionHouse.getInstance().getLogger().warning("Display at location " + loc + " not found. Failed to remove it.");
             return;
         }
         DisplayNote data = displays.remove(displayID);

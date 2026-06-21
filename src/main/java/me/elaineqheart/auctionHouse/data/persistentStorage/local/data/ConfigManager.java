@@ -40,10 +40,8 @@ public class ConfigManager {
         //Config defaultConfig = new Config();
         //defaultConfig.setup("config.yml", true, "");
         //AuctionHouse.getPlugin().reloadConfig();
-        AuctionHouse.getPlugin().getConfig().options().copyDefaults(true);
-        AuctionHouse.getPlugin().saveConfig();
-
-        Plugin plugin = AuctionHouse.getPlugin();
+        AuctionHouse.getInstance().getConfig().options().copyDefaults(true);
+        AuctionHouse.getInstance().saveConfig();
 
         messages.setup("messages.yml", true, "");
         displays.setup("displays.yml", false, "/data");
@@ -52,20 +50,19 @@ public class ConfigManager {
         blacklist.setup("blacklist.yml", false, "/data");
         categories.setup("categories.yml", false, "/data");
         playerPreferences.setup("playerPreferences.yml", false, "/data");
-        transactionLogger.setup(transactionLogger.getName(), false, "/logs");
         layout.setup("layout.yml", true, "");
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
         instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(ConfigManager::displaysBackwardsCompatibility);
-        //Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
+        //old method: Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }
 
     private static void saveDefaultConfig() {
         String resourcePath = "config.yml";
-        InputStream in = AuctionHouse.getPlugin().getResource(resourcePath);
+        InputStream in = AuctionHouse.getInstance().getResource(resourcePath);
         assert in != null;
         //FileConfiguration c = AuctionHouse.getPlugin().getConfig();
-        File outFile = new File(AuctionHouse.getPlugin().getDataFolder(), resourcePath);
+        File outFile = new File(AuctionHouse.getInstance().getDataFolder(), resourcePath);
 
         try {
             if (outFile.getParentFile().mkdirs() || outFile.createNewFile()) {
@@ -79,7 +76,7 @@ public class ConfigManager {
                 in.close();
             }
         } catch (IOException ex) {
-            AuctionHouse.getPlugin().getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+            AuctionHouse.getInstance().getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
         }
 //        AuctionHouse.getPlugin().getConfig().options().copyDefaults(true);
 //        String[] keyList = {"tax", "auction-setup-time", "default-max-auctions", "sold-message", "auto-collect", "partial-selling",
@@ -92,13 +89,13 @@ public class ConfigManager {
     }
 
     public static boolean backwardsCompatibility() {
-        FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        FileConfiguration c = AuctionHouse.getInstance().getConfig();
         if(c.getString("plugin-version") == null) return true;
-        return !Objects.equals(c.getString("plugin-version"), AuctionHouse.getPlugin().getDescription().getVersion());
+        return !Objects.equals(c.getString("plugin-version"), AuctionHouse.getInstance().getDescription().getVersion());
     }
 
     public static void reloadConfigs() {
-        AuctionHouse.getPlugin().reloadConfig();
+        AuctionHouse.getInstance().reloadConfig();
         getList().forEach(Config::reload);
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
     }

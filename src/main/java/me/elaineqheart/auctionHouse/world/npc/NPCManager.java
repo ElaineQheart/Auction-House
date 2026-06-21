@@ -15,7 +15,7 @@ public class NPCManager {
 
     public static void createAuctionMaster(Location loc, String facing) {
         World world = loc.getWorld();
-        if(world == null) { AuctionHouse.getPlugin().getLogger().severe("Creating an npc failed. The world is null."); return; }
+        if(world == null) { AuctionHouse.getInstance().getLogger().severe("Creating an npc failed. The world is null."); return; }
 
         int rotation = 0; //default rotation is south
         switch (facing) {
@@ -35,7 +35,7 @@ public class NPCManager {
         stand.setInvisible(true);
         stand.setAI(false);
         stand.setSilent(true);
-        stand.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"), PersistentDataType.BOOLEAN, true);
+        stand.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "auction_stand"), PersistentDataType.BOOLEAN, true);
 
         Villager npc = (Villager) world.spawnEntity(loc, EntityType.VILLAGER); //creating a villager
         stand.addPassenger(npc);
@@ -53,14 +53,14 @@ public class NPCManager {
         npc.setInvulnerable(true);
         npc.setSilent(true);
         //this is to identify the npc
-        npc.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"), PersistentDataType.BOOLEAN, true);
+        npc.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "auction_master"), PersistentDataType.BOOLEAN, true);
         //npc.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(), "uuid"), PersistentDataType.STRING, UUID.randomUUID().toString());
     }
 
     public static void removeAuctionMaster(Villager npc) {
         if(npc == null) return;
         for(Entity entity : npc.getNearbyEntities(1,1,1)) {
-            if(entity instanceof ArmorStand stand && stand.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"), PersistentDataType.BOOLEAN)) {
+            if(entity instanceof ArmorStand stand && stand.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "auction_stand"), PersistentDataType.BOOLEAN)) {
                 if(!stand.getPassengers().isEmpty() && npc.equals(stand.getPassengers().getFirst())) {
                     stand.remove();
                 }
@@ -77,7 +77,7 @@ public class NPCManager {
     }
 
     public static boolean isNPC(Entity entity) {
-        return entity.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"));
+        return entity.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "auction_master"));
     }
 
 }

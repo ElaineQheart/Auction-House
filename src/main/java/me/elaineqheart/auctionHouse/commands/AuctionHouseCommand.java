@@ -49,7 +49,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
         if(commandSender instanceof ConsoleCommandSender) {
             if(strings.length == 1 && (strings[0].equals(M.getFormatted("commands.reload")))) {
                 reload();
-                AuctionHouse.getPlugin().getLogger().info("reloaded files");
+                AuctionHouse.getInstance().getLogger().info("reloaded files");
                 return true;
             }
         }
@@ -64,7 +64,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.about"))) {
                 p.sendMessage("§6> §7§l---------------[ §dAuction House§7§l ]---------------");
                 p.sendMessage("§6> §7Made by:§6 ElaineQheart");
-                p.sendMessage("§6> §7Plugin Version:§6 " + AuctionHouse.getPlugin().getDescription().getVersion());
+                p.sendMessage("§6> §7Plugin Version:§6 " + AuctionHouse.getInstance().getDescription().getVersion());
                 p.sendMessage("§6> §7Contact:§e§n https://discord.gg/ePTwfDK6AY");
                 p.sendMessage("§6> §e§nhttps://www.spigotmc.org/threads/auction-house.690682/");
                 p.sendMessage("§6>");
@@ -271,7 +271,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 } else if (strings[0].equals(M.getFormatted("commands.reload"))) {
                     reload();
                     p.sendMessage(M.getFormatted("command-feedback.reload"));
-                    AuctionHouse.getPlugin().getLogger().info("reloaded");
+                    AuctionHouse.getInstance().getLogger().info("reloaded");
                     return true;
 
                 } else if (strings[0].equals(M.getFormatted("commands.summon"))) {

@@ -39,7 +39,7 @@ public class JsonNoteStorage {
 
     public static void saveNotes() throws IOException {
 
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
+        File file = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/data/notes.json");
         //if the parent file of the plugin doesn't exist, it has to be created
         file.getParentFile().mkdir();
         file.createNewFile();
@@ -54,7 +54,7 @@ public class JsonNoteStorage {
 
     public static void loadNotes() throws IOException {
         if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
+        File file = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/data/notes.json");
         if(file.exists()){
             Reader reader = new FileReader(file);
             ItemNote[] items = getGson().fromJson(reader, ItemNote[].class);
@@ -63,8 +63,8 @@ public class JsonNoteStorage {
     }
 
     private static void backwardsCompatibility() throws IOException {
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/data/notes.json");
-        File old = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/notes.json");
+        File file = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/data/notes.json");
+        File old = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/notes.json");
         if (old.exists()) {
             file.getParentFile().mkdir();
             file.createNewFile();

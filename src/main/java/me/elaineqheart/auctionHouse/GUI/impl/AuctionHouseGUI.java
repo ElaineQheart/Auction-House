@@ -51,19 +51,19 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         super();
         this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
     public AuctionHouseGUI(Player p) {
         super();
         this.c = AhConfiguration.getInstance(p);
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
     public AuctionHouseGUI(AhConfiguration configuration) {
         super();
         this.c = configuration;
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         TaskManager.cancelTask(invID);
         instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
+        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     private void fillOutItems(Sort sort, List<Integer> itemSlots){

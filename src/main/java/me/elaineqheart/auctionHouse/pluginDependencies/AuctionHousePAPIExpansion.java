@@ -21,7 +21,7 @@ public class AuctionHousePAPIExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getVersion() {
-        return AuctionHouse.getPlugin().getDescription().getVersion();
+        return AuctionHouse.getInstance().getDescription().getVersion();
     }
 
     @Override

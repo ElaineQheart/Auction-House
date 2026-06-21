@@ -138,7 +138,7 @@ public class ItemManager {
         assert meta != null;
         meta.setItemName(M.getFormatted("items.info.name"));
         //cast the tax value to int and then to double to avoid floating point issues
-        String tax = ChatColor.GOLD + "" + (double)(int)(AuctionHouse.getPlugin().getConfig().getDouble("tax") * 1000) / 10 + "%";
+        String tax = ChatColor.GOLD + "" + (double)(int)(AuctionHouse.getInstance().getConfig().getDouble("tax") * 1000) / 10 + "%";
         meta.setLore(M.getLoreList("items.info.lore", "%tax%", tax));
         item.setItemMeta(meta);
         return item;
@@ -241,7 +241,7 @@ public class ItemManager {
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(ChatColor.GRAY + "");
-        meta.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getPlugin(),"AuctionHouseSearch"), PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(),"AuctionHouseSearch"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
         return item;
     }

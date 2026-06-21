@@ -64,13 +64,13 @@ public class DisplayListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when the display is clicked
     public void onDisplayClick(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING)) {
+        if (event.getRightClicked().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING)) {
             event.setCancelled(true);
             Player p = event.getPlayer();
-            String type = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "type"), PersistentDataType.STRING);
+            String type = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING);
             if (type == null)
                 throw new RuntimeException("The display type is null. This should never happen.");
-            int rank = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "rank"), PersistentDataType.INTEGER);
+            int rank = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER);
             ItemNote note = UpdateDisplay.getNote(type, rank);
             if (note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE, 0.2f, 1);
@@ -101,12 +101,12 @@ public class DisplayListener implements Listener {
         assert displayLoc.getWorld() != null;
         for (Entity test : displayLoc.getWorld().getNearbyEntities(displayLoc, 1, 1, 1)) {
             if (UpdateDisplay.isDisplayGlass(test)) {
-                if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER)) {
+                if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER)) {
                     type = "highest_price";
-                    rank = test.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "highest_price"), PersistentDataType.INTEGER);
-                } else if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER)) {
+                    rank = test.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER);
+                } else if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "ending_soon"), PersistentDataType.INTEGER)) {
                     type = "ending_soon";
-                    rank = test.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getPlugin(), "ending_soon"), PersistentDataType.INTEGER);
+                    rank = test.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "ending_soon"), PersistentDataType.INTEGER);
                 }
                 break;
             }

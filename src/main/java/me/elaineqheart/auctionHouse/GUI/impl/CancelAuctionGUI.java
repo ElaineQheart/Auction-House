@@ -40,7 +40,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         c = configuration;
         goBackToAuctionHouse = c.getView() == AhConfiguration.View.AUCTION_HOUSE;
         c.setView(AhConfiguration.View.CANCEL_AUCTION);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // Not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
     }
 
     @Override

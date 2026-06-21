@@ -66,8 +66,8 @@ public class SettingManager {
     }
 
     public static void loadData() {
-        AuctionHouse.getPlugin().reloadConfig();
-        FileConfiguration c = AuctionHouse.getPlugin().getConfig();
+        AuctionHouse.getInstance().reloadConfig();
+        FileConfiguration c = AuctionHouse.getInstance().getConfig();
 
         if (ConfigManager.backwardsCompatibility())
             backwardsCompatibility();
@@ -153,7 +153,7 @@ public class SettingManager {
             }
             return Bukkit.createBlockData(input);
         } catch (Exception e) {
-            AuctionHouse.getPlugin().getLogger().warning("Invalid block data: " + input + ". Using default.");
+            AuctionHouse.getInstance().getLogger().warning("Invalid block data: " + input + ". Using default.");
             return Bukkit.createBlockData(defaultMaterial);
         }
     }
@@ -200,8 +200,8 @@ public class SettingManager {
     }
 
     private static void backwardsCompatibility() {
-        FileConfiguration c = AuctionHouse.getPlugin().getConfig();
-        c.set("plugin-version", AuctionHouse.getPlugin().getDescription().getVersion());
+        FileConfiguration c = AuctionHouse.getInstance().getConfig();
+        c.set("plugin-version", AuctionHouse.getInstance().getDescription().getVersion());
         FileConfiguration messageFile = M.get();
         if (c.contains("currency")) {
             messageFile.set("placeholders.currency-symbol", c.getString("currency"));
@@ -264,8 +264,8 @@ public class SettingManager {
 
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
-        AuctionHouse.getPlugin().saveConfig();
-        AuctionHouse.getPlugin().reloadConfig();
+        AuctionHouse.getInstance().saveConfig();
+        AuctionHouse.getInstance().reloadConfig();
     }
 
     private static void backwardsCompatibilityForPlaceholderAPI(FileConfiguration c) {

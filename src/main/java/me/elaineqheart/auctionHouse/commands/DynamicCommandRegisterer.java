@@ -27,7 +27,7 @@ public class DynamicCommandRegisterer {
             f.setAccessible(true);
             CommandMap commandMap = (CommandMap) f.get(Bukkit.getServer());
 
-            PluginCommand existing = AuctionHouse.getPlugin().getServer().getPluginCommand(name);
+            PluginCommand existing = AuctionHouse.getInstance().getServer().getPluginCommand(name);
             if (existing != null) existing.unregister(commandMap);
 
             commandMap.register("auctionhouse", new DynamicCommand(name,

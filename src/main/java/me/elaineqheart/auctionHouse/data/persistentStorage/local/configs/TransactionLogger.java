@@ -70,7 +70,7 @@ public class TransactionLogger extends Config {
         String formattedDate = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
 
         int number = 1;
-        File folder = new File(AuctionHouse.getPlugin().getDataFolder() + "/logs");
+        File folder = new File(AuctionHouse.getInstance().getDataFolder() + "/logs");
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles != null) {
             for (File file : listOfFiles) {

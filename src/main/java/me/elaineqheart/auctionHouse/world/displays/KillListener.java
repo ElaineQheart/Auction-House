@@ -11,7 +11,7 @@ public class KillListener implements Listener {
 
     public static void register() {
         if (!EntityRemoveEvent.class.isAnnotationPresent(Deprecated.class)) {
-            Bukkit.getPluginManager().registerEvents(new KillListener(), AuctionHouse.getPlugin());
+            Bukkit.getPluginManager().registerEvents(new KillListener(), AuctionHouse.getInstance());
         }
     }
 

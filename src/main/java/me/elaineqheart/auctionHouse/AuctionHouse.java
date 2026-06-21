@@ -27,10 +27,14 @@ public final class AuctionHouse extends JavaPlugin {
     private static AuctionHouse instance;
     private static GUIManager guiManager;
     private static AnvilGUIManager anvilManager;
-    public static AuctionHouse getPlugin() {return instance;}
     public static GUIManager getGuiManager() {return guiManager;}
     public static AnvilGUIManager getAnvilManager() {return anvilManager;}
     private MorePaperLib morePaperLib;
+    public static AuctionHouse getInstance() {return instance;}
+    public MorePaperLib getMorePaperLib() {
+        //morePaperLib.scheduling()... It uses Paper's threaded-regions schedulers if Folia is used, otherwise it falls back to the default Bukkit scheduler.
+        return morePaperLib;
+    }
 
     @Override
     public void onEnable() {
@@ -57,7 +61,6 @@ public final class AuctionHouse extends JavaPlugin {
         KillListener.register();
 
         ConfigManager.setupConfigs();
-
 
         //if(SettingManager.useRedis) RedisManager.connect();
 
@@ -89,12 +92,14 @@ public final class AuctionHouse extends JavaPlugin {
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 
-    public MorePaperLib getMorePaperLib() {
-        return morePaperLib;
-    }
 
-    public static AuctionHouse getInstance() {
-        return instance;
+    private static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
 }

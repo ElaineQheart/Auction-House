@@ -20,7 +20,7 @@ public class Config {
 
     public void setup(String fileName, boolean copyDefaults, String parent){
         this.fileName = fileName;
-        file = new File(AuctionHouse.getPlugin().getDataFolder() + parent,  fileName);
+        file = new File(AuctionHouse.getInstance().getDataFolder() + parent,  fileName);
 
         if (!file.exists()){
             try{
@@ -34,7 +34,7 @@ public class Config {
         customFile = YamlConfiguration.loadConfiguration(file);
 
         if(copyDefaults) {
-            final InputStream defConfigStream = AuctionHouse.getPlugin().getResource(fileName);
+            final InputStream defConfigStream = AuctionHouse.getInstance().getResource(fileName);
             if (defConfigStream != null) {
                 customFile.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream, Charsets.UTF_8)));
                 customFile.options().copyDefaults(true);
@@ -59,7 +59,7 @@ public class Config {
         try {
             customFile.save(file);
         }catch (IOException e){
-            AuctionHouse.getPlugin().getLogger().severe("Couldn't save " + fileName + " file");
+            AuctionHouse.getInstance().getLogger().severe("Couldn't save " + fileName + " file");
         }
     }
 
@@ -71,8 +71,8 @@ public class Config {
     public void reloadChild() {}
 
     private void backwardsCompatibility(String fileName, String parent) {
-        File file = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + parent + "/" + fileName);
-        File old = new File(AuctionHouse.getPlugin().getDataFolder().getAbsolutePath() + "/" + fileName);
+        File file = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + parent + "/" + fileName);
+        File old = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/" + fileName);
         if (old.exists()) {
 
             try {

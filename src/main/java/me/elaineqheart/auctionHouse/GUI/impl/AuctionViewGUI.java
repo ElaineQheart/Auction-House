@@ -49,7 +49,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         TaskManager.cancelTask(invID);
         instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
         invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     public AuctionViewGUI(ItemNote note, AhConfiguration configuration, double bid, AhConfiguration.View backTo) {
@@ -58,7 +58,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         c = configuration;
         this.goBackTo = backTo;
         c.setView(AhConfiguration.View.AUCTION_VIEW);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
         this.bid = bid;
         if(this.bid == 0) this.bid = note.hasBidHistory() ? Bid.nextMinBid(note.getPrice()) : note.getPrice();
         currentGUIs.put(c.getPlayer(), this);

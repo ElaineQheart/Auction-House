@@ -29,10 +29,10 @@ public class NPCListener implements Listener {
     //connect the stand with the villager, so if one dies, both die
     @EventHandler
     public void onVillagerDeath(EntityDeathEvent event) {
-        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_master"))) {
+        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "auction_master"))) {
             NPCManager.removeAuctionMaster((Villager) event.getEntity());
         }
-        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getPlugin(), "auction_stand"))) {
+        if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "auction_stand"))) {
             NPCManager.removeAuctionMaster((ArmorStand) event.getEntity());
         }
     }

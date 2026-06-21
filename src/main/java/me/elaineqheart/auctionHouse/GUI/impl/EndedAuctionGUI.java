@@ -41,7 +41,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ENDED_AUCTION);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getPlugin(), this, 20, 20).getTaskId()); // not folia supported
+        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
         topBid = Objects.equals(note.getLastBidder(), c.getPlayer().getUniqueId());
         this.goBackTo = goBackTo;
     }
