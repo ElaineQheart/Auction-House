@@ -3,16 +3,13 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local.data;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.*;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class ConfigManager {
 
@@ -52,7 +49,7 @@ public class ConfigManager {
         playerPreferences.setup("playerPreferences.yml", false, "/data");
         layout.setup("layout.yml", true, "");
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(displays::backwardsCompatibility);
+        instance.getScheduler().globalRegionalScheduler().run(displays::backwardsCompatibility);
         //old method: Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }

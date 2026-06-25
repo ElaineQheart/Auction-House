@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.GUI;
 
-import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyBidsGUI;

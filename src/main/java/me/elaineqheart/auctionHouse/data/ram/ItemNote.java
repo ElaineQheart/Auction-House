@@ -141,12 +141,12 @@ public class ItemNote {
     public Date getDateCreated() {return dateCreated;}
     public double getPrice() {return price;}
     public boolean isSold() {return isSold;}
-    public boolean isOnAuction() {return !isSold || partiallySoldAmountLeft != 0;} //NOT INCLUDING EXPIRED
+    public boolean isTheoreticallyOnAuction() {return !isSold || partiallySoldAmountLeft != 0;} //NOT INCLUDING EXPIRED
     public int getPartiallySoldAmountLeft() {return partiallySoldAmountLeft;}
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}
     public String getItemName() {
-        if (itemName == null) itemName = StringUtils.getItemName(getItem());
+        if (itemName == null) itemName = StringUtils.getItemName(getItem()); //backwards compatibility
         return itemName;
     }
     public List<Bid> getBidHistoryList() {

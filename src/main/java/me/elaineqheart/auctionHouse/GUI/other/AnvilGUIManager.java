@@ -90,7 +90,7 @@ public class AnvilGUIManager implements Listener {
         ItemStack result = event.getInventory().getItem(2);
         if (result == null) return;
 
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
+        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
     }
 
     @EventHandler

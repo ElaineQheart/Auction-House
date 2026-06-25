@@ -14,27 +14,27 @@ import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MyAuctionsGUI extends InventoryGUI implements Runnable{
 
-    private UUID invID = UUID.randomUUID();
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private final AhConfiguration c;
     private int noteSize;
     private int screenSize;
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public enum MySort{
@@ -48,7 +48,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         super();
         c = configuration;
         c.setView(AhConfiguration.View.MY_AUCTIONS);
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -62,16 +62,8 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         super.decorate(player);
     }
 
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
-    }
-
     private void update() {
         decorate(c.getPlayer());
-        TaskManager.cancelTask(invID);
-        invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     private void fillOutItems(Player p, List<Integer> itemSlots){
@@ -85,7 +77,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                         .filter(note -> note.isExpired() && (!note.isBIDAuction() && !note.isSold() || note.isBIDAuction() && !note.hasBidHistory()))
                         .collect(Collectors.toList());
             case ACTIVE_AUCTIONS -> returnList = myAuctions.stream()
-                        .filter(note -> !note.isExpired() && note.isOnAuction())
+                        .filter(note -> !note.isExpired() && note.isTheoreticallyOnAuction())
                         .collect(Collectors.toList());
             default -> returnList = myAuctions;
         }

@@ -7,11 +7,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRemoveEvent;
-public class KillListener implements Listener {
+public class DisplayKillListener implements Listener {
 
     public static void register() {
         if (!EntityRemoveEvent.class.isAnnotationPresent(Deprecated.class)) {
-            Bukkit.getPluginManager().registerEvents(new KillListener(), AuctionHouse.getInstance());
+            Bukkit.getPluginManager().registerEvents(new DisplayKillListener(), AuctionHouse.getInstance());
         }
     }
 
@@ -20,12 +20,12 @@ public class KillListener implements Listener {
         Entity entity = event.getEntity();
         if(!entity.isValid()) return;
         if(entity.isDead()) return;
-        if(UpdateDisplay.isDisplayGlass(entity)) {
+        if(DisplayListener.isDisplayGlass(entity)) {
             Location loc = entity.getLocation();
-            UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
+            //UpdateDisplay.safeRemoveInteraction(loc); // safety measurement, in case both entities are removed at the same time
             UpdateDisplay.removeDisplay(loc,false);
         }
-        if(UpdateDisplay.isDisplayInteraction(entity)) {
+        if(DisplayListener.isDisplayInteraction(entity)) {
             Location loc = entity.getLocation().add(-0.5,-1,-0.5);
             UpdateDisplay.removeDisplay(loc,false);
         }

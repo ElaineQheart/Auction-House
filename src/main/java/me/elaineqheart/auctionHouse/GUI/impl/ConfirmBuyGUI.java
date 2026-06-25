@@ -7,7 +7,6 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
@@ -35,7 +34,6 @@ public class ConfirmBuyGUI extends InventoryGUI{
         this.item = item;
         c = configuration;
         price = note.getPrice() / note.getItem().getAmount() * item.getAmount();
-
     }
 
     @Override
@@ -94,7 +92,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!test.isOnAuction() || test.getCurrentAmount() < item.getAmount()) {
+                    if (!test.isTheoreticallyOnAuction() || test.getCurrentAmount() < item.getAmount()) {
                         p.sendMessage(M.getFormatted("chat.already-sold2"));
                         Sounds.villagerDeny(event);
                         return;
@@ -105,7 +103,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     Economy eco = VaultHook.getEconomy();
-                    instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
+                    instance.getScheduler().globalRegionalScheduler().run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
                     if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
                         p.sendMessage(M.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
@@ -147,7 +145,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         }
                     }
                     if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {
-                        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> CollectSoldItemGUI.collect
+                        instance.getScheduler().globalRegionalScheduler().run(() -> CollectSoldItemGUI.collect
                                 (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
                         );
                     }

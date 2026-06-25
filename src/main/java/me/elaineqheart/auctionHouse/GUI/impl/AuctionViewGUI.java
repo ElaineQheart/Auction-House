@@ -24,14 +24,12 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     private final ItemNote note;
-    private UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private double bid;
     private boolean topBid;
@@ -41,15 +39,13 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public void update() {
-        TaskManager.cancelTask(invID);
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
-        invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
+        decorate(c.getPlayer());
     }
 
     public AuctionViewGUI(ItemNote note, AhConfiguration configuration, double bid, AhConfiguration.View backTo) {
@@ -58,10 +54,10 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         c = configuration;
         this.goBackTo = backTo;
         c.setView(AhConfiguration.View.AUCTION_VIEW);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
         this.bid = bid;
         if(this.bid == 0) this.bid = note.hasBidHistory() ? Bid.nextMinBid(note.getPrice()) : note.getPrice();
         currentGUIs.put(c.getPlayer(), this);
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -125,7 +121,6 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
         currentGUIs.remove(c.getPlayer());
     }
 
@@ -217,7 +212,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
+                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), c.getPlayer()),1);
                         }
                     };
@@ -254,7 +249,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
+                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, bid, goBackTo), c.getPlayer()),1);
                         }
                     };

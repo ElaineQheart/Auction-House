@@ -17,12 +17,14 @@ import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
@@ -30,14 +32,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     public final AhConfiguration c;
-    private UUID invID = UUID.randomUUID();
     private int noteSize;
     private int screenSize;
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public enum Sort{
@@ -50,20 +52,21 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     public AuctionHouseGUI(int page, Sort sort, String search, Player p, boolean isAdmin) {
         super();
         this.c = new AhConfiguration(page, sort, search, p ,isAdmin);
-        c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        init();
     }
     public AuctionHouseGUI(Player p) {
         super();
         this.c = AhConfiguration.getInstance(p);
-        c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        init();
     }
     public AuctionHouseGUI(AhConfiguration configuration) {
         super();
         this.c = configuration;
+        init();
+    }
+    private void init() {
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -77,16 +80,8 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
         super.decorate(player);
     }
 
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
-    }
-
     private void update() {
-        TaskManager.cancelTask(invID);
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().run(() -> decorate(c.getPlayer()));
-        invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        decorate(c.getPlayer());
     }
 
     private void fillOutItems(Sort sort, List<Integer> itemSlots){
@@ -289,7 +284,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                             }
                             public void onClose(Player p) {
-                                instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
+                                instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                         AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer()),1);
                             }
                         };
@@ -307,7 +302,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.click(event);
                     if(event.isRightClick()) c.setCurrentSort(previousSort(c.getCurrentSort()));
-                    else c.setCurrentSort(nextSort(c.getCurrentSort()));;
+                    else c.setCurrentSort(nextSort(c.getCurrentSort()));
                     c.setCurrentPage(0);
                     update();
                 });

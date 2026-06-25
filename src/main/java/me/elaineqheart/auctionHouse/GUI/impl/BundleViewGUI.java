@@ -41,7 +41,7 @@ public class BundleViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
+        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> {
             Sounds.closeBundle(event);
             ShulkerViewGUI.openSwitch(c, note, p, goBackTo);
         },0);

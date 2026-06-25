@@ -6,7 +6,6 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +18,7 @@ public class PlayerJoinCollectListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if(!SettingManager.autoCollect) return;
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
+        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> {
             Player p = event.getPlayer();
             for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) sell(note, p);
         }, 1);

@@ -10,6 +10,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.BlockDisplay;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Interaction;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,6 +19,8 @@ import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
 
 public class CreateDisplay {
 
@@ -47,7 +50,6 @@ public class CreateDisplay {
         AxisAngle4f zeroRotation = new AxisAngle4f(0, 0, 0, 0);
         glass.setTransformation(new Transformation(translation, zeroRotation, scale, zeroRotation));
         glass.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), sortType), PersistentDataType.INTEGER, rank);
-
         Interaction interaction = (Interaction) world.spawnEntity(loc.clone().add(0.5, 1, 0.5), EntityType.INTERACTION);
         interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER, rank); // rank #
         interaction.getPersistentDataContainer().set(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING, sortType); // sort type
@@ -57,9 +59,16 @@ public class CreateDisplay {
 
         placeBlocks(loc, rank, sortType);
         int newID = 1; // default
-        if (!UpdateDisplay.displayItems.isEmpty()) newID = Collections.max(UpdateDisplay.displayItems.keySet()) + 1; // new display ID
-        ConfigManager.displays.addDisplay(newID, loc);
-        UpdateDisplay.reload();
+        Set<Integer> displays = UpdateDisplay.getDisplayItems().keySet();
+        if (!displays.isEmpty()) newID = Collections.max(displays) + 1; // new display ID
+        DisplayNote note = new DisplayNote();
+        note.location = loc;
+        note.glassUUID = glass.getUniqueId();
+        note.interactionUUID = interaction.getUniqueId();
+        note.rank = rank;
+        note.sortType = sortType;
+        ConfigManager.displays.addDisplay(newID, note);
+        UpdateDisplay.reload(false);
     }
 
     public static void placeBlocks(Location loc, int rank, String sortType) {

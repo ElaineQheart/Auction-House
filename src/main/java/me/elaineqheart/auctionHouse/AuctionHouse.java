@@ -11,7 +11,7 @@ import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
 import me.elaineqheart.auctionHouse.pluginDependencies.AuctionHousePAPIExpansion;
 import me.elaineqheart.auctionHouse.pluginDependencies.LocaleAPIExtension;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
-import me.elaineqheart.auctionHouse.world.displays.KillListener;
+import me.elaineqheart.auctionHouse.world.displays.DisplayKillListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCListener;
 import net.milkbowl.vault.economy.Economy;
@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.morepaperlib.MorePaperLib;
+import space.arim.morepaperlib.scheduling.GracefulScheduling;
 
 import java.io.IOException;
 
@@ -31,9 +32,9 @@ public final class AuctionHouse extends JavaPlugin {
     public static AnvilGUIManager getAnvilManager() {return anvilManager;}
     private MorePaperLib morePaperLib;
     public static AuctionHouse getInstance() {return instance;}
-    public MorePaperLib getMorePaperLib() {
+    public GracefulScheduling getScheduler() {
         //morePaperLib.scheduling()... It uses Paper's threaded-regions schedulers if Folia is used, otherwise it falls back to the default Bukkit scheduler.
-        return morePaperLib;
+        return morePaperLib.scheduling();
     }
 
     @Override
@@ -58,7 +59,7 @@ public final class AuctionHouse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
         Bukkit.getPluginManager().registerEvents(new AhConfigurationListener(), this);
-        KillListener.register();
+        DisplayKillListener.register();
 
         ConfigManager.setupConfigs();
 
@@ -93,7 +94,7 @@ public final class AuctionHouse extends JavaPlugin {
     }
 
 
-    private static boolean isFolia() {
+    public static boolean isFolia() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
             return true;

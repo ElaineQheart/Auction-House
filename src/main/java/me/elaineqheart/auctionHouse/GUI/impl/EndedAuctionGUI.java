@@ -16,24 +16,25 @@ import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
-import java.util.UUID;
 
 public class EndedAuctionGUI extends InventoryGUI implements Runnable{
+
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private final ItemNote note;
-    private final UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private final boolean topBid;
     private final AhConfiguration.View goBackTo;
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public EndedAuctionGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
@@ -41,7 +42,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ENDED_AUCTION);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
         topBid = Objects.equals(note.getLastBidder(), c.getPlayer().getUniqueId());
         this.goBackTo = goBackTo;
     }
@@ -72,11 +73,6 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
 
         if(c.shouldKeepOpen()) this.addButton(49, back());
         super.decorate(player);
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
     }
 
     private void fillOutPlaces(String[] places, InventoryButton fillerItem){

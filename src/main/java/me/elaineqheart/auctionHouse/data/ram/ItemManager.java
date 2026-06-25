@@ -368,7 +368,7 @@ public class ItemManager {
             lore.addAll(M.getLoreList("items.auction.lore.own-auction"));
         }
 
-        if (note.isSold() && note.isOnAuction()) {
+        if (note.isSold() && note.isTheoreticallyOnAuction()) {
             if (ownAuction) {
                 lore.addAll(M.getLoreList("items.auction.lore.partially-sold",
                         "%sold%", String.valueOf(note.getItem().getAmount() - note.getPartiallySoldAmountLeft()),
@@ -387,7 +387,7 @@ public class ItemManager {
             addAdminMessageOrExpired(lore, note);
         } else if (note.isBIDAuction() && note.hasBidHistory() && note.isExpired()) {
             lore.addAll(M.getLoreList("items.auction.lore.ended"));
-        } else if (note.isSold() && !note.isOnAuction()) {
+        } else if (note.isSold() && !note.isTheoreticallyOnAuction()) {
             lore.addAll(M.getLoreList("items.auction.lore.sold",
                     "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID())));
         } else if (note.isOnWaitingList()) {

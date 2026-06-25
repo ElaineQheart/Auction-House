@@ -1,26 +1,22 @@
 package me.elaineqheart.auctionHouse;
 
-import org.bukkit.Bukkit;
-
-import java.util.HashMap;
-import java.util.UUID;
-
 public class TaskManager {
 
-    private static final HashMap<UUID, Integer> taskID = new HashMap<>();
+    public static int GUIUpdateTick = 20;
+    //private static final HashMap<UUID, Integer> taskID = new HashMap<>();
     //private static final HashMap<LocalTime, Integer> taskHistory = new HashMap<>();
 
-    public static void cancelTask(UUID key) {
-        assert key != null;
-        if (!taskID.containsKey(key)) return;
-        //taskHistory.put(LocalTime.now(), taskID.get(key));
-        Bukkit.getScheduler().cancelTask(taskID.get(key)); // Not folia supported
-        taskID.remove(key);
-    }
-
-    public static void addTaskID(UUID uniqueId, int taskId) {
-        taskID.put(uniqueId,taskId);
-    }
+//    public static void cancelTask(UUID key) {
+//        assert key != null;
+//        if (!taskID.containsKey(key)) return;
+//        //taskHistory.put(LocalTime.now(), taskID.get(key));
+//        Bukkit.getScheduler().cancelTask(taskID.get(key)); // Not folia supported
+//        taskID.remove(key);
+//    }
+//
+//    public static void addTaskID(UUID uniqueId, int taskId) {
+//        taskID.put(uniqueId,taskId);
+//    }
 
 //    public static void printStackTrace() {
 //        AuctionHouse.getPlugin().getLogger().info("Log size: " + taskHistory.size());

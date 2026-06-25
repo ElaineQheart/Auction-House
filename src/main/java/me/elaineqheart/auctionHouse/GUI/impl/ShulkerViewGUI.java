@@ -5,7 +5,6 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -30,7 +29,7 @@ public class ShulkerViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
+        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> {
             Sounds.closeShulker(event);
             openSwitch(c, note, p, goBackTo);
         },0);

@@ -42,8 +42,9 @@ tasks.named('shadowJar') {
     archiveBaseName.set(rootProject.name ?: 'AuctionHouse')
     archiveClassifier.set('')
     archiveVersion.set(version)
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/windows/26.1.2/plugins"))
+    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.1.2_folia/plugins"))
+    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.2_spigot/plugins"))
+    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     mergeServiceFiles()
 }
 

@@ -91,7 +91,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
+                    if (!test.isTheoreticallyOnAuction() || test.getCurrentAmount() < note.getCurrentAmount()) {
                         p.sendMessage(M.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;
@@ -127,7 +127,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    if (!test.isOnAuction() || test.getCurrentAmount() < note.getItem().getAmount()) {
+                    if (!test.isTheoreticallyOnAuction() || test.getCurrentAmount() < note.getItem().getAmount()) {
                         p.sendMessage(M.getFormatted("chat.already-sold"));
                         Sounds.villagerDeny(event);
                         return;

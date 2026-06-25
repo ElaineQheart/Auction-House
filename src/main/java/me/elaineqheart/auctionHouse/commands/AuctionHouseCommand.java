@@ -173,13 +173,21 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                             "%item%", itemName,
                             "%amount%", String.valueOf(amount));
-                    instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() -> {
-                        for(Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                            if(ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
+                    if (SettingManager.auctionSetupTime == 0) {
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            if (ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
                                 onlinePlayer.sendMessage(announcement);
                             }
                         }
-                    }, SettingManager.auctionSetupTime * 20);
+                    } else {
+                        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> { //delay has to be > 0 in Folia
+                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                                if (ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
+                                    onlinePlayer.sendMessage(announcement);
+                                }
+                            }
+                        }, SettingManager.auctionSetupTime * 20);
+                    }
                 }
 
             }
@@ -196,7 +204,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             if(strings.length == 2 && strings[0].equals("view")) {
                 ItemNote note = AuctionHouseStorage.getNote(UUID.fromString(strings[1]));
                 if(note == null
-                    || !note.getPlayerUUID().equals(p.getUniqueId()) && !note.isOnAuction()
+                    || !note.getPlayerUUID().equals(p.getUniqueId()) && !note.isTheoreticallyOnAuction()
                     || note.getPlayerUUID().equals(p.getUniqueId()) && (note.getBuyerName() == null || note.getBuyerName().isEmpty())) return true;
                 Sounds.click(p);
                 AhConfiguration configuration = AhConfiguration.getInstance(p).setPlayer(p.getUniqueId());
@@ -308,7 +316,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             p.sendMessage(M.getFormatted("command-feedback.invalid-number6"));
                             return true;
                         }
-                        for(Location displayLoc : UpdateDisplay.locations.keySet()) {
+                        for(Location displayLoc : UpdateDisplay.getLocations()) {
                             if(Objects.equals(blockLoc.getWorld(), displayLoc.getWorld()) && blockLoc.distance(displayLoc) < 2.1) {
                                 p.sendMessage(M.getFormatted("command-feedback.no-space-for-display"));
                                 return true;
@@ -503,7 +511,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             throw new RuntimeException(e);
         }
         SettingManager.loadData();
-        UpdateDisplay.reload();
+        UpdateDisplay.reload(false);
     }
 
     private static List<String> adminCommands() {

@@ -12,7 +12,6 @@ import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.UUID;
@@ -27,8 +26,9 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public AdminManageItemsGUI(ItemNote note, AhConfiguration configuration) {
@@ -36,7 +36,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ADMIN_MANAGE_ITEMS);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -59,11 +59,6 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.addButton(32, deleteAuction());
         this.addButton(49, back());
         super.decorate(player);
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID); // not folia supported
     }
 
     private void fillOutPlaces(String[] places, InventoryButton fillerItem){
@@ -106,7 +101,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, true, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
+                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
@@ -124,7 +119,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            instance.getMorePaperLib().scheduling().globalRegionalScheduler().runDelayed(() ->
+                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };

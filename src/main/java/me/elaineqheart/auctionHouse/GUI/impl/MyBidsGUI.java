@@ -13,18 +13,17 @@ import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class MyBidsGUI extends InventoryGUI implements Runnable {
 
-    private UUID invID = UUID.randomUUID();
+    private static final AuctionHouse instance = AuctionHouse.getInstance();
+
     private final AhConfiguration c;
     private int noteSize;
     private int screenSize;
@@ -33,8 +32,9 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public MyBidsGUI(AhConfiguration c, int page) {
@@ -48,7 +48,7 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
         this.c.setView(AhConfiguration.View.MY_BIDS);
         this.page = page;
         rows = getInventory().getSize()/9;
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -58,18 +58,10 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
     }
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
-    }
-
-    @Override
     protected Inventory createInventory() {return null;}
 
     private void update() {
         decorate(c.getPlayer());
-        TaskManager.cancelTask(invID);
-        invID = UUID.randomUUID();
-        TaskManager.addTaskID(invID,Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // not folia supported
     }
 
     private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {

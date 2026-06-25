@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage;
 
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.TransactionLogger;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.JsonNoteStorage;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;

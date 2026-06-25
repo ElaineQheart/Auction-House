@@ -12,7 +12,9 @@ import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.BlockDisplay;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,21 +38,20 @@ public class DisplayListener implements Listener {
         Location displayLoc = isProtected(loc);
         if (displayLoc == null) return; //not a display location
 
+        event.setCancelled(true);
         boolean isBaseBlock = (loc.getBlockX() == displayLoc.getBlockX() &&
                 loc.getBlockY() == displayLoc.getBlockY() &&
                 loc.getBlockZ() == displayLoc.getBlockZ());
 
         if (isBaseBlock && p.getGameMode() == GameMode.CREATIVE && p.hasPermission(SettingManager.permissionModerate) && p.isSneaking()) {
-            event.setCancelled(true);
             UpdateDisplay.removeDisplay(displayLoc, true);
         } else {
-            event.setCancelled(true);
             if (p.hasPermission(SettingManager.permissionModerate)) p.sendMessage(M.getFormatted("world.displays.break-instruction"));
         }
     }
 
     private Location isProtected(Location inputLoc) {
-        for (Location baseLoc : UpdateDisplay.locations.keySet()) {
+        for (Location baseLoc : UpdateDisplay.getLocations()) {
             if (inputLoc.getWorld() != baseLoc.getWorld()) continue;
             if (inputLoc.getBlockY() != baseLoc.getBlockY()) continue;
             int dx = Math.abs(inputLoc.getBlockX() - baseLoc.getBlockX());
@@ -64,25 +65,27 @@ public class DisplayListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when the display is clicked
     public void onDisplayClick(PlayerInteractAtEntityEvent event) {
-        if (event.getRightClicked().getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING)) {
+        Entity entity = event.getRightClicked();
+        if (entity.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING)) {
             event.setCancelled(true);
             Player p = event.getPlayer();
-            String type = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING);
+            String type = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING);
             if (type == null)
                 throw new RuntimeException("The display type is null. This should never happen.");
-            int rank = event.getRightClicked().getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER);
+            Integer rank = entity.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER);
+            assert rank != null;
             ItemNote note = UpdateDisplay.getNote(type, rank);
             if (note != null) {
                 p.playSound(p, Sound.UI_STONECUTTER_SELECT_RECIPE, 0.2f, 1);
                 AhConfiguration configuration = new AhConfiguration(0, AuctionHouseGUI.Sort.HIGHEST_PRICE, "", p, false);
                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, configuration, 0, AhConfiguration.View.AUCTION_HOUSE), p);
             }
+            //backwards compatibility for displays in unloaded chunks that are now loaded
+            if (!UpdateDisplay.getInteractions().contains(entity.getUniqueId())) UpdateDisplay.reload(false);
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when interacting directly with the blocks
-                                                    // of the
-    // display
+    @EventHandler(priority = EventPriority.HIGHEST) // open the auction house when interacting directly with the blocks of the display
     public void onBlockInteract(PlayerInteractEvent event) {
         if (event.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) return;
         if (event.getClickedBlock() == null) return;
@@ -100,7 +103,7 @@ public class DisplayListener implements Listener {
         String type = null;
         assert displayLoc.getWorld() != null;
         for (Entity test : displayLoc.getWorld().getNearbyEntities(displayLoc, 1, 1, 1)) {
-            if (UpdateDisplay.isDisplayGlass(test)) {
+            if (isDisplayGlass(test)) {
                 if (test.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER)) {
                     type = "highest_price";
                     rank = test.getPersistentDataContainer().get(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER);
@@ -127,7 +130,7 @@ public class DisplayListener implements Listener {
     public void onPiston(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
-            for (Location loc2 : UpdateDisplay.locations.keySet()) {
+            for (Location loc2 : UpdateDisplay.getLocations()) {
                 if (loc.equals(loc2)) {
                     event.setCancelled(true);
                     return; // Prevent piston movement if a display is present
@@ -140,7 +143,7 @@ public class DisplayListener implements Listener {
     public void onPiston(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
             Location loc = block.getLocation();
-            for (Location loc2 : UpdateDisplay.locations.keySet()) {
+            for (Location loc2 : UpdateDisplay.getLocations()) {
                 if (loc.equals(loc2)) {
                     event.setCancelled(true);
                     return; // Prevent piston movement if a display is present
@@ -169,9 +172,29 @@ public class DisplayListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onTeleport(EntityTeleportEvent event) {
         Entity entity = event.getEntity();
-        if (UpdateDisplay.isDisplayGlass(entity) || UpdateDisplay.isDisplayInteraction(entity)) {
+        if (isDisplayGlass(entity) || isDisplayInteraction(entity)) {
             event.setCancelled(true);
         }
+    }
+
+
+
+
+    public static boolean isDisplayGlass(Entity entity) {
+        if (entity instanceof BlockDisplay display) {
+            return display.getPersistentDataContainer()
+                    .has(new NamespacedKey(AuctionHouse.getInstance(), "highest_price"), PersistentDataType.INTEGER) ||
+                    display.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "ending_soon"), PersistentDataType.INTEGER);
+        }
+        return false;
+    }
+
+    public static boolean isDisplayInteraction(Entity entity) {
+        if (entity instanceof Interaction interaction) {
+            return interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "rank"), PersistentDataType.INTEGER) &&
+                    interaction.getPersistentDataContainer().has(new NamespacedKey(AuctionHouse.getInstance(), "type"), PersistentDataType.STRING);
+        }
+        return false;
     }
 
 }

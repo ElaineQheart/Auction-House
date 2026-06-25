@@ -12,16 +12,12 @@ import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public class CancelAuctionGUI extends InventoryGUI implements Runnable{
 
     private final ItemNote note;
-    private final UUID invID = UUID.randomUUID();
     private final AhConfiguration c;
     private final AhConfiguration.View goBackTo;
     private static final AuctionHouse instance = AuctionHouse.getInstance();
@@ -29,9 +25,10 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
 
     @Override
     public void run() {
-        if (this.getInventory().getViewers().isEmpty()) TaskManager.cancelTask(invID);
+        if (this.getInventory().getViewers().isEmpty()) return;
         this.addButton(13, Item());
         super.decorate(c.getPlayer());
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public CancelAuctionGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
@@ -40,7 +37,7 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
         c = configuration;
         this.goBackTo = goBackTo;
         c.setView(AhConfiguration.View.CANCEL_AUCTION);
-        TaskManager.addTaskID(invID, Bukkit.getScheduler().runTaskTimer(AuctionHouse.getInstance(), this, 20, 20).getTaskId()); // Not folia supported
+        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -126,11 +123,6 @@ public class CancelAuctionGUI extends InventoryGUI implements Runnable{
                     AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
                     p.sendMessage(M.getFormatted("chat.auction-canceled"));
                 });
-    }
-
-    @Override
-    public void onClose(InventoryCloseEvent event) {
-        TaskManager.cancelTask(invID);
     }
 
 }

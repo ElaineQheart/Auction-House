@@ -20,7 +20,7 @@ public class AuctionHouseStorage {
     private static void addToLists(ItemNote note) {
         notes.put(note.getNoteID(), note);
         itemNotes.add(note.getNoteID());
-        if(note.isOnAuction() && !note.isExpired()) {
+        if(note.isTheoreticallyOnAuction() && !note.isExpired()) {
             sortedHighestPrice.add(note.getNoteID());
             sortedTimeLeft.add(note.getNoteID());
             sortedAlphabetical.add(note.getNoteID());
@@ -105,7 +105,7 @@ public class AuctionHouseStorage {
         }
         return list.stream()
                 .map(notes::get)
-                .filter(note -> note.isOnAuction() && !note.isExpired() && !note.isOnWaitingList())
+                .filter(note -> note.isTheoreticallyOnAuction() && !note.isExpired() && !note.isOnWaitingList())
                 .filter(note -> search.isEmpty() || note.getSearchIndex(c.getPlayer()).stream().anyMatch(string -> string.contains(search.toLowerCase())))
                 .filter(note -> switch (c.getBinFilter()) {
                     case ALL -> true;
