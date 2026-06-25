@@ -23,7 +23,7 @@ public class LayoutGenerator {
                 "# . . . . . . . #",
                 "# . . . . . . . #",
                 "# # # # # # # # #",
-                "b o # p r n # # i"));
+                "b o # p r n # d i"));
         ItemStack fillerItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = fillerItem.getItemMeta();
         assert meta != null;
