@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
-import com.google.gson.Gson;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
