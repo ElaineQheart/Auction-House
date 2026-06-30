@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -35,6 +36,11 @@ public class AnvilGUIManager implements Listener {
     }
 
     public void open(Player player, String inventoryTitleKey, AnvilHandler handler) {
+        if (ConfigManager.oldVersion21()) {
+            player.sendMessage("TEST");
+            player.sendMessage(M.getFormatted("command-feedback.old-version-anvil"));
+            return;
+        }
         AnvilView view = MenuType.ANVIL.create(player, M.getFormatted(inventoryTitleKey));
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);

@@ -30,7 +30,7 @@ public class Config {
                 //uwu
             }
         }
-        if(ConfigManager.backwardsCompatibility() && !parent.isEmpty()) backwardsCompatibility(fileName, parent);
+        if (ConfigManager.backwardsCompatibility() && !parent.isEmpty()) backwardsCompatibility(fileName, parent);
         customFile = YamlConfiguration.loadConfiguration(file);
 
         if(copyDefaults) {

@@ -53,7 +53,7 @@ public class JsonNoteStorage {
     }
 
     public static void loadNotes() throws IOException {
-        if(ConfigManager.backwardsCompatibility()) backwardsCompatibility();
+        if (ConfigManager.backwardsCompatibility()) backwardsCompatibility();
         File file = new File(AuctionHouse.getInstance().getDataFolder().getAbsolutePath() + "/data/notes.json");
         if(file.exists()){
             Reader reader = new FileReader(file);

@@ -273,10 +273,6 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                         c.setCurrentPage(0);
                         update();
                     }else {
-                        if (ConfigManager.oldVersion21()) {
-                            c.getPlayer().sendMessage(M.getFormatted("command-feedback.old-version-anvil"));
-                            return;
-                        }
                         Sounds.click(event);
                         AnvilHandler handler = new AnvilHandler() {
                             public void execute(Player p, String typedText) {
