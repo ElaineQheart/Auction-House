@@ -2,7 +2,7 @@ package me.elaineqheart.auctionHouse;
 
 import me.elaineqheart.auctionHouse.GUI.GUIListener;
 import me.elaineqheart.auctionHouse.GUI.GUIManager;
-import me.elaineqheart.auctionHouse.GUI.other.AnvilGUIManager;
+import me.elaineqheart.auctionHouse.GUI.other.input.InputGUIManager;
 import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
@@ -27,9 +27,9 @@ public final class AuctionHouse extends JavaPlugin {
 
     private static AuctionHouse instance;
     private static GUIManager guiManager;
-    private static AnvilGUIManager anvilManager;
+    private static InputGUIManager inputGUIManager;
     public static GUIManager getGuiManager() {return guiManager;}
-    public static AnvilGUIManager getAnvilManager() {return anvilManager;}
+    public static InputGUIManager getInputManager() {return inputGUIManager;}
     private MorePaperLib morePaperLib;
     public static AuctionHouse getInstance() {return instance;}
     public GracefulScheduling getScheduler() {
@@ -43,10 +43,8 @@ public final class AuctionHouse extends JavaPlugin {
         LocaleAPIExtension.setup();
         instance = this;
         guiManager = new GUIManager();
-        GUIListener guiListener = new GUIListener(guiManager);
-        anvilManager = new AnvilGUIManager();
-        Bukkit.getPluginManager().registerEvents(guiListener, this);
-        Bukkit.getPluginManager().registerEvents(anvilManager, this);
+        GUIListener guiListener = new GUIListener(guiManager, this);
+        inputGUIManager = new InputGUIManager(this);
         morePaperLib = new MorePaperLib(instance);
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -89,7 +87,7 @@ public final class AuctionHouse extends JavaPlugin {
     public void onDisable() {
         ConfigManager.playerPreferences.disable();
         if(guiManager != null) guiManager.forceCloseAll();
-        if(anvilManager != null) anvilManager.forceCloseAll();
+        if(inputGUIManager != null) inputGUIManager.forceCloseAll();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 

@@ -3,8 +3,8 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
-import me.elaineqheart.auctionHouse.GUI.other.AnvilHandler;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.GUI.other.input.InputHandler;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
@@ -191,7 +191,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                         p.sendMessage(M.getFormatted("chat.own-auction"));
                         return;
                     }
-                    AnvilHandler handler = new AnvilHandler() {
+                    InputHandler handler = new InputHandler() {
                         public void execute(Player p, String typedText) {
                             try {
                                 int amount = Integer.parseInt(typedText);
@@ -216,7 +216,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), c.getPlayer()),1);
                         }
                     };
-                    AuctionHouse.getAnvilManager().open(p, "inventory-titles.anvil-set-amount", handler);
+                    AuctionHouse.getInputManager().open(p, "inventory-titles.anvil-set-amount", handler);
                 });
     }
 
@@ -230,7 +230,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.createBidExplanation(bid))
                 .consumer(event -> {
                     Sounds.click(event);
-                    AnvilHandler handler = new AnvilHandler() {
+                    InputHandler handler = new InputHandler() {
                         public void execute(Player p, String typedText) {
                             double amount = StringUtils.parsePositiveNumber(typedText);
                             if (amount <= bid) {
@@ -253,7 +253,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, bid, goBackTo), c.getPlayer()),1);
                         }
                     };
-                    AuctionHouse.getAnvilManager().open(c.getPlayer(), "inventory-titles.anvil-set-bid", handler);
+                    AuctionHouse.getInputManager().open(c.getPlayer(), "inventory-titles.anvil-set-bid", handler);
                 });
     }
     private InventoryButton submitBid() {

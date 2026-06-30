@@ -1,8 +1,7 @@
-package me.elaineqheart.auctionHouse.GUI.other;
+package me.elaineqheart.auctionHouse.GUI.other.input;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
+import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,39 +21,25 @@ import java.util.Map;
 
 public class AnvilGUIManager implements Listener {
 
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
+    private final AuctionHouse instance = AuctionHouse.getInstance();
 
-    private static final Map<Inventory, AnvilHandler> activeInventories = new HashMap<>();
+    private final Map<Inventory, InputHandler> activeInventories = new HashMap<>();
 
-    public enum SearchType {
-        AH,
-        ADMIN_AH,
-        ITEM_EXPIRE_MESSAGE,
-        ITEM_DELETE_MESSAGE,
-        SET_AMOUNT,
-        SET_BID
-    }
-
-    public void open(Player player, String inventoryTitleKey, AnvilHandler handler) {
-        if (ConfigManager.oldVersion21()) {
-            player.sendMessage("TEST");
-            player.sendMessage(M.getFormatted("command-feedback.old-version-anvil"));
-            return;
-        }
-        AnvilView view = MenuType.ANVIL.create(player, M.getFormatted(inventoryTitleKey));
+    public void open(Player player, String inventoryTitle, InputHandler handler) {
+        AnvilView view = MenuType.ANVIL.create(player, inventoryTitle);
         view.setMaximumRepairCost(0);
         view.setItem(0, ItemManager.emptyPaper);
         registerHandledInventory(view.getTopInventory(), handler);
         player.openInventory(view);
     }
 
-    public void registerHandledInventory(Inventory inventory, AnvilHandler handler) {
+    public void registerHandledInventory(Inventory inventory, InputHandler handler) {
         activeInventories.put(inventory,handler);
     }
 
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
-        AnvilHandler handler = activeInventories.get(event.getView().getTopInventory());
+        InputHandler handler = activeInventories.get(event.getView().getTopInventory());
         if (handler == null) return;
 
         event.setCancelled(true);
@@ -80,7 +65,7 @@ public class AnvilGUIManager implements Listener {
         }
     }
 
-    private void openGUI(InventoryClickEvent event, String typedText, AnvilHandler handler, ItemStack paperItem) {
+    private void openGUI(InventoryClickEvent event, String typedText, InputHandler handler, ItemStack paperItem) {
         Player player = (Player) event.getWhoClicked();
         player.getOpenInventory().getTopInventory().remove(paperItem);
         player.getOpenInventory().getBottomInventory().remove(paperItem);
@@ -90,7 +75,7 @@ public class AnvilGUIManager implements Listener {
 
     @EventHandler //also set the name formatted
     public void handleTyping(PrepareAnvilEvent event) {
-        AnvilHandler handler = activeInventories.get(event.getView().getTopInventory());
+        InputHandler handler = activeInventories.get(event.getView().getTopInventory());
         if (handler == null) return;
 
         ItemStack result = event.getInventory().getItem(2);
@@ -101,7 +86,7 @@ public class AnvilGUIManager implements Listener {
 
     @EventHandler
     public void handleClose(InventoryCloseEvent event) {
-        AnvilHandler handler = activeInventories.get(event.getView().getTopInventory());
+        InputHandler handler = activeInventories.get(event.getView().getTopInventory());
         if (handler == null) return;
         ItemStack paperItem = event.getInventory().getItem(0);
         Player p = (Player) event.getPlayer();

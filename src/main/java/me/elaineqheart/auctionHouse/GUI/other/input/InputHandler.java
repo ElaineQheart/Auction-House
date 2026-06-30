@@ -1,8 +1,8 @@
-package me.elaineqheart.auctionHouse.GUI.other;
+package me.elaineqheart.auctionHouse.GUI.other.input;
 
 import org.bukkit.entity.Player;
 
-public interface AnvilHandler {
+public interface InputHandler {
 
     void execute(Player p, String typedText);
 

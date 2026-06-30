@@ -1,5 +1,7 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,8 +12,9 @@ public class GUIListener implements Listener {
 
     private final GUIManager guiManager;
 
-    public GUIListener(GUIManager guiManager) {
+    public GUIListener(GUIManager guiManager, AuctionHouse plugin) {
         this.guiManager = guiManager;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @EventHandler

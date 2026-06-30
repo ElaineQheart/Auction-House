@@ -3,8 +3,8 @@ package me.elaineqheart.auctionHouse.GUI.impl;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
-import me.elaineqheart.auctionHouse.GUI.other.AnvilHandler;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.GUI.other.input.InputHandler;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
@@ -95,7 +95,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminCancelAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AnvilHandler handler = new AnvilHandler() {
+                    InputHandler handler = new InputHandler() {
                         public void execute(Player p, String typedText) {
                             AuctionHouse.getGuiManager().openGUI
                                     (new AdminConfirmGUI(typedText, note, true, c), c.getPlayer());
@@ -105,7 +105,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
-                    AuctionHouse.getAnvilManager().open(c.getPlayer(),"inventory-titles.anvil-admin-delete-message", handler);
+                    AuctionHouse.getInputManager().open(c.getPlayer(),"inventory-titles.anvil-admin-delete-message", handler);
                 });
     }
     private InventoryButton expireAuction() {
@@ -113,7 +113,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                 .creator(player -> ItemManager.adminExpireAuction)
                 .consumer(event -> {
                     Sounds.click(event);
-                    AnvilHandler handler = new AnvilHandler() {
+                    InputHandler handler = new InputHandler() {
                         public void execute(Player p, String typedText) {
                             AuctionHouse.getGuiManager().openGUI
                                     (new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
@@ -123,7 +123,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
-                    AuctionHouse.getAnvilManager().open(c.getPlayer(), "inventory-titles.anvil-admin-expire-message", handler);
+                    AuctionHouse.getInputManager().open(c.getPlayer(), "inventory-titles.anvil-admin-expire-message", handler);
                 });
     }
 

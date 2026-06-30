@@ -79,6 +79,7 @@ chat:
   collect-coins: "§b-------------------------------------------------
     &n§eYou collected %price%§e back from an auction
     &n§b-------------------------------------------------"
+  input-listener: "§e%request%. Please type your input in chat:"
 
 inventory-titles:
   admin-confirm-gui: "Confirm Action"
@@ -547,7 +548,6 @@ command-feedback:
     test: "§6/ah test:§f Used to save the item from your main hand to the files"
     help: "§6/ah help:§f Shows the help menu"
     search: "§6/ah search:§f Search an item on the ah"
-  old-version-anvil: "This feature isn't supported in your current minecraft version. Try switching to a newer one or use §6/ah search <item>"
 
 placeholders:
   number: "§6%input%§r"
