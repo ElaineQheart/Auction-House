@@ -261,6 +261,39 @@ public class SettingManager {
         }
         backwardsCompatibilityForPlaceholderAPI(messageFile);
         soundsBackwardsCompatibility();
+        if (messageFile.contains("chat.purchase-auction")) {
+            if (Objects.equals(messageFile.get("chat.purchase-auction"), "§b-----------------" +
+                    "-------------------------------- &n§eYou purchased %item% from " +
+                    "§7%seller%§e's auction &n§b-------------------------------------------------")) {
+                messageFile.set("chat.purchase-auction", "§b---------------------------------------" +
+                        "---------- &n§eYou purchased §r%item%§e from §7%seller%§e's auction &n§b" +
+                        "-------------------------------------------------");
+            }
+            if (Objects.equals(messageFile.get("chat.sold-message.prefix"), "§6[Auction] §7%buyer%§e bought %item%§e for %price% ")) {
+                messageFile.set("chat.sold-message.prefix", "§6[Auction] §7%buyer%§e bought §r%item%§e for %price%");
+            }
+            if (Objects.equals(messageFile.get("chat.sold-message.auto-collect"), "§6[Auction] §7%buyer%§e bought %item%§e! §6+%price%")) {
+                messageFile.set("chat.sold-message.auto-collect", "§6[Auction] §7%buyer%§e bought §r%item%§e! §6+%price%");
+            }
+            if (Objects.equals(messageFile.get("chat.auction-announcement"), "§6[Auction] §7%player%§e is selling %item%§e x%amount% for %price%")) {
+                messageFile.set("chat.auction-announcement", "§6[Auction] §7%player%§e is selling §r%item%§e x%amount% for %price%");
+            }
+            if (Objects.equals(messageFile.get("chat.bid-announcement"), "§6[Auction] §7%player%§e is auctioning %item%§e x%amount% for %price%")) {
+                messageFile.set("chat.bid-announcement", "§6[Auction] §7%player%§e is auctioning §r%item%§e x%amount% for %price%");
+            }
+            if (Objects.equals(messageFile.get("chat.placed-bid"), "§eBid of %price%§e placed for %item%§e!")) {
+                messageFile.set("chat.placed-bid", "§eBid of %price%§e placed for §r%item%§e!");
+            }
+            if (Objects.equals(messageFile.get("chat.outbid.prefix"), "§6[Auction] §7%player%§e outbid you by %price%§e for %item%")) {
+                messageFile.set("chat.outbid.prefix", "§6[Auction] §7%player%§e outbid you by %price%§e for §r%item%§e");
+            }
+            if (Objects.equals(messageFile.get("chat.claim-auction"), "§b------------------------------------------------- &n§eYou claimed %item%§e from §7%seller%§e's auction &n§b-------------------------------------------------")) {
+                messageFile.set("chat.claim-auction", "§b-------------------------------------------------&n§eYou claimed §r%item%§e from §7%seller%§e's auction&n§b-------------------------------------------------");
+            }
+            if (Objects.equals(messageFile.get("command-feedback.blacklist-success"), "Successfully added the properties of %item% to the blacklist")) {
+                messageFile.set("command-feedback.blacklist-success", "Successfully added the properties of %item%§r to the blacklist");
+            }
+        }
 
         ConfigManager.messages.save();
         ConfigManager.messages.reload();
