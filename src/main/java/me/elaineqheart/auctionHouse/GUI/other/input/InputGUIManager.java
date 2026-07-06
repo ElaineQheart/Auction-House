@@ -18,6 +18,7 @@ public class InputGUIManager implements Listener {
         Bukkit.getPluginManager().registerEvents(chatManager, plugin);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public void open(Player player, String inventoryTitleKey, InputHandler handler) {
         String inventoryTitle = M.getFormatted(inventoryTitleKey);
         try {

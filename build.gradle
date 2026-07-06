@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.elaineqheart'
-version = '1.5'
+version = '1.5.1'
 
 repositories {
     mavenCentral()
@@ -42,9 +42,9 @@ tasks.named('shadowJar') {
     archiveBaseName.set(rootProject.name ?: 'AuctionHouse')
     archiveClassifier.set('')
     archiveVersion.set(version)
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.1.2_folia/plugins"))
+    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.2_spigot/plugins"))
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.1_paper/plugins"))
+    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.11_purpur/plugins"))
     mergeServiceFiles()
 }
 

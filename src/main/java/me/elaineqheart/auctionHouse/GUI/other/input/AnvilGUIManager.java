@@ -25,6 +25,7 @@ public class AnvilGUIManager implements Listener {
 
     private final Map<Inventory, InputHandler> activeInventories = new HashMap<>();
 
+    @SuppressWarnings("UnstableApiUsage")
     public void open(Player player, String inventoryTitle, InputHandler handler) {
         AnvilView view = MenuType.ANVIL.create(player, inventoryTitle);
         view.setMaximumRepairCost(0);
@@ -37,6 +38,7 @@ public class AnvilGUIManager implements Listener {
         activeInventories.put(inventory,handler);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @EventHandler
     public void handleClick(InventoryClickEvent event) {
         InputHandler handler = activeInventories.get(event.getView().getTopInventory());
@@ -73,6 +75,7 @@ public class AnvilGUIManager implements Listener {
         handler.execute(player, typedText);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @EventHandler //also set the name formatted
     public void handleTyping(PrepareAnvilEvent event) {
         InputHandler handler = activeInventories.get(event.getView().getTopInventory());
