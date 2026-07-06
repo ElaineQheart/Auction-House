@@ -26,7 +26,7 @@ public class ItemNoteStorage {
     }
 
 
-    public static void createNote(Player p, ItemStack item, double price, boolean isBIDAuction) {
+    public static ItemNote createNote(Player p, ItemStack item, double price, boolean isBIDAuction) {
         ItemNote itemNote = new ItemNote(p, item, price, isBIDAuction);
         ConfigManager.transactionLogger.logSetUpAuction(
                 p.getDisplayName(),
@@ -37,6 +37,7 @@ public class ItemNoteStorage {
 
         //if(r()) RedisNoteStorage.createNote(p, item, price); else
         JsonNoteStorage.createNote(itemNote);
+        return itemNote;
     }
 
     public static void saveNotes() throws IOException {

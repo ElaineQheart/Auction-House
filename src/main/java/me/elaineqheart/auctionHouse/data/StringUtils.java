@@ -2,16 +2,15 @@ package me.elaineqheart.auctionHouse.data;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class StringUtils {
 
@@ -93,6 +92,13 @@ public class StringUtils {
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();
         itemEntity.remove();
+        System.out.println(name);
+        if (ChatColor.stripColor(name).equals("Stone")) {
+            // getting item name failed; using fallback method
+            // if material IS stone, using fallback method works just fine
+            if (item.getItemMeta() != null && !item.getItemMeta().getItemName().isEmpty()) return item.getItemMeta().getItemName();
+            return formatMaterialName(item.getType());
+        }
         return name;
     }
 
@@ -133,6 +139,21 @@ public class StringUtils {
         } else {
             return String.format("%.1fB", price / 1000000000.0);
         }
+    }
+
+
+    // Credit: https://github.com/Rosewood-Development/RoseStacker/blob/master/Plugin/src/main/java/dev/rosewood/rosestacker/utils/StackerUtils.java
+    // But only because it's messing with item creation. When using that plugin, default spawned item entities have "Stone" as their item name.
+    public static String formatMaterialName(Material material) {
+        if (material == Material.TNT)
+            return "TNT";
+        return formatName(material.name());
+    }
+
+    public static String formatName(String name) {
+        return Arrays.stream(name.replace('_', ' ').split("\\s+"))
+                .map(x -> x.substring(0, 1).toUpperCase() + x.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
     }
 
 }
