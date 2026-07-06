@@ -87,13 +87,13 @@ public class StringUtils {
     }
 
     public static String getItemName(ItemStack item) {
+        if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) return item.getItemMeta().getDisplayName();
         World world = Bukkit.getWorlds().getFirst();
         Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();
         itemEntity.remove();
-        if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + item.getItemMeta().getDisplayName();
-        return ChatColor.RESET + name;
+        return name;
     }
 
     public static double parsePositiveNumber(String input) {

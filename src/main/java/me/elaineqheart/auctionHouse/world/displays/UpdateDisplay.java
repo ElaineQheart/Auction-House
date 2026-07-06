@@ -69,7 +69,6 @@ public class UpdateDisplay implements Runnable {
             playerName = itemNote.getPlayerName();
             itemStack = itemNote.getItem();
             name = itemNote.getItemName();
-            if (itemStack.getItemMeta() != null && itemStack.getItemMeta().hasDisplayName()) name = ChatColor.ITALIC + itemStack.getItemMeta().getDisplayName();
         }
 
         if (updateItemEntity(data, itemStack) | updateTextEntity(data, name, playerName)) {
