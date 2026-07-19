@@ -26,7 +26,9 @@ repositories {
 //alt + ins
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude group: "org.bukkit", module: "bukkit"
+    }
     compileOnly("com.github.Unp1xelt:Locale-API:1.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     implementation("net.kyori:adventure-text-minimessage:4.25.0")
@@ -42,9 +44,10 @@ tasks.named('shadowJar') {
     archiveBaseName.set(rootProject.name ?: 'AuctionHouse')
     archiveClassifier.set('')
     archiveVersion.set(version)
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
+    relocate("space.arim.morepaperlib", "me.elaineqheart.auctionHouse.libs.morepaperlib")
+    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.2_spigot/plugins"))
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.11_purpur/plugins"))
+    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.11_purpur/plugins"))
     mergeServiceFiles()
 }
 
