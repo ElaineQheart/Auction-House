@@ -73,6 +73,10 @@ public class SettingManager {
             backwardsCompatibility();
 
         taxRate = c.getDouble("tax", 0.01);
+        if (taxRate < 0 || taxRate > 1) {
+            AuctionHouse.getInstance().getLogger().warning("The Auction House tax is " + taxRate*100 + " %");
+            Bukkit.broadcastMessage("§c[AuctionHouse] Warning! The tax is " + taxRate*100 + " %");
+        }
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
@@ -99,7 +103,7 @@ public class SettingManager {
         minBIDPrice = c.getDouble("min-bid", 1);
         maxBINPrice = c.getDouble("max-bin", -1);
         maxBIDPrice = c.getDouble("max-bid", -1);
-        useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", false);
+        useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", true);
         FileConfiguration layout = ConfigManager.layout.getCustomFile();
         soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");
         soundOpenEnderchest = layout.getString("sounds.open-enderchest", "block.ender_chest.open");
