@@ -503,6 +503,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
 
 
     private static void reload() {
+        SettingManager.loadData();
         ConfigManager.reloadConfigs();
         try {
             ItemNoteStorage.loadNotes();
@@ -510,7 +511,6 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        SettingManager.loadData();
         UpdateDisplay.reload(false);
     }
 

@@ -51,6 +51,7 @@ public final class AuctionHouse extends JavaPlugin {
         if (rsp == null) {
             Bukkit.getLogger().severe("No registered Vault provider found!");
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
