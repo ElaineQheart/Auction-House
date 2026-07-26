@@ -92,7 +92,6 @@ public class StringUtils {
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();
         itemEntity.remove();
-        System.out.println(name);
         if (ChatColor.stripColor(name).equals("Stone")) {
             // getting item name failed; using fallback method
             // if material IS stone, using fallback method works just fine

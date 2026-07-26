@@ -73,9 +73,9 @@ public class SettingManager {
             backwardsCompatibility();
 
         taxRate = c.getDouble("tax", 0.01);
-        if (taxRate < 0 || taxRate > 1) {
+        if (taxRate < 0 || taxRate >= 1) {
             AuctionHouse.getInstance().getLogger().warning("The Auction House tax is " + taxRate*100 + " %");
-            Bukkit.broadcastMessage("§c[AuctionHouse] Warning! The tax is " + taxRate*100 + " %");
+            Bukkit.broadcastMessage("§c[AuctionHouse] Warning! The tax is " + taxRate*100 + "%");
         }
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
