@@ -69,7 +69,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     private void fillOutItems(Player p, List<Integer> itemSlots){
         List<ItemNote> myAuctions = AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId());
         List<ItemNote> returnList;
-        switch (c.getMyCurrentSort()){
+        switch (c.getMyCurrentSort()) {
             case SOLD_ITEMS -> returnList = myAuctions.stream()
                         .filter(note -> note.isSold() || note.isBIDAuction() && note.hasBidHistory() && note.isExpired())
                         .collect(Collectors.toList());
@@ -87,6 +87,11 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {
         noteSize = myAuctions.size();
         screenSize = itemSlots.size();
+
+        int pages = (noteSize-1) / screenSize;
+        if (c.getMyCurrentPage() > pages) c.setMyCurrentPage(pages);
+        if (c.getMyCurrentPage() < 0) c.setMyCurrentPage(0);
+
         int start = c.getMyCurrentPage() * screenSize;
         int stop = start + screenSize;
         int end = Math.min(noteSize, stop);
@@ -244,7 +249,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     }
 
     private InventoryButton nextPage(){
-        int pages = (noteSize-1)/screenSize;
+        final int pages = ((noteSize == 0 ? 1 : noteSize) - 1) / screenSize;
         ItemStack item = ConfigManager.layout.getItem("n");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
@@ -263,13 +268,14 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
                 });
     }
     private InventoryButton previousPage(){
+        final int pages = ((noteSize == 0 ? 1 : noteSize) - 1) / screenSize;
         ItemStack item = ConfigManager.layout.getItem("p");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
         meta.setItemName(M.getFormatted("items.previous-page.name"));
         meta.setLore(M.getLoreList("items.previous-page.lore",
                 "%page%", String.valueOf(c.getMyCurrentPage()+1),
-                "%pages%", String.valueOf((noteSize-1)/screenSize+1)));
+                "%pages%", String.valueOf(pages+1)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)

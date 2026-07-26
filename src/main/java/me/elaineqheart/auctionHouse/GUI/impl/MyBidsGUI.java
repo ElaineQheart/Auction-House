@@ -67,6 +67,11 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
     private void createButtonsForAuctionItems(List<ItemNote> myAuctions, List<Integer> itemSlots) {
         noteSize = myAuctions.size();
         screenSize = itemSlots.size();
+
+        int pages = (noteSize-1) / screenSize;
+        if (page > pages) page = pages;
+        if (page < 0) page = 0;
+
         int start = page * screenSize;
         int stop = start + screenSize;
         int end = Math.min(noteSize, stop);
