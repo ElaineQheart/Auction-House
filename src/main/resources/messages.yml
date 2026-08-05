@@ -63,7 +63,7 @@ chat:
     &n§b-------------------------------------------------"
   sold-message:
     prefix: "§6[Auction] §7%buyer%§e bought §r%item%§e for %price%"
-    interaction: "§f§l[CLICK]"
+    interaction: " §f§l[CLICK]"
     auto-collect: "§6[Auction] §7%buyer%§e bought §r%item%§e! §6+%price%"
   auction-announcement: "§6[Auction] §7%player%§e is selling §r%item%§e x%amount% for %price%"
   bid-announcement: "§6[Auction] §7%player%§e is auctioning §r%item%§e x%amount% for %price%"

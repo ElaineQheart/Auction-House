@@ -297,6 +297,9 @@ public class SettingManager {
             if (Objects.equals(messageFile.get("command-feedback.blacklist-success"), "Successfully added the properties of %item% to the blacklist")) {
                 messageFile.set("command-feedback.blacklist-success", "Successfully added the properties of %item%§r to the blacklist");
             }
+            if (Objects.equals(messageFile.get("chat.sold-message.interaction"), "§f§l[CLICK]")) {
+                messageFile.set("chat.sold-message.interaction", " §f§l[CLICK]");
+            }
         }
 
         ConfigManager.messages.save();
