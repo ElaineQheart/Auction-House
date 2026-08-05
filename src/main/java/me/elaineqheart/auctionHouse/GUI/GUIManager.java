@@ -1,5 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI;
 
+import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyBidsGUI;
@@ -25,7 +26,9 @@ public class GUIManager {
 
     public void openGUI(InventoryGUI gui, Player player) {
         this.registerHandledInventory(gui.getInventory(), gui);
-        player.openInventory(gui.getInventory());
+        AuctionHouse.getInstance().getScheduler().entitySpecificScheduler(player).run((task) -> {
+            player.openInventory(gui.getInventory());
+        }, null);
     }
     public void openGUI(Player p, AhConfiguration c, AhConfiguration.View goBackTo) {
         if (goBackTo == AhConfiguration.View.AUCTION_HOUSE) openGUI(new AuctionHouseGUI(c), p);
