@@ -158,7 +158,9 @@ public class AuctionHouseStorage {
         sortedPlayers.clear();
         for(UUID noteID : itemNotes) {
             ItemNote note = notes.get(noteID);
-            for(UUID playerID : note.getBidders()) {
+            Set<UUID> involvedPlayers = note.getBidders();
+            involvedPlayers.add(note.getPlayerUUID());
+            for(UUID playerID : involvedPlayers) {
                 if(canCollectBid(note, playerID)) addBid(playerID, note.getNoteID());
             }
         }
