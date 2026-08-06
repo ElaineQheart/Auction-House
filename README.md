@@ -6,4 +6,4 @@ Plugin originally made for SpireMC; This is a spigot plugin and I'm using gradle
 *spigot mc page for some images:* 
 https://www.spigotmc.org/resources/auction-house.125238/
 
-*also modrinth page:* https://modrinth.com/plugin/auction-house-plugin
+*also modrinth page to download the plugin:* https://modrinth.com/plugin/auction-house-plugin
