@@ -74,7 +74,7 @@ public class AuctionHouseStorage {
 
     public static boolean canCollectBid(ItemNote item, UUID player) {return !item.getClaimedPlayers().contains(player);}
 
-    public static void removeBid(UUID player, UUID noteID) {
+    public static void removeBidFromMemory(UUID player, UUID noteID) {
         if(sortedBids.containsKey(player)) sortedBids.get(player).remove(noteID);
         if(sortedPlayers.containsKey(noteID)) {
             sortedPlayers.get(noteID).remove(player);
@@ -145,11 +145,9 @@ public class AuctionHouseStorage {
     }
 
     public static void addBid(UUID playerID, UUID noteID) {
-        sortedBids.computeIfAbsent(playerID, k -> new ArrayList<>());
-        List<UUID> bids = sortedBids.get(playerID);
+        List<UUID> bids = sortedBids.computeIfAbsent(playerID, k -> new ArrayList<>());
         if(!bids.contains(noteID)) bids.addFirst(noteID);
-        sortedPlayers.computeIfAbsent(noteID, k -> new ArrayList<>());
-        List<UUID> players = sortedPlayers.get(noteID);
+        List<UUID> players = sortedPlayers.computeIfAbsent(noteID, k -> new ArrayList<>());
         if(!players.contains(playerID)) players.addFirst(playerID);
     }
 
@@ -158,9 +156,8 @@ public class AuctionHouseStorage {
         sortedPlayers.clear();
         for(UUID noteID : itemNotes) {
             ItemNote note = notes.get(noteID);
-            Set<UUID> involvedPlayers = note.getBidders();
-            involvedPlayers.add(note.getPlayerUUID());
-            for(UUID playerID : involvedPlayers) {
+            if (!note.isBIDAuction()) continue;
+            for(UUID playerID : note.getBidders()) {
                 if(canCollectBid(note, playerID)) addBid(playerID, note.getNoteID());
             }
         }

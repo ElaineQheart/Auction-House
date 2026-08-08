@@ -125,9 +125,9 @@ public class ItemNoteStorage {
     public static void addBid(ItemNote note, Player player, double amount) {
         note.addBid(player, amount);
     }
-    public static void removeBid(Player player, ItemNote note) {
+    public static void removeBidFromMemory(Player player, ItemNote note) {
         note.removeBid(player);
-        AuctionHouseStorage.removeBid(player.getUniqueId(), note.getNoteID());
+        AuctionHouseStorage.removeBidFromMemory(player.getUniqueId(), note.getNoteID());
     }
 
     //public static boolean r() {return SettingManager.useRedis;}
@@ -230,7 +230,7 @@ public class ItemNoteStorage {
     public static boolean claimEndedAuctionItem(Player p, ItemNote note) {
         //check synchronously when using database
 
-        removeBid(p, note);
+        removeBidFromMemory(p, note);
         saveNotesWithoutCheck();
         return true;
     }

@@ -617,11 +617,6 @@ public class ItemManager {
         ItemStack item = ConfigManager.layout.getItem("collect-coins");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        // note.getBidHistoryList() is empty after server restart if every player collected it.
-
-
-
-
         meta.setItemName(M.getFormatted("items.collect-coins.name"));
         List<String> lore = M.getLoreList("items.collect-coins.lore", note.getBidHistoryList().getLast().getPrice(),
                 "%player%", M.formatPlayer(note.getLastBidderName(), note.getLastBidder()));

@@ -1,6 +1,5 @@
 package me.elaineqheart.auctionHouse.data;
 
-import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import org.bukkit.*;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class StringUtils {

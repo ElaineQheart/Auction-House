@@ -138,7 +138,6 @@ public class ItemNote {
     public UUID getBuyerUUID() {return isBIDAuction ? getLastBidder() :
             (buyerUUID != null ? buyerUUID : Bukkit.getOfflinePlayer(buyerName).getUniqueId());} //offline player backwards compatibility
     public UUID getPlayerUUID() {return playerUUID;}
-    public Date getDateCreated() {return dateCreated;}
     public double getPrice() {return price;}
     public boolean isSold() {return isSold;}
     public boolean isTheoreticallyOnAuction() {return !isSold || partiallySoldAmountLeft != 0;} //NOT INCLUDING EXPIRED
