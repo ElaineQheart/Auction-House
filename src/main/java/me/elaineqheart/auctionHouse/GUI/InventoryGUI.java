@@ -32,14 +32,15 @@ public abstract class InventoryGUI implements InventoryHandler {
     }
 
     public void decorate(Player player) {
-        try {
-            this.buttonMap.forEach((slot, button) -> {
+        this.buttonMap.forEach((slot, button) -> {
+            try {
                 ItemStack icon = button.getIconCreator().apply(player);
                 this.inventory.setItem(slot, icon);
-            });
-        } catch (Exception e) {
-            AuctionHouse.getInstance().getLogger().warning("GUI render failed in slot: " + e.getMessage());
-        }
+            } catch (Exception e) {
+                AuctionHouse.getInstance().getLogger().warning("GUI render failed in slot: " + slot);
+            }
+        });
+
     }
 
     @Override
