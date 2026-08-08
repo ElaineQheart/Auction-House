@@ -83,7 +83,7 @@ public class AuctionHouseStorage {
     }
     public static void checkRemove(UUID noteID) {
         if(!notes.get(noteID).isBIDAuction()) return;
-        if(sortedPlayers.get(noteID).isEmpty() && notes.get(noteID).isSold()) {
+        if(sortedPlayers.containsKey(noteID) && sortedPlayers.get(noteID).isEmpty() && notes.get(noteID).isSold()) {
             sortedPlayers.remove(noteID);
             sortedBids.remove(notes.get(noteID).getPlayerUUID());
             removeFromLists(noteID);
