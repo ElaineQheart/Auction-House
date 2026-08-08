@@ -90,24 +90,18 @@ public class StringUtils {
     public static String getItemName(ItemStack item) {
         if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) return item.getItemMeta().getDisplayName();
         World world = Bukkit.getWorlds().getFirst();
+        Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
+        itemEntity.setItemStack(item);
+        String name = itemEntity.getName();
+        itemEntity.remove();
 
-        AtomicReference<String> name = new AtomicReference<>("");
-
-        final Location location = new Location(world,0,0,0);
-        AuctionHouse.getInstance().getScheduler().regionSpecificScheduler(location).run((task) -> {
-            Item itemEntity = (Item) world.spawnEntity(location, EntityType.ITEM);
-            itemEntity.setItemStack(item);
-            name.set(itemEntity.getName());
-            itemEntity.remove();
-        });
-
-        if (ChatColor.stripColor(name.get()).equals("Stone")) {
+        if (ChatColor.stripColor(name).equals("Stone")) {
             // getting item name failed; using fallback method
             // if material IS stone, using fallback method works just fine
             if (item.getItemMeta() != null && !item.getItemMeta().getItemName().isEmpty()) return item.getItemMeta().getItemName();
             return formatMaterialName(item.getType());
         }
-        return name.get();
+        return name;
     }
 
     public static double parsePositiveNumber(String input) {
