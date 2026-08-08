@@ -383,10 +383,10 @@ public class ItemManager {
             } else {
                 addAdminMessageOrExpired(lore, note);
             }
-        } else if (note.isExpired()) {
-            addAdminMessageOrExpired(lore, note);
         } else if (note.isBIDAuction() && note.hasBidHistory() && note.isExpired()) {
             lore.addAll(M.getLoreList("items.auction.lore.ended"));
+        } else if (note.isExpired()) {
+            addAdminMessageOrExpired(lore, note);
         } else if (note.isSold() && !note.isTheoreticallyOnAuction()) {
             lore.addAll(M.getLoreList("items.auction.lore.sold",
                     "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID())));
@@ -617,6 +617,11 @@ public class ItemManager {
         ItemStack item = ConfigManager.layout.getItem("collect-coins");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
+        // note.getBidHistoryList() is empty after server restart if every player collected it.
+
+
+
+
         meta.setItemName(M.getFormatted("items.collect-coins.name"));
         List<String> lore = M.getLoreList("items.collect-coins.lore", note.getBidHistoryList().getLast().getPrice(),
                 "%player%", M.formatPlayer(note.getLastBidderName(), note.getLastBidder()));
