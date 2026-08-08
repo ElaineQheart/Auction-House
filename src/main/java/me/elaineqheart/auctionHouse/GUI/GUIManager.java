@@ -26,9 +26,7 @@ public class GUIManager {
 
     public void openGUI(InventoryGUI gui, Player player) {
         this.registerHandledInventory(gui.getInventory(), gui);
-        AuctionHouse.getInstance().getScheduler().entitySpecificScheduler(player).run((task) -> {
-            player.openInventory(gui.getInventory());
-        }, null);
+        player.openInventory(gui.getInventory());
     }
     public void openGUI(Player p, AhConfiguration c, AhConfiguration.View goBackTo) {
         if (goBackTo == AhConfiguration.View.AUCTION_HOUSE) openGUI(new AuctionHouseGUI(c), p);
