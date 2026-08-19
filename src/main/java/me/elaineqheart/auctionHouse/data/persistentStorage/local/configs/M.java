@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -25,6 +26,7 @@ public class M extends Config {
 
     private static final MiniMessage mm = MiniMessage.builder()
             .preProcessor(M::convertLegacyInput)
+            .postProcessor(M::explicitItalic)
             .build();
 
     // legacy %placeholder% tokens that are rewritten to MiniMessage tags so old configs keep working
@@ -69,6 +71,14 @@ public class M extends Config {
     // parses arbitrary text (item names, admin input) through the same MiniMessage pipeline
     public static Component deserialize(String input) {
         return safeDeserialize(input);
+    }
+
+    private static Component explicitItalic(Component component) {
+        return component.style(s -> {
+            if (s.build().decoration(TextDecoration.ITALIC) == TextDecoration.State.NOT_SET) {
+                s.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+            }
+        }).children(component.children().stream().map(M::explicitItalic).toList());
     }
 
     public static Component formatPlayer(String playerName, UUID playerID) {
