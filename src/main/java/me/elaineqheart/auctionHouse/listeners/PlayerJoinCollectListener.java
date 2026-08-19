@@ -6,6 +6,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,10 +29,11 @@ public class PlayerJoinCollectListener implements Listener {
     public static void sell(ItemNote note, Player p) {
         if (!note.isSold() && !(note.isBIDAuction() && note.hasBidHistory() && note.isExpired())) return;
         int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
-        String message = M.getFormatted("chat.sold-message.auto-collect", note.getSoldPrice(),
-                "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID()),
-                "%item%", note.getItemName(),
-                "%amount%", String.valueOf(amount));
+        Component message = M.getFormatted("chat.sold-message.auto-collect",
+                "price", note.getSoldPrice(),
+                "buyer", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID()),
+                "item", note.getItemName(),
+                "amount", String.valueOf(amount));
         boolean success = CollectSoldItemGUI.collect(p, note.getNoteID(), amount, note.getSoldPrice());
         if (!success || !p.isOnline()) return;
         if (SettingManager.soldMessageEnabled) p.sendMessage(message);

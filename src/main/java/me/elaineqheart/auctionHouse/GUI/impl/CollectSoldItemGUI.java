@@ -12,6 +12,7 @@ import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
+import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -94,9 +95,10 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 .creator(player -> ItemManager.collectSoldItem(getProfit(price)))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    String message = M.getFormatted("chat.collect-sold-auction", getProfit(price),
-                            "%amount%", String.valueOf(item.getAmount()),
-                            "%item%", note.getItemName());
+                    Component message = M.getFormatted("chat.collect-sold-auction",
+                            "price", getProfit(price),
+                            "amount", String.valueOf(item.getAmount()),
+                            "item", note.getItemName());
 
                     boolean success = collect(p, note.getNoteID(), item.getAmount(), price);
                     AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);

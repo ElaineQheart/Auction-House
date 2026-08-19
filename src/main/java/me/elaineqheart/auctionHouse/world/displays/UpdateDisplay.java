@@ -9,6 +9,8 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigMana
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
@@ -98,10 +100,10 @@ public class UpdateDisplay implements Runnable {
 
         String time = StringUtils.getTimeTrimmed(note.getTimeLeft());
         for (Sign sign : signs) {
-            sign.getSide(Side.FRONT).setLine(0, M.getFormatted("world.displays.line-0", note.getPrice(), "%time%", time));
-            sign.getSide(Side.FRONT).setLine(1, M.getFormatted("world.displays.line-1", note.getPrice(), "%time%", time));
-            sign.getSide(Side.FRONT).setLine(2, M.getFormatted("world.displays.line-2", note.getPrice(), "%time%", time));
-            sign.getSide(Side.FRONT).setLine(3, M.getFormatted("world.displays.line-3", note.getPrice(), "%time%", time));
+            sign.getSide(Side.FRONT).line(0, M.getFormatted("world.displays.line-0", "price-trim", note.getPrice()));
+            sign.getSide(Side.FRONT).line(1, M.getFormatted("world.displays.line-1", "price", note.getPrice(), "time", time));
+            sign.getSide(Side.FRONT).line(2, M.getFormatted("world.displays.line-2", "price", note.getPrice(), "time", time));
+            sign.getSide(Side.FRONT).line(3, M.getFormatted("world.displays.line-3", "price", note.getPrice(), "time", time));
             sign.update(true, false);
         }
     }
@@ -157,12 +159,17 @@ public class UpdateDisplay implements Runnable {
             data.textUUID = data.text.getUniqueId();
         }
 
+        Component byPlayer = M.getFormatted("world.displays.by-player", "player", playerName);
         if (data.sortType.equals("highest_price")) {
-            data.text.setText(ChatColor.YELLOW + "#" + data.rank + " " + ChatColor.RESET + itemName + ChatColor.GRAY + "\n" +
-                    M.getFormatted("world.displays.by-player", "%player%", playerName));
+            data.text.text(Component.text("#" + data.rank + " ", NamedTextColor.YELLOW)
+                    .append(M.deserialize(itemName))
+                    .append(Component.text("\n", NamedTextColor.GRAY))
+                    .append(byPlayer));
         } else if (data.sortType.equals("ending_soon")) {
-            data.text.setText(ChatColor.GREEN + "#" + data.rank + " " + ChatColor.RESET + itemName + ChatColor.GRAY + "\n" +
-                    M.getFormatted("world.displays.by-player", "%player%", playerName));
+            data.text.text(Component.text("#" + data.rank + " ", NamedTextColor.GREEN)
+                    .append(M.deserialize(itemName))
+                    .append(Component.text("\n", NamedTextColor.GRAY))
+                    .append(byPlayer));
         }
         return reload;
     }

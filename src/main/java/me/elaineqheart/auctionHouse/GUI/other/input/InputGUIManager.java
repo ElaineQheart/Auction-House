@@ -20,7 +20,7 @@ public class InputGUIManager implements Listener {
 
     @SuppressWarnings("UnstableApiUsage")
     public void open(Player player, String inventoryTitleKey, InputHandler handler) {
-        String inventoryTitle = M.getFormatted(inventoryTitleKey);
+        String inventoryTitle = M.getString(inventoryTitleKey);
         try {
             MenuType.class.getName();
 

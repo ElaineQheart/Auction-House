@@ -1,85 +1,73 @@
-# color codes:
-# §0: Black
-# §1: Dark Blue
-# §2: Dark Green
-# §3: Dark Aqua
-# §4: Dark Red
-# §5: Dark Purple
-# §6: Gold
-# §7: Gray
-# §8: Dark Gray
-# §9: Blue
-# §a: Green
-# §b: Aqua
-# §c: Red
-# §d: Light Purple
-# §e: Yellow
-# §f: White
-
-# §k obfuscated
-# §l bold
-# §m strikethrough
-# §n underline
-# §o italic
-# §r reset
+# MiniMessage format:
+# https://docs.advntr.dev/minimessage/format.html
+#
+# Colors:
+# <black> <dark_blue> <dark_green> <dark_aqua> <dark_red> <dark_purple>
+# <gold> <gray> <dark_gray> <blue> <green> <aqua> <red> <light_purple>
+# <yellow> <white>
+#
+# Formats:
+# <obfuscated> <bold> <strikethrough> <underlined> <italic> <reset>
+# <color:#RRGGBB> for hex colors
+#
 # &n new line
 
 # chat messages from the auction house
 chat:
-  already-sold: "§cERROR! This item has already been sold!"
-  already-sold2: "§cThis item has already been sold!"
-  already-sold3: "§cAnother player already placed a bid!"
-  non-existent: "§cERROR! This item has been removed!"
-  non-existent2: "§cThis item has been removed!"
-  not-enough-money: "§cYou don't have enough money to buy this item!"
-  expired: "§cThe item is no longer on auction!"
-  inventory-full: "§cYour inventory is full!
+  already-sold: "<red>ERROR! This item has already been sold!"
+  already-sold2: "<red>This item has already been sold!"
+  already-sold3: "<red>Another player already placed a bid!"
+  non-existent: "<red>ERROR! This item has been removed!"
+  non-existent2: "<red>This item has been removed!"
+  not-enough-money: "<red>You don't have enough money to buy this item!"
+  expired: "<red>The item is no longer on auction!"
+  inventory-full: "<red>Your inventory is full!
     &nPlease empty a slot in order to take the item!"
-  admin-expire-auction: "§b-------------------------------------------------
-    &n§aYou successfully expired the auction
-    &n§rReason: %reason%
-    &n§b-------------------------------------------------"
-  admin-delete-auction: "§b-------------------------------------------------
-    &n§aYou successfully deleted the auction
-    &n§rReason: %reason%
-    &n§b-------------------------------------------------"
-  expired-auction-by-admin: "§4-------------------------------------------------
-    &n§cYour auction was expired by a moderator
-    &n§7Reason: %reason%
-    &n§4-------------------------------------------------"
-  deleted-auction-by-admin: "§4-------------------------------------------------
-    &n§cYour auction was deleted by a moderator
-    &n§7Reason: %reason%
-    &n§4-------------------------------------------------"
+  admin-expire-auction: "<aqua>-------------------------------------------------
+    &n<green>You successfully expired the auction
+    &n<reset>Reason: <reason>
+    &n<aqua>-------------------------------------------------"
+  admin-delete-auction: "<aqua>-------------------------------------------------
+    &n<green>You successfully deleted the auction
+    &n<reset>Reason: <reason>
+    &n<aqua>-------------------------------------------------"
+  expired-auction-by-admin: "<dark_red>-------------------------------------------------
+    &n<red>Your auction was expired by a moderator
+    &n<gray>Reason: <reason>
+    &n<dark_red>-------------------------------------------------"
+  deleted-auction-by-admin: "<dark_red>-------------------------------------------------
+    &n<red>Your auction was deleted by a moderator
+    &n<gray>Reason: <reason>
+    &n<dark_red>-------------------------------------------------"
   own-auction: "This is your own auction! You cannot buy it."
-  auction-canceled: "§b-------------------------------------------------
-    &n§eYour auction was canceled!
-    &n§b-------------------------------------------------"
-  collect-sold-auction: "§b-------------------------------------------------
-    &n§eYou collected an auction for %price%!
-    &n§b-------------------------------------------------"
-  purchase-auction: "§b-------------------------------------------------
-    &n§eYou purchased §r%item%§e from §7%seller%§e's auction
-    &n§b-------------------------------------------------"
+  auction-canceled: "<aqua>-------------------------------------------------
+    &n<yellow>Your auction was canceled!
+    &n<aqua>-------------------------------------------------"
+  collect-sold-auction: "<aqua>-------------------------------------------------
+    &n<yellow>You collected an auction for <price>!
+    &n<aqua>-------------------------------------------------"
+  purchase-auction: "<aqua>-------------------------------------------------
+    &n<yellow>You purchased <reset><item><yellow> from <gray><seller><yellow>'s auction
+    &n<aqua>-------------------------------------------------"
   sold-message:
-    prefix: "§6[Auction] §7%buyer%§e bought §r%item%§e for %price%"
-    interaction: " §f§l[CLICK]"
-    auto-collect: "§6[Auction] §7%buyer%§e bought §r%item%§e! §6+%price%"
-  auction-announcement: "§6[Auction] §7%player%§e is selling §r%item%§e x%amount% for %price%"
-  bid-announcement: "§6[Auction] §7%player%§e is auctioning §r%item%§e x%amount% for %price%"
-  invalid-amount: "§cThat is not a valid amount!"
-  placed-bid: "§eBid of %price%§e placed for §r%item%§e!"
+    prefix: "<gold>[Auction] <gray><buyer><yellow> bought <reset><item><yellow> for <price>"
+    interaction: " <white><bold>[CLICK]"
+    auto-collect: "<gold>[Auction] <gray><buyer><yellow> bought <reset><item><yellow>! <gold>+<price>"
+  auction-announcement: "<gold>[Auction] <gray><player><yellow> is selling <reset><item><yellow> x<amount> for <price>"
+  bid-announcement: "<gold>[Auction] <gray><player><yellow> is auctioning <reset><item><yellow> x<amount> for <price>"
+  invalid-amount: "<red>That is not a valid amount!"
+  placed-bid: "<yellow>Bid of <price><yellow> placed for <reset><item><yellow>!"
   outbid:
-    prefix: "§6[Auction] §7%player%§e outbid you by %price%§e for §r%item%§e"
-    interaction: "§f§l[CLICK]"
-  already-top-bid: "§aYou already have the top bid on this auction!"
-  claim-auction: "§b-------------------------------------------------
-    &n§eYou claimed §r%item%§e from §7%seller%§e's auction
-    &n§b-------------------------------------------------"
-  collect-coins: "§b-------------------------------------------------
-    &n§eYou collected %price%§e back from an auction
-    &n§b-------------------------------------------------"
-  input-listener: "§e%request%. Please type your input in chat:"
+    prefix: "<gold>[Auction] <gray><player><yellow> outbid you by <price><yellow> for <reset><item><yellow>"
+    interaction: "<white><bold>[CLICK]"
+  already-top-bid: "<green>You already have the top bid on this auction!"
+  claim-auction: "<aqua>-------------------------------------------------
+    &n<yellow>You claimed <reset><item><yellow> from <gray><seller><yellow>'s auction
+    &n<aqua>-------------------------------------------------"
+  collect-coins: "<aqua>-------------------------------------------------
+    &n<yellow>You collected <price><yellow> back from an auction
+    &n<aqua>-------------------------------------------------"
+  input-listener: "<yellow><request>. Please type your input in chat:"
 
 inventory-titles:
   admin-confirm-gui: "Confirm Action"
@@ -100,352 +88,352 @@ inventory-titles:
   auction-view: "Auction View"
 items:
   next-page:
-    name: "§aNext Page"
-    lore: "§7%page%/%pages%
+    name: "<green>Next Page"
+    lore: "<gray><page>/<pages>
       &n
-      &n§eRight-Click to skip!
-      &n§aClick to turn the page!"
+      &n<yellow>Right-Click to skip!
+      &n<green>Click to turn the page!"
   previous-page:
-    name: "§aPrevious Page"
-    lore: "§7%page%/%pages%
+    name: "<green>Previous Page"
+    lore: "<gray><page>/<pages>
       &n
-      &n§eRight-Click to skip!
-      &n§aClick to turn the page!"
+      &n<yellow>Right-Click to skip!
+      &n<green>Click to turn the page!"
   search:
-    name: "§aSearch"
-    lore: "§7Find Items by name, type or enchants
+    name: "<green>Search"
+    lore: "<gray>Find Items by name, type or enchants
       &n
-      &n§7Filter: %filter%
+      &n<gray>Filter: <filter>
       &n
-      &n§eRight-Click to clear!
-      &n§aClick to set filter!"
+      &n<yellow>Right-Click to clear!
+      &n<green>Click to set filter!"
   locked-slot:
-    name: "§cLocked Slot"
+    name: "<red>Locked Slot"
   refresh:
-    name: "§aRefresh"
-    lore: "§7Click to refresh the menu"
+    name: "<green>Refresh"
+    lore: "<gray>Click to refresh the menu"
   back-main-menu:
-    name: "§aMain Menu"
-    lore: "§7Click to go back!"
+    name: "<green>Main Menu"
+    lore: "<gray>Click to go back!"
   back-my-auctions:
-    name: "§aMy Auctions"
-    lore: "§7Click to go back!"
+    name: "<green>My Auctions"
+    lore: "<gray>Click to go back!"
   info:
-    name: "§aInfo"
-    lore: "§7To set up a new auction use
-      &n§7/ah sell 1000
-      &n§7while holding the item to sell in your hand.
-      &n§7The number will be the price of the item.
-      &n§7Current tax is %tax%§7.
-      &n§8 - auction house made by ElaineQheart"
+    name: "<green>Info"
+    lore: "<gray>To set up a new auction use
+      &n<gray>/ah sell 1000
+      &n<gray>while holding the item to sell in your hand.
+      &n<gray>The number will be the price of the item.
+      &n<gray>Current tax is <tax><gray>.
+      &n<dark_gray> - auction house made by ElaineQheart"
   my-auctions:
-    name: "§aMy Auctions"
-    lore: "§7Click to view your auctions!"
+    name: "<green>My Auctions"
+    lore: "<gray>Click to view your auctions!"
   sort-highest-price:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§b► Highest Price
-      &n§7 Lowest Price
-      &n§7 Ending Soon
-      &n§7 Alphabetical
+      &n<aqua>► Highest Price
+      &n<gray> Lowest Price
+      &n<gray> Ending Soon
+      &n<gray> Alphabetical
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   sort-lowest-price:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 Highest Price
-      &n§b► Lowest Price
-      &n§7 Ending Soon
-      &n§7 Alphabetical
+      &n<gray> Highest Price
+      &n<aqua>► Lowest Price
+      &n<gray> Ending Soon
+      &n<gray> Alphabetical
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   sort-ending-soon:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 Highest Price
-      &n§7 Lowest Price
-      &n§b► Ending Soon
-      &n§7 Alphabetical
+      &n<gray> Highest Price
+      &n<gray> Lowest Price
+      &n<aqua>► Ending Soon
+      &n<gray> Alphabetical
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   sort-alphabetical:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 Highest Price
-      &n§7 Lowest Price
-      &n§7 Ending Soon
-      &n§b► Alphabetical
+      &n<gray> Highest Price
+      &n<gray> Lowest Price
+      &n<gray> Ending Soon
+      &n<aqua>► Alphabetical
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   bin-filter-all:
-    name: "§aBIN Filter"
+    name: "<green>BIN Filter"
     lore: "
-      &n§b► Show All
-      &n§7 BIN Only
-      &n§7 Auctions Only
+      &n<aqua>► Show All
+      &n<gray> BIN Only
+      &n<gray> Auctions Only
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch filter!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch filter!"
   bin-filter-bin:
-    name: "§aBIN Filter"
+    name: "<green>BIN Filter"
     lore: "
-      &n§7 Show All
-      &n§b► BIN Only
-      &n§7 Auctions Only
+      &n<gray> Show All
+      &n<aqua>► BIN Only
+      &n<gray> Auctions Only
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch filter!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch filter!"
   bin-filter-auctions:
-    name: "§aBIN Filter"
+    name: "<green>BIN Filter"
     lore: "
-      &n§7 Show All
-      &n§7 BIN Only
-      &n§b► Auctions Only
+      &n<gray> Show All
+      &n<gray> BIN Only
+      &n<aqua>► Auctions Only
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch filter!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch filter!"
   my-sort-all:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§b► All Auctions
-      &n§7 Sold Items
-      &n§7 Expired Items
-      &n§7 Active Auctions
+      &n<aqua>► All Auctions
+      &n<gray> Sold Items
+      &n<gray> Expired Items
+      &n<gray> Active Auctions
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   my-sort-sold:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 All Auctions
-      &n§b► Sold Items
-      &n§7 Expired Items
-      &n§7 Active Auctions
+      &n<gray> All Auctions
+      &n<aqua>► Sold Items
+      &n<gray> Expired Items
+      &n<gray> Active Auctions
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   my-sort-expired:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 All Auctions
-      &n§7 Sold Items
-      &n§b► Expired Items
-      &n§7 Active Auctions
+      &n<gray> All Auctions
+      &n<gray> Sold Items
+      &n<aqua>► Expired Items
+      &n<gray> Active Auctions
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   my-sort-active:
-    name: "§aSort"
+    name: "<green>Sort"
     lore: "
-      &n§7 All Auctions
-      &n§7 Sold Items
-      &n§7 Expired Items
-      &n§b► Active Auctions
+      &n<gray> All Auctions
+      &n<gray> Sold Items
+      &n<gray> Expired Items
+      &n<aqua>► Active Auctions
       &n
-      &n§eRight-Click to go backwards!
-      &n§aClick to switch sort!"
+      &n<yellow>Right-Click to go backwards!
+      &n<green>Click to switch sort!"
   cancel:
-    name: "§cCancel"
+    name: "<red>Cancel"
   collect-expired:
-    name: "§cCollect Expired Item"
+    name: "<red>Collect Expired Item"
     lore: "
-      &n§eClick to collect!"
+      &n<yellow>Click to collect!"
   cancel-auction:
-    name: "§cCancel Auction Item"
+    name: "<red>Cancel Auction Item"
     lore: "
-      &n§eClick to collect!"
+      &n<yellow>Click to collect!"
   cancel-bid-auction:
-    name: "§cCancel Auction"
+    name: "<red>Cancel Auction"
     lore: "
-      &n§7You can cancel auctions as long
-      &n§7as they have§c 0§7 bids!
+      &n<gray>You can cancel auctions as long
+      &n<gray>as they have<red> 0<gray> bids!
       &n
-      &n§eClick to cancel auction!"
+      &n<yellow>Click to cancel auction!"
   admin-info:
-    name: "§aInfo"
-    lore: "§7Click on an item to expire or delete it
-      &n§7Expired items can be collected again by the player
-      &n§7Deleted items will be removed from the auction house
-      &n§7and you will get them in your inventory"
+    name: "<green>Info"
+    lore: "<gray>Click on an item to expire or delete it
+      &n<gray>Expired items can be collected again by the player
+      &n<gray>Deleted items will be removed from the auction house
+      &n<gray>and you will get them in your inventory"
   admin-cancel-auction:
-    name: "§cCancel Auction Item"
+    name: "<red>Cancel Auction Item"
     lore: "
-      &n§eThe player won't get the item back! You will collect it!"
+      &n<yellow>The player won't get the item back! You will collect it!"
   admin-expire-auction:
-    name: "§eExpire Auction Item"
+    name: "<yellow>Expire Auction Item"
     lore: "
-      &n§eClick to make it expire!"
+      &n<yellow>Click to make it expire!"
   confirm:
-    name: "§aConfirm"
+    name: "<green>Confirm"
   deleted:
-    name: "§cCanceled Item"
+    name: "<red>Canceled Item"
   auction:
     lore:
-      default: "§8------------------
-        &n§7Seller: %seller%
-        &n§7Buy it now: %price%
+      default: "<dark_gray>------------------
+        &n<gray>Seller: <seller>
+        &n<gray>Buy it now: <price>
         &n "
-      default-starting-bid: "§8------------------
-        &n§7Seller: %seller%
-        &n§7Starting Bid: %price%
+      default-starting-bid: "<dark_gray>------------------
+        &n<gray>Seller: <seller>
+        &n<gray>Starting Bid: <price>
         &n "
-      default-bid: "§8------------------
-        &n§7Seller: %seller%
-        &n§7Bids: §a%amountOfBids% bids
+      default-bid: "<dark_gray>------------------
+        &n<gray>Seller: <seller>
+        &n<gray>Bids: <green><amountOfBids> bids
         &n 
-        &n§7Top bid: %price%
-        &n§7Bidder: %buyer%
+        &n<gray>Top bid: <price>
+        &n<gray>Bidder: <buyer>
         &n "
-      own-auction: "§aThis is your own item!
+      own-auction: "<green>This is your own item!
         &n "
-      admin-deleted: "§cDeleted by a moderator!"
-      admin-expired: "§cExpired by a moderator!"
-      admin-message: "§7Reason: %reason%"
-      expired: "§cExpired!"
-      ended: "§7Status:§a Ended!"
-      sold: "§6Sold!
-        &n§7Buyer: %buyer%"
-      partially-sold: "§6Sold: §e%sold%/%total%
-        &n§7Buyer: %buyer%&n "
-      waiting-list: "Auction starting in: %time%"
-      active: "Ends in: %time%"
-      buying-item: "§8------------------
-        &n§e§nBUYING ITEM!"
-      shulker-preview: "§f§oRight-Click to preview!"
+      admin-deleted: "<red>Deleted by a moderator!"
+      admin-expired: "<red>Expired by a moderator!"
+      admin-message: "<gray>Reason: <reason>"
+      expired: "<red>Expired!"
+      ended: "<gray>Status:<green> Ended!"
+      sold: "<gold>Sold!
+        &n<gray>Buyer: <buyer>"
+      partially-sold: "<gold>Sold: <yellow><sold>/<total>
+        &n<gray>Buyer: <buyer>&n "
+      waiting-list: "Auction starting in: <time>"
+      active: "Ends in: <time>"
+      buying-item: "<dark_gray>------------------
+        &n<yellow><underlined>BUYING ITEM!"
+      shulker-preview: "<white><italic>Right-Click to preview!"
   admin-expire-item:
-    lore: "§8------------------
-      &n§7Seller: %seller%
-      &n§7Price: %price%
+    lore: "<dark_gray>------------------
+      &n<gray>Seller: <seller>
+      &n<gray>Price: <price>
       &n
-      &n§cExpired by a moderator!
-      &n§7Reason: %reason%"
+      &n<red>Expired by a moderator!
+      &n<gray>Reason: <reason>"
   admin-delete-item:
-    lore: "§8------------------
-      &n§7Seller: %seller%
-      &n§7Price: %price%
+    lore: "<dark_gray>------------------
+      &n<gray>Seller: <seller>
+      &n<gray>Price: <price>
       &n
-      &n§cDeleted by a moderator!
-      &n§7Reason: %reason%"
+      &n<red>Deleted by a moderator!
+      &n<gray>Reason: <reason>"
   buy-item:
-    name: "§6Buy Item right now!"
+    name: "<gold>Buy Item right now!"
     lore: "
-      &n§7Price: %price%
+      &n<gray>Price: <price>
       &n
-      &n§eClick to buy!"
+      &n<yellow>Click to buy!"
   not-enough-money:
-    name: "§6Buy Item right now!"
+    name: "<gold>Buy Item right now!"
     lore: "
-      &n§7You need %price%§7 to buy this item!
+      &n<gray>You need <price><gray> to buy this item!
       &n
-      &n§cNot enough money!"
+      &n<red>Not enough money!"
   confirm-buy:
-    name: "§aConfirm"
-    lore: "§7Cost: %price%"
+    name: "<green>Confirm"
+    lore: "<gray>Cost: <price>"
   collect-sold:
-    name: "§aCollect Sold Item"
+    name: "<green>Collect Sold Item"
     lore: "
-      &n§7Value with taxes: %price%
+      &n<gray>Value with taxes: <price>
       &n
-      &n§eClick to collect!"
+      &n<yellow>Click to collect!"
   choose-item-buy-amount:
-    name: "§fChoose amount to buy!"
-    lore: "§7You can choose to buy only a few items
-      &n§7with the price being reduced accordingly
+    name: "<white>Choose amount to buy!"
+    lore: "<gray>You can choose to buy only a few items
+      &n<gray>with the price being reduced accordingly
       &n
-      &n§eClick to set!"
+      &n<yellow>Click to set!"
   loading:
     name: "loading..."
   bid-history:
-    name: "§fBid History"
-    lore: "§7Total bids: §a%amountOfBids% bids"
-    bid: "§8------------------
-      &n§7Bid: %price%
-      &n§7By: %player%
-      &n§b%time% ago"
-    more: "§8------------------
-      &n§7...%amount% more"
+    name: "<white>Bid History"
+    lore: "<gray>Total bids: <green><amountOfBids> bids"
+    bid: "<dark_gray>------------------
+      &n<gray>Bid: <price>
+      &n<gray>By: <player>
+      &n<aqua><time> ago"
+    more: "<dark_gray>------------------
+      &n<gray>...<amount> more"
   bid-explanation:
-    name: "§fBid Amount: %price%"
-    lore: "§7You need to bid at least %price%§7 to
-      &n§7hold the top bid on this auction.
+    name: "<white>Bid Amount: <price>"
+    lore: "<gray>You need to bid at least <price><gray> to
+      &n<gray>hold the top bid on this auction.
       &n
-      &n§7When the auction ends, the§e top bid
-      &n§7wins the item.
+      &n<gray>When the auction ends, the<yellow> top bid
+      &n<gray>wins the item.
       &n
-      &n§7If you do not win, you can claim your
-      &n§7bid coins back.
+      &n<gray>If you do not win, you can claim your
+      &n<gray>bid coins back.
       &n
-      &n§eClick to edit amount!"
+      &n<yellow>Click to edit amount!"
   submit-bid:
-    name: "§6Submit Bid"
+    name: "<gold>Submit Bid"
     lore: "
-      &n§7New bid: %price%
+      &n<gray>New bid: <price>
       &n
-      &n§eClick to bid!"
+      &n<yellow>Click to bid!"
   submit-another-bid:
-    name: "§6Submit Bid"
+    name: "<gold>Submit Bid"
     lore: "
-      &n§7New bid: %price%
-      &n§7Your previous bid: %price2%
+      &n<gray>New bid: <price>
+      &n<gray>Your previous bid: <price2>
       &n
-      &n§7You pay: %price3%
+      &n<gray>You pay: <price3>
       &n
-      &n§eClick to bid!"
+      &n<yellow>Click to bid!"
   cannot-afford-bid:
-    name: "§6Submit Bid"
+    name: "<gold>Submit Bid"
     lore: "
-      &n§7New Bid: %price%
+      &n<gray>New Bid: <price>
       &n
-      &n§cCannot afford bid!"
+      &n<red>Cannot afford bid!"
   top-bid:
-    name: "§6Highest Bid"
+    name: "<gold>Highest Bid"
     lore: "
-      &n§7Your bid: %price%
-      &n§7New bid: %price2%
+      &n<gray>Your bid: <price>
+      &n<gray>New bid: <price2>
       &n
-      &n§aAlready top bid!"
+      &n<green>Already top bid!"
   my-bids:
-    name: "§aManage Bids"
-    lore: "§7View and manage your bids
+    name: "<green>Manage Bids"
+    lore: "<gray>View and manage your bids
       &n
-      &n§eClick to view!"
+      &n<yellow>Click to view!"
   collect-auction:
-    name: "§6Collect Auction"
+    name: "<gold>Collect Auction"
     lore: "
-      &n§7You had the top bid for %price%
-      &n§7You may collect the item.
+      &n<gray>You had the top bid for <price>
+      &n<gray>You may collect the item.
       &n
-      &n§eClick to collect item!"
+      &n<yellow>Click to collect item!"
   collect-coins:
-    name: "§6Collect Coins"
+    name: "<gold>Collect Coins"
     lore: "
-      &n§7You did not place the top bid of this auction.
-      &n§7You may collect your bid coins back.
+      &n<gray>You did not place the top bid of this auction.
+      &n<gray>You may collect your bid coins back.
       &n
-      &n§7Top bid: %price%§7 by %player%
-      &n§7Your bid: %price2%
+      &n<gray>Top bid: <price><gray> by <player>
+      &n<gray>Your bid: <price2>
       &n
-      &n§eClick to collect coins!"
+      &n<yellow>Click to collect coins!"
   own-bid:
-    name: "§6Submit Bid"
+    name: "<gold>Submit Bid"
     lore: "
-      &n§7New bid: %price%
+      &n<gray>New bid: <price>
       &n
-      &n§aThis is your own auction!"
+      &n<green>This is your own auction!"
 
 world:
-  npc: "§6Auction Master"
+  npc: "<gold>Auction Master"
   displays:
-    line-0: "%price-trim%"
-    line-1: "§e%time%"
+    line-0: "<price-trim>"
+    line-1: "<yellow><time>"
     line-2: ""
-    line-3: "§d[CLICK]"
-    by-player: "by: %player%"
-    break-instruction: "§cTo remove the display, switch to creative mode and sneak + break the base block."
+    line-3: "<light_purple>[CLICK]"
+    by-player: "by: <player>"
+    break-instruction: "<red>To remove the display, switch to creative mode and sneak + break the base block."
 
 commands:
   ah: "ah"
@@ -486,76 +474,76 @@ commands:
   search-cancel: "cancel"
 
 command-feedback:
-  usage: "§eUsage: /ah sell <price> <amount>"
-  bid-usage: "§eTo sell an item: /ah bid <price> <amount>"
-  search-usage: "§eUsage: /ah search <item>&n§eUsage: /ah search cancel"
-  reached-max-auctions: "§eYou can only have %limit% auctions at a time"
-  no-item-in-hand: "§eYou need to hold an item in your hand to sell it"
+  usage: "<yellow>Usage: /ah sell <price> <amount>"
+  bid-usage: "<yellow>To sell an item: /ah bid <price> <amount>"
+  search-usage: "<yellow>Usage: /ah search <item>&n<yellow>Usage: /ah search cancel"
+  reached-max-auctions: "<yellow>You can only have <limit> auctions at a time"
+  no-item-in-hand: "<yellow>You need to hold an item in your hand to sell it"
   invalid-number: "That is not a valid number"
   invalid-number2: "That is not a valid price"
-  invalid-number3: "§eThat is not a valid amount of days"
-  invalid-number4: "§eThat is not a valid duration"
+  invalid-number3: "<yellow>That is not a valid amount of days"
+  invalid-number4: "<yellow>That is not a valid duration"
   invalid-number5: "Item rank number must be greater than 0"
   invalid-number6: "Invalid item rank number. Please enter a valid number"
   invalid-number7: "That is not a valid amount"
-  auction: "§eYou have put up an auction for %price%"
-  announcements-enabled: "§aAuction announcements enabled! §7You will now see when players put items on auction."
-  announcements-disabled: "§cAuction announcements disabled! §7You will no longer see when players put items on auction."
-  ban-usage: "§eUsage: /ah ban <player> <time in days> <reason>"
-  pardon-usage: "§eUsage: /ah pardon <player>"
-  player-not-found: "§eThat player is not online"
-  ban: "§b-------------------------------------------------
-    &n§e%player% was banned from the ah for %duration% days.
-    &n§rReason: %reason%
-    &n§b-------------------------------------------------"
-  pardon: "§b-------------------------------------------------
-    &n§fUnbanned %player% from the auction house
-    &n§b-------------------------------------------------"
-  no-banned-players: "§eThere are no players banned"
+  auction: "<yellow>You have put up an auction for <price>"
+  announcements-enabled: "<green>Auction announcements enabled! <gray>You will now see when players put items on auction."
+  announcements-disabled: "<red>Auction announcements disabled! <gray>You will no longer see when players put items on auction."
+  ban-usage: "<yellow>Usage: /ah ban <player> <time in days> <reason>"
+  pardon-usage: "<yellow>Usage: /ah pardon <player>"
+  player-not-found: "<yellow>That player is not online"
+  ban: "<aqua>-------------------------------------------------
+    &n<yellow><player> was banned from the ah for <duration> days.
+    &n<reset>Reason: <reason>
+    &n<aqua>-------------------------------------------------"
+  pardon: "<aqua>-------------------------------------------------
+    &n<white>Unbanned <player> from the auction house
+    &n<aqua>-------------------------------------------------"
+  no-banned-players: "<yellow>There are no players banned"
   not-banned: "That player isn't banned from the auction house"
-  reload: "§eThe auction house plugin has reloaded."
+  reload: "<yellow>The auction house plugin has reloaded."
   summon-usage: "/ah summon <entity>"
   npc-usage: "/ah summon npc facing <direction>"
   display-usage: "/ah summon display <sort type> <item rank>"
-  no-space-for-display: "§eThere is already a display here. Please remove it first."
-  no-air-space-for-display: "§eThere is not enough space to spawn a display. Please destroy the surrounding blocks first."
-  blacklist-usage: "§eUsage: /ah blacklist add <type> <text>&n§rFor <exact> and <material> you don't need <text>, but hold an item in your hand"
+  no-space-for-display: "<yellow>There is already a display here. Please remove it first."
+  no-air-space-for-display: "<yellow>There is not enough space to spawn a display. Please destroy the surrounding blocks first."
+  blacklist-usage: "<yellow>Usage: /ah blacklist add <type> <text>&n<reset>For <exact> and <material> you don't need <text>, but hold an item in your hand"
   blacklist-undo: "Successfully removed the last rule"
   blacklist-undo-error: "There are no rules"
-  blacklist-no-item-in-hand: "§eYou need to hold an item in your hand to add its properties to the blacklist"
-  blacklist-no-model: "§eYou need to hold an item in your hand with a custom \"item_model\" to add that model to the blacklist"
-  blacklist-success: "Successfully added the properties of %item%§r to the blacklist"
-  blacklist-name-success: "Successfully added \"%name%\" to the blacklist"
+  blacklist-no-item-in-hand: "<yellow>You need to hold an item in your hand to add its properties to the blacklist"
+  blacklist-no-model: "<yellow>You need to hold an item in your hand with a custom \"item_model\" to add that model to the blacklist"
+  blacklist-success: "Successfully added the properties of <item><reset> to the blacklist"
+  blacklist-name-success: "Successfully added \"<name>\" to the blacklist"
   blacklist-all: "Successfully added EVERY item to the blacklist"
-  item-blacklisted: "§cYou cannot auction this item!"
+  item-blacklisted: "<red>You cannot auction this item!"
   item-saved-to-layout-file: "Item from main hand saved in layout.yml under \"test\""
-  min-bid: "Your starting bid must be at least %price%!"
-  min-bin: "The item price must be at least %price%!"
-  max-bid: "Your starting bid can be at most %price%!"
-  max-bin: "The item price can be at most %price%!"
-  help-prefix: "§7§l--------------[ §dAuction House Help§7§l ]--------------"
+  min-bid: "Your starting bid must be at least <price>!"
+  min-bin: "The item price must be at least <price>!"
+  max-bid: "Your starting bid can be at most <price>!"
+  max-bin: "The item price can be at most <price>!"
+  help-prefix: "<gray><bold>--------------[ <light_purple>Auction House Help<gray><bold> ]--------------"
   help:
-    about: "§6/ah about:§f Displays information about the author"
-    sell: "§6/ah sell:§f Create a BIN auction with the item in your main hand"
-    bid: "§6/ah bid:§f Creates a BID auction with the item in your main hand"
-    announce: "§6/ah announce:§f Toggles auction announcements for the player"
-    admin: "§6/ah admin:§f Used to cancel or delete auctions"
-    ban: "§6/ah ban:§f Adds somebody to the banlist, making them unable to open or use the ah"
-    pardon: "§6/ah pardon:§f Removes a player from the banlist"
-    blacklist: "§6/ah blacklist:§f Adds items to the blacklist, which cannot be auctioned"
-    reload: "§6/ah reload:§f Updates any changes made to the files"
-    summon: "§6/ah summon:§f Summons the auction master npc or the item displays. Remove them by punching them in creative mode while being op"
-    test: "§6/ah test:§f Used to save the item from your main hand to the files"
-    help: "§6/ah help:§f Shows the help menu"
-    search: "§6/ah search:§f Search an item on the ah"
+    about: "<gold>/ah about:<white> Displays information about the author"
+    sell: "<gold>/ah sell:<white> Create a BIN auction with the item in your main hand"
+    bid: "<gold>/ah bid:<white> Creates a BID auction with the item in your main hand"
+    announce: "<gold>/ah announce:<white> Toggles auction announcements for the player"
+    admin: "<gold>/ah admin:<white> Used to cancel or delete auctions"
+    ban: "<gold>/ah ban:<white> Adds somebody to the banlist, making them unable to open or use the ah"
+    pardon: "<gold>/ah pardon:<white> Removes a player from the banlist"
+    blacklist: "<gold>/ah blacklist:<white> Adds items to the blacklist, which cannot be auctioned"
+    reload: "<gold>/ah reload:<white> Updates any changes made to the files"
+    summon: "<gold>/ah summon:<white> Summons the auction master npc or the item displays. Remove them by punching them in creative mode while being op"
+    test: "<gold>/ah test:<white> Used to save the item from your main hand to the files"
+    help: "<gold>/ah help:<white> Shows the help menu"
+    search: "<gold>/ah search:<white> Search an item on the ah"
 
 placeholders:
-  number: "§6%input%§r"
-  price: "%number%%currency-symbol%"
-  price-trim: "%price%"
-  currency-symbol: "§6 coins"
+  number: "<gold><input><reset>"
+  price: "<number><currency-symbol>"
+  price-trim: "<price>"
+  currency-symbol: "<gold> coins"
   format-numbers: "#,###.##"
   format-time-characters: "dhms"
-  player: "%player_name%"
-  seller: "%player_name%"
-  buyer: "%player_name%"
+  player: "<player_name>"
+  seller: "<player_name>"
+  buyer: "<player_name>"

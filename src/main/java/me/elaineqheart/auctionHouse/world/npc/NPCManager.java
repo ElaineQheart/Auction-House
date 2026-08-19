@@ -46,7 +46,7 @@ public class NPCManager {
         npc.setVillagerType(Villager.Type.JUNGLE);
         npc.setAdult();
         npc.setCanPickupItems(false);
-        npc.setCustomName(M.getFormatted("world.npc"));
+        npc.customName(M.getFormatted("world.npc"));
         npc.setCustomNameVisible(true);
         npc.setCollidable(false);
         npc.setGravity(false);

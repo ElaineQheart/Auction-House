@@ -17,4 +17,3 @@ min-bid: 1                                  # the minimum bid price
 max-bid: -1                                 # limit the bid price; set to -1 to disable
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
-use-adventure-text-minimessages: true       # support for miniMessages like <yellow> in messages.yml

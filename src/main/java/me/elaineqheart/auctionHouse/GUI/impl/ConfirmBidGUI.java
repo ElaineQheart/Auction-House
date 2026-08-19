@@ -8,8 +8,8 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.*;
 import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -116,8 +116,9 @@ public class ConfirmBidGUI extends InventoryGUI {
 
                     eco.withdrawPlayer(p, increase);
                     Sounds.experience(event);
-                    p.sendMessage(M.getFormatted("chat.placed-bid", price,
-                            "%item%", note.getItemName()));
+                    p.sendMessage(M.getFormatted("chat.placed-bid",
+                            "price", price,
+                            "item", note.getItemName()));
                     if (c.shouldKeepOpen()) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackToAuctionHouse ? AhConfiguration.View.AUCTION_HOUSE : AhConfiguration.View.MY_AUCTIONS), p);
                     else instance.getScheduler().globalRegionalScheduler().run(() -> p.closeInventory());
 
@@ -127,12 +128,13 @@ public class ConfirmBidGUI extends InventoryGUI {
                         Player bidder = Bukkit.getPlayer(id);
                         if(bidder == null) continue;
                         double difference = price - note.getBid(bidder);
-                        bidder.sendMessage(M.getFormatted("chat.outbid.prefix", difference,
-                                "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
-                                "%item%", note.getItemName()));
-                        TextComponent click = new TextComponent(M.getFormatted("chat.outbid.interaction"));
-                        click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
-                        bidder.spigot().sendMessage(click);
+                        bidder.sendMessage(M.getFormatted("chat.outbid.prefix",
+                                "price", difference,
+                                "player", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
+                                "item", note.getItemName()));
+                        Component click = M.getFormatted("chat.outbid.interaction")
+                                .clickEvent(ClickEvent.runCommand("/ah view " + note.getNoteID()));
+                        bidder.sendMessage(click);
                         if(AuctionViewGUI.currentGUIs.get(bidder) == null) continue;
                         AuctionViewGUI.currentGUIs.get(bidder).update();
                     }

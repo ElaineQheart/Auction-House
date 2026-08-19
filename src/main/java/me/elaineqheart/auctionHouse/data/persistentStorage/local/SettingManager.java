@@ -42,7 +42,6 @@ public class SettingManager {
     public static double minBIDPrice;
     public static double maxBINPrice;
     public static double maxBIDPrice;
-    public static boolean useAdventureAPIMessages;
     public static String soundClick;
     public static String soundOpenEnderchest;
     public static String soundCloseEnderchest;
@@ -69,7 +68,6 @@ public class SettingManager {
         AuctionHouse.getInstance().reloadConfig();
         FileConfiguration c = AuctionHouse.getInstance().getConfig();
 
-        useAdventureAPIMessages = c.getBoolean("use-adventure-text-minimessages", true);
         if (ConfigManager.backwardsCompatibility())
             backwardsCompatibility();
 
@@ -81,7 +79,7 @@ public class SettingManager {
         auctionSetupTime = c.getLong("auction-setup-time", 30);
         defaultMaxAuctions = c.getInt("default-max-auctions", 10);
         soldMessageEnabled = c.getBoolean("sold-message", true);
-        formatter = new DecimalFormat(M.getFormatted("placeholders.format-numbers"));
+        formatter = new DecimalFormat(M.getString("placeholders.format-numbers"));
         formatTimeCharacters = c.getString("format-time-characters", "dhms");
         permissionModerate = c.getString("admin-permission", "auctionhouse.moderator");
         partialSelling = c.getBoolean("partial-selling", false);
@@ -252,8 +250,8 @@ public class SettingManager {
             messageFile.set("world.displays.line-3", messageFile.get("world.displays.sign-interaction"));
             messageFile.set("world.displays.sign-interaction", null);
             String by = messageFile.getString("world.displays.by-player");
-            if (by != null && !by.contains("%player%")) {
-                messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "%player%");
+            if (by != null && !by.contains("%player%") && !by.contains("<player>")) {
+                messageFile.set("world.displays.by-player", messageFile.get("world.displays.by-player") + "<player>");
             }
         }
         if (messageFile.contains("commands.alias")) {

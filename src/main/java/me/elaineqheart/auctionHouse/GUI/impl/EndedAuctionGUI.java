@@ -13,6 +13,7 @@ import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
+import net.kyori.adventure.text.Component;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -137,9 +138,9 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                         return;
                     }
                     ItemStack item = note.getItem();
-                    String message = M.getFormatted("chat.claim-auction",
-                            "%item%", note.getItemName(),
-                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()));
+                    Component message = M.getFormatted("chat.claim-auction",
+                            "item", note.getItemName(),
+                            "seller", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()));
 
                     boolean claimed = ItemNoteStorage.claimEndedAuctionItem(p, note);
                     if (!claimed) {
@@ -172,8 +173,9 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    String message = M.getFormatted("chat.collect-coins", price,
-                            "%item%", note.getItemName());
+                    Component message = M.getFormatted("chat.collect-coins",
+                            "price", price,
+                            "item", note.getItemName());
 
                     boolean claimed = ItemNoteStorage.claimEndedAuctionItem(p, note);
                     if (!claimed) {

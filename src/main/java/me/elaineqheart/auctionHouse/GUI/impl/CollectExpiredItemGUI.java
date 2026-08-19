@@ -107,11 +107,11 @@ public class CollectExpiredItemGUI extends InventoryGUI {
 
                     if(note.getAdminMessage() != null && !note.getAdminMessage().isEmpty()) { // expired by a moderator
                         if(note.getItem().equals(ItemManager.createDirt())) {
-                            p.sendMessage(M.getFormatted("chat.deleted-auction-by-admin", "%reason%", note.getAdminMessage()));
+                            p.sendMessage(M.getFormatted("chat.deleted-auction-by-admin", "reason", note.getAdminMessage()));
                             p.closeInventory();
                             Sounds.breakWood(event);
                         }else {
-                            p.sendMessage(M.getFormatted("chat.expired-auction-by-admin", "%reason%", note.getAdminMessage()));
+                            p.sendMessage(M.getFormatted("chat.expired-auction-by-admin", "reason", note.getAdminMessage()));
                             p.closeInventory();
                             p.getInventory().addItem(withdrawItem);
                             Sounds.experience(event);

@@ -106,7 +106,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                     p.closeInventory();
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    p.sendMessage(M.getFormatted("chat.admin-expire-auction", "%reason%", reason));
+                        p.sendMessage(M.getFormatted("chat.admin-expire-auction", "reason", reason));
                 });
     }
     private InventoryButton confirmDeleteItem() {
@@ -144,7 +144,7 @@ public class AdminConfirmGUI extends InventoryGUI{
                     p.closeInventory();
                     Sounds.experience(event);
                     Sounds.breakWood(event);
-                    p.sendMessage(M.getFormatted("chat.admin-delete-auction","%reason%", reason));
+                    p.sendMessage(M.getFormatted("chat.admin-delete-auction", "reason", reason));
                 });
     }
     private InventoryButton cancel(){

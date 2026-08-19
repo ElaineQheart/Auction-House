@@ -2,25 +2,38 @@ package me.elaineqheart.auctionHouse.data.persistentStorage.local.configs;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.elaineqheart.auctionHouse.data.StringUtils;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.Config;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class M extends Config {
 
-    private static final LegacyComponentSerializer legacy = LegacyComponentSerializer.legacySection();
-    private static final MiniMessage mm = MiniMessage.miniMessage();
+    private static final MiniMessage mm = MiniMessage.builder()
+            .preProcessor(M::convertLegacyInput)
+            .build();
+
+    // legacy %placeholder% tokens that are rewritten to MiniMessage tags so old configs keep working
+    private static final Pattern LEGACY_PLACEHOLDER = Pattern.compile("%([a-zA-Z][a-zA-Z0-9_-]*)%");
+    private static final Set<String> KNOWN_PLACEHOLDERS = Set.of(
+            "player", "seller", "buyer", "price", "price-trim", "number",
+            "item", "amount", "time", "reason", "request", "filter",
+            "page", "pages", "tax", "amountOfBids", "sold", "total",
+            "duration", "limit", "name", "input", "currency-symbol", "player_name");
 
     // AuctionHouse.getPlugin().saveResource("messages.yml", false);
 
@@ -28,100 +41,170 @@ public class M extends Config {
         return ConfigManager.messages.getCustomFile();
     }
 
-    private static String getValue(String key, boolean convertNewLine) {
+    private static String getValue(String key) {
         String message = get().getString(key);
         if (message == null) {
-            return ChatColor.RED + "Missing message key: " + key;
+            return "<red>Missing message key: " + key;
         }
-        return convertNewLine ? message.replace("&n", "\n") : message;
+        return message.replace("&n", "\n");
     }
 
-    //this is to replace placeholders like %player%
-    public static String getFormatted(String key, String... replacements) {
-        String message = getValue(key,true);
-        message = replacePlaceholders(key, message, replacements);
-        return adventureApi(message);
-    }
-    public static String getFormatted(String key, double price, String... replacements) {
-        String message = getValue(key,true);
-        message = replacePlaceholders(key, message, replacements);
-        message = replace(message, price);
-        return adventureApi(message);
+    public static Component getFormatted(String key, Object... replacements) {
+        if (replacements.length % 2 != 0) return error("Invalid placeholder replacements for key: " + key);
+        return deserialize(getValue(key), resolverOf(replacements));
     }
 
-    public static List<String> getLoreList(String key, String... replacements) {
-        String message = getValue(key,false);
-        message = replacePlaceholders(key, message, replacements);
-        List<String> list = Arrays.asList(message.split("&n"));
-        list.replaceAll(M::adventureApi);
-        return list;
-    }
-    public static List<String> getLoreList(String key, double price, String... replacements) {
-        String message = getValue(key,false);
-        message = replacePlaceholders(key, message, replacements);
-        message = replace(message, price);
-        List<String> list = Arrays.asList(message.split("&n"));
-        list.replaceAll(M::adventureApi);
-        return list;
+    public static List<Component> getLoreList(String key, Object... replacements) {
+        if (replacements.length % 2 != 0) return List.of(error("Invalid placeholder replacements for key: " + key));
+        return Arrays.stream(getValue(key).split("\n", -1))
+                .map(line -> deserialize(line, resolverOf(replacements)))
+                .toList();
     }
 
-    private static String replacePlaceholders(String key, String message, String... replacements) {
-        if (replacements.length % 2 != 0) {
-            return ChatColor.RED + "Invalid placeholder replacements for key: " + key;
-        }
-        for (int i = 0; i < replacements.length; i += 2) {
-            message = message.replace(replacements[i], replacements[i + 1]);
-        }
-        return message;
+    // plain text, used for command names, decimal formats and anvil titles
+    public static String getString(String key) {
+        return PlainTextComponentSerializer.plainText().serialize(getFormatted(key));
     }
 
-    public static String replace(String message, double... prices) {
-        message = message.replace("%price%", StringUtils.formatPrice(prices[0], false));
-        message = message.replace("%price-trim%", StringUtils.formatPrice(prices[0], true));
-        message = message.replace("%number%", StringUtils.formatNumber(prices[0]));
-        for(int i = 2; i-1 < prices.length; i++) {
-            message = message.replace("%price"+i+"%", StringUtils.formatPrice(prices[i-1], false));
-            message = message.replace("%price-trim"+i+"%", StringUtils.formatPrice(prices[i-1], true));
-            message = message.replace("%number"+i+"%", StringUtils.formatNumber(prices[i-1]));
-        }
-        return message;
+    // parses arbitrary text (item names, admin input) through the same MiniMessage pipeline
+    public static Component deserialize(String input) {
+        return safeDeserialize(input);
     }
 
-    public static String formatPlayer(String playerName, UUID playerID) {
+    public static Component formatPlayer(String playerName, UUID playerID) {
         return resolveNameTemplate("placeholders.player", playerName, playerID);
     }
-    public static String formatSeller(String playerName, UUID playerID) {
-        return resolveNameTemplate("placeholders.seller", playerName,playerID);
+
+    public static Component formatSeller(String playerName, UUID playerID) {
+        return resolveNameTemplate("placeholders.seller", playerName, playerID);
     }
-    public static String formatBuyer(String playerName, UUID playerID) {
+
+    public static Component formatBuyer(String playerName, UUID playerID) {
         return resolveNameTemplate("placeholders.buyer", playerName, playerID);
     }
 
-
-    // substitute %player_name% with PAPI when available
-    private static String resolveNameTemplate(String templateKey, String playerName, UUID playerID) {
-        if (playerName == null) return "";
-        String template = get().getString(templateKey, "%player_name%");
-        String result = template.replace("%player_name%", playerName);
+    // substitute <player_name> with PAPI when available
+    private static Component resolveNameTemplate(String templateKey, String playerName, UUID playerID) {
+        if (playerName == null) return Component.empty();
+        String template = get().getString(templateKey);
+        String result = template == null ? "<player_name>" : template;
+        result = result.replace("<player_name>", playerName)
+                .replace("%player_name%", playerName);
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             OfflinePlayer target = Bukkit.getOfflinePlayer(playerID);
             result = PlaceholderAPI.setPlaceholders(target, result);
         }
 
-        result = ChatColor.translateAlternateColorCodes('&', result);
-        return adventureApi(result);
+        return deserialize(result.replace('&', '§'), resolverOf());
     }
 
-    private static String adventureApi(String input) {
-        if (!SettingManager.useAdventureAPIMessages) return input;
-        Component comp;
-        try {
-            comp = mm.deserialize(input);
-        } catch (Exception e) {
-            comp = legacy.deserialize(input);
+    private static Component deserialize(String input, TagResolver resolver) {
+        return mm.deserialize(input, resolver);
+    }
+
+    private static TagResolver resolverOf(Object... replacements) {
+        TagResolver.Builder builder = TagResolver.builder();
+        for (int i = 0; i < replacements.length; i += 2) {
+            String tag = String.valueOf(replacements[i]).toLowerCase(Locale.ROOT);
+            builder.resolver(TagResolver.resolver(tag, tagOf(tag, replacements[i + 1])));
         }
-        return legacy.serialize(comp);
+        return builder.build();
+    }
+
+    private static Tag tagOf(String tag, Object value) {
+        if (value instanceof Component component) {
+            return Tag.selfClosingInserting(component);
+        }
+        if (value instanceof Number number) {
+            double d = number.doubleValue();
+            if (tag.startsWith("price-trim")) return Tag.selfClosingInserting(StringUtils.formatPrice(d, true));
+            if (tag.startsWith("price")) return Tag.selfClosingInserting(StringUtils.formatPrice(d, false));
+            if (tag.startsWith("number")) return Tag.selfClosingInserting(StringUtils.formatNumber(d));
+            return Tag.selfClosingInserting(Component.text(value.toString()));
+        }
+        return Tag.selfClosingInserting(safeDeserialize(value.toString()));
+    }
+
+    private static Component safeDeserialize(String input) {
+        if (input == null) return Component.empty();
+        try {
+            return mm.deserialize(input);
+        } catch (Exception e) {
+            return Component.text(input);
+        }
+    }
+
+    private static Component error(String message) {
+        return mm.deserialize("<red>" + message);
+    }
+
+    private static String convertLegacyInput(String input) {
+        String result = replaceLegacyPlaceholders(input);
+        if (result.indexOf('§') == -1) return result;
+        StringBuilder sb = new StringBuilder(result.length());
+        for (int i = 0; i < result.length(); i++) {
+            char c = result.charAt(i);
+            if (c != '§') {
+                sb.append(c);
+                continue;
+            }
+            if (i + 1 >= result.length()) break;
+            char code = Character.toLowerCase(result.charAt(++i));
+            if (code == 'x') {
+                StringBuilder hex = new StringBuilder(6);
+                for (int h = 0; h < 6 && i + 2 < result.length(); h++) {
+                    i += 2;
+                    hex.append(result.charAt(i));
+                }
+                sb.append("<color:#").append(hex).append('>');
+                continue;
+            }
+            String tag = legacyCodeToTag(code);
+            if (tag != null) sb.append('<').append(tag).append('>');
+        }
+        return sb.toString();
+    }
+
+    private static String replaceLegacyPlaceholders(String input) {
+        Matcher matcher = LEGACY_PLACEHOLDER.matcher(input);
+        StringBuilder sb = new StringBuilder(input.length());
+        while (matcher.find()) {
+            String name = matcher.group(1);
+            if (KNOWN_PLACEHOLDERS.contains(name)
+                    || name.startsWith("price") || name.startsWith("number") || name.startsWith("price-trim")) {
+                matcher.appendReplacement(sb, "<" + name + ">");
+            }
+        }
+        return matcher.appendTail(sb).toString();
+    }
+
+    private static String legacyCodeToTag(char code) {
+        return switch (code) {
+            case '0' -> "black";
+            case '1' -> "dark_blue";
+            case '2' -> "dark_green";
+            case '3' -> "dark_aqua";
+            case '4' -> "dark_red";
+            case '5' -> "dark_purple";
+            case '6' -> "gold";
+            case '7' -> "gray";
+            case '8' -> "dark_gray";
+            case '9' -> "blue";
+            case 'a' -> "green";
+            case 'b' -> "aqua";
+            case 'c' -> "red";
+            case 'd' -> "light_purple";
+            case 'e' -> "yellow";
+            case 'f' -> "white";
+            case 'k' -> "obfuscated";
+            case 'l' -> "bold";
+            case 'm' -> "strikethrough";
+            case 'n' -> "underlined";
+            case 'o' -> "italic";
+            case 'r' -> "reset";
+            default -> null;
+        };
     }
 
 }

@@ -20,7 +20,7 @@ public class ChatInputManager implements Listener {
     public void open(Player player, String inventoryTitle, InputHandler handler) {
         registerPlayer(player, handler);
         player.closeInventory();
-        player.sendMessage(M.getFormatted("chat.input-listener", "%request%", inventoryTitle));
+        player.sendMessage(M.getFormatted("chat.input-listener", "request", inventoryTitle));
     }
 
     private void registerPlayer(Player player, InputHandler handler) {

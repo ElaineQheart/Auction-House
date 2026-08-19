@@ -12,8 +12,8 @@ import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -122,26 +122,28 @@ public class ConfirmBuyGUI extends InventoryGUI{
                     p.getInventory().addItem(item);
 
                     p.sendMessage(M.getFormatted("chat.purchase-auction",
-                            "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
-                            "%item%", note.getItemName()));
+                            "seller", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
+                            "item", note.getItemName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerUUID());
                     if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
                         String itemName = note.getItemName();
                         String amount = String.valueOf(item.getAmount());
-                        String buyer = M.formatBuyer(p.getDisplayName(), p.getUniqueId());
+                        Component buyer = M.formatBuyer(p.getDisplayName(), p.getUniqueId());
                         if(SettingManager.autoCollect) {
-                            seller.sendMessage(M.getFormatted("chat.sold-message.auto-collect", price,
-                                    "%buyer%", buyer,
-                                    "%item%", itemName,
-                                    "%amount%", amount));
+                            seller.sendMessage(M.getFormatted("chat.sold-message.auto-collect",
+                                    "price", price,
+                                    "buyer", buyer,
+                                    "item", itemName,
+                                    "amount", amount));
                         } else {
-                            TextComponent component = new TextComponent(M.getFormatted("chat.sold-message.prefix", price,
-                                    "%buyer%", buyer,
-                                    "%item%", itemName,
-                                    "%amount%", amount));
-                            TextComponent click = new TextComponent(M.getFormatted("chat.sold-message.interaction"));
-                            click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ah view " + note.getNoteID().toString()));
-                            seller.spigot().sendMessage(component, click);
+                            Component component = M.getFormatted("chat.sold-message.prefix",
+                                    "price", price,
+                                    "buyer", buyer,
+                                    "item", itemName,
+                                    "amount", amount);
+                            Component click = M.getFormatted("chat.sold-message.interaction")
+                                    .clickEvent(ClickEvent.runCommand("/ah view " + note.getNoteID()));
+                            seller.sendMessage(component.append(click));
                         }
                     }
                     if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {

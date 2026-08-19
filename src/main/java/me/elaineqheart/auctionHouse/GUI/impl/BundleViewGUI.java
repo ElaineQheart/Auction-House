@@ -77,10 +77,10 @@ public class BundleViewGUI extends InventoryGUI {
         ItemStack item = ConfigManager.layout.getItem("n");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(M.getFormatted("items.next-page.name"));
-        meta.setLore(M.getLoreList("items.next-page.lore",
-                "%page%", String.valueOf(page+1),
-                "%pages%", String.valueOf(2)));
+        meta.itemName(M.getFormatted("items.next-page.name"));
+        meta.lore(M.getLoreList("items.next-page.lore",
+                "page", String.valueOf(page+1),
+                "pages", String.valueOf(2)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)
@@ -95,10 +95,10 @@ public class BundleViewGUI extends InventoryGUI {
         ItemStack item = ConfigManager.layout.getItem("p");
         ItemMeta meta = item.getItemMeta();
         assert meta != null;
-        meta.setItemName(M.getFormatted("items.previous-page.name"));
-        meta.setLore(M.getLoreList("items.previous-page.lore",
-                "%page%", String.valueOf(page+1),
-                "%pages%", String.valueOf(2)));
+        meta.itemName(M.getFormatted("items.previous-page.name"));
+        meta.lore(M.getLoreList("items.previous-page.lore",
+                "page", String.valueOf(page+1),
+                "pages", String.valueOf(2)));
         item.setItemMeta(meta);
         return new InventoryButton()
                 .creator(player -> item)

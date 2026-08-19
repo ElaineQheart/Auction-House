@@ -2,6 +2,7 @@ package me.elaineqheart.auctionHouse.data;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
@@ -66,23 +67,23 @@ public class StringUtils {
         }
     }
 
-    public static String formatNumber(double number) {
-        return M.getFormatted("placeholders.number", "%input%", formatNumberPlain(number));
+    public static Component formatNumber(double number) {
+        return M.getFormatted("placeholders.number", "input", formatNumberPlain(number));
     }
     public static String formatNumberPlain(double number) {
         // fallback for async threads
         DecimalFormat fmt = Objects.requireNonNullElseGet(SettingManager.formatter, () ->
-                new DecimalFormat(M.getFormatted("placeholders.format-numbers")));
+                new DecimalFormat(M.getString("placeholders.format-numbers")));
         return fmt.format(number);
     }
-    public static String formatNumber(String number) {
-        return M.getFormatted("placeholders.number", "%input%", number);
+    public static Component formatNumber(String number) {
+        return M.getFormatted("placeholders.number", "input", number);
     }
 
-    public static String formatPrice(double price, boolean trimmed) {
+    public static Component formatPrice(double price, boolean trimmed) {
         return M.getFormatted("placeholders.price",
-                "%number%", formatNumber(trimmed ? StringUtils.getPriceTrimmed(price) : formatNumber(price)),
-                "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
+                "number", trimmed ? formatNumber(getPriceTrimmed(price)) : formatNumber(price),
+                "currency-symbol", M.getFormatted("placeholders.currency-symbol"));
     }
 
     public static String getItemName(ItemStack item) {

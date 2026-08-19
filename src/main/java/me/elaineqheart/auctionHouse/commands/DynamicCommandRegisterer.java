@@ -15,7 +15,7 @@ import java.util.List;
 public class DynamicCommandRegisterer {
 
     public static void init() {
-        String name = M.getFormatted("commands.ah").toLowerCase();
+        String name = M.getString("commands.ah").toLowerCase();
         List<String> aliases = ConfigManager.messages.getCustomFile().getStringList("commands.aliases");
         //String alias = M.getFormatted("commands.alias").toLowerCase();
         //List<String> aliases = alias.isEmpty() ? List.of() : List.of(alias);
