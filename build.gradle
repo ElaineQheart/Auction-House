@@ -20,11 +20,15 @@ repositories {
     maven { url = "https://jitpack.io" }
     maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url = "https://mvn-repo.arim.space/lesser-gpl3/" }
+    maven {
+        name = "papermc"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
 }
 
 //alt + ins
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude group: "org.bukkit", module: "bukkit"
     }
@@ -45,7 +49,6 @@ tasks.named("shadowJar") {
     archiveVersion.set(version)
     relocate("net.kyori.adventure", "me.elaineqheart.auctionHouse.libs.adventure")
     relocate("space.arim.morepaperlib", "me.elaineqheart.auctionHouse.libs.morepaperlib")
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
     //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.2_spigot/plugins"))
     //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.11_purpur/plugins"))
     mergeServiceFiles()
