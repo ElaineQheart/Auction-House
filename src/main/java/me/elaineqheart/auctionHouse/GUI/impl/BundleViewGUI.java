@@ -40,10 +40,12 @@ public class BundleViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> {
-            Sounds.closeBundle(event);
-            ShulkerViewGUI.openSwitch(c, note, p, goBackTo);
-        },0);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() -> {
+                    Sounds.closeBundle(event);
+                    ShulkerViewGUI.openInventoryGoingBack(c, note, p, goBackTo);
+                },
+                null,
+                0);
     }
 
     @Override

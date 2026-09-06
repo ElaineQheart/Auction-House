@@ -23,7 +23,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     public AdminManageItemsGUI(ItemNote note, AhConfiguration configuration) {
@@ -31,7 +31,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ADMIN_MANAGE_ITEMS);
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -96,8 +96,10 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, true, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
-                                    AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
+                            AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() ->
+                                    AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),
+                                    null,
+                                    1);
                         }
                     };
                     AuctionHouse.getInputManager().open(c.getPlayer(),"inventory-titles.anvil-admin-delete-message", handler);
@@ -110,12 +112,13 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                     Sounds.click(event);
                     InputHandler handler = new InputHandler() {
                         public void execute(Player p, String typedText) {
-                            AuctionHouse.getGuiManager().openGUI
-                                    (new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
+                            AuctionHouse.getGuiManager().openGUI(new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
-                                    AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
+                            AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() ->
+                                    AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),
+                                    null,
+                                    1);
                         }
                     };
                     AuctionHouse.getInputManager().open(c.getPlayer(), "inventory-titles.anvil-admin-expire-message", handler);

@@ -16,6 +16,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -102,7 +103,8 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
                     Economy eco = VaultHook.getEconomy();
-                    AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p));
+                    //go back to main auction, even when balance is lower than item price
+                    AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p), null);
                     if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
                         p.sendMessage(M.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
@@ -124,7 +126,8 @@ public class ConfirmBuyGUI extends InventoryGUI{
                             "%seller%", M.formatSeller(note.getPlayerName(), note.getPlayerUUID()),
                             "%item%", note.getItemName()));
                     Player seller = Bukkit.getPlayer(note.getPlayerUUID());
-                    if (SettingManager.soldMessageEnabled && seller != null && Bukkit.getOnlinePlayers().contains(seller)) {
+                    if (seller == null || !Bukkit.getOnlinePlayers().contains(seller)) return;
+                    if (SettingManager.soldMessageEnabled) {
                         String itemName = note.getItemName();
                         String amount = String.valueOf(item.getAmount());
                         String buyer = M.formatBuyer(p.getDisplayName(), p.getUniqueId());
@@ -144,8 +147,9 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         }
                     }
                     if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {
-                        AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> CollectSoldItemGUI.collect
-                                (Bukkit.getOfflinePlayer(note.getPlayerUUID()), note.getNoteID(), item.getAmount(), note.getSoldPrice())
+                        AuctionHouse.getScheduler().entitySpecificScheduler(seller).run(() -> CollectSoldItemGUI.collect
+                                (seller, note.getNoteID(), item.getAmount(), note.getSoldPrice()),
+                                null
                         );
                     }
                 });

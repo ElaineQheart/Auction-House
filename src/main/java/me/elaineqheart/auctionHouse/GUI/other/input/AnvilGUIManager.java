@@ -76,13 +76,16 @@ public class AnvilGUIManager implements Listener {
     @SuppressWarnings("UnstableApiUsage")
     @EventHandler //also set the name formatted
     public void handleTyping(PrepareAnvilEvent event) {
-        InputHandler handler = activeInventories.get(event.getView().getTopInventory());
+        AnvilView anvilView = event.getView();
+        InputHandler handler = activeInventories.get(anvilView.getTopInventory());
         if (handler == null) return;
 
         ItemStack result = event.getInventory().getItem(2);
         if (result == null) return;
 
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
+        AuctionHouse.getScheduler().entitySpecificScheduler(anvilView.getPlayer()).runDelayed(() -> anvilView.setRepairCost(0),
+                null,
+                1);
     }
 
     @EventHandler

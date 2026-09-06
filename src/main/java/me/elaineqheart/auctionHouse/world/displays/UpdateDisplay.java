@@ -190,12 +190,19 @@ public class UpdateDisplay implements Runnable {
         if (justUpdateLists) return;
         for (DisplayNote data : displayItems.values()) {
             if (data == null) continue;
-            if (!data.location.getBlock().getBlockData().matches(SettingManager.getDisplayBase(data.sortType, data.rank)))
-                CreateDisplay.placeBlocks(data.location, data.rank, data.sortType);
+            if (AuctionHouse.isFolia()) {
+                AuctionHouse.getScheduler().regionSpecificScheduler(data.location).run(() -> replaceBlocks(data));
+            } else {
+                replaceBlocks(data);
+            }
         }
         new UpdateDisplay().run(); //reload
     }
 
+    private static void replaceBlocks(DisplayNote data) {
+        if (!data.location.getBlock().getBlockData().matches(SettingManager.getDisplayBase(data.sortType, data.rank)))
+            CreateDisplay.placeBlocks(data.location, data.rank, data.sortType);
+    }
 
 
     public static ItemNote getNote(String type, int rank) {

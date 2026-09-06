@@ -39,7 +39,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     public void update() {
@@ -55,7 +55,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
         this.bid = bid;
         if(this.bid == 0) this.bid = note.hasBidHistory() ? Bid.nextMinBid(note.getPrice()) : note.getPrice();
         currentGUIs.put(c.getPlayer(), this);
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -210,8 +210,10 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
-                                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), c.getPlayer()),1);
+                            AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() ->
+                                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), c.getPlayer()),
+                                    null,
+                                    1);
                         }
                     };
                     AuctionHouse.getInputManager().open(p, "inventory-titles.anvil-set-amount", handler);
@@ -247,8 +249,10 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             }
                         }
                         public void onClose(Player p) {
-                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
-                                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, bid, goBackTo), c.getPlayer()),1);
+                            AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() ->
+                                    AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, bid, goBackTo), c.getPlayer()),
+                                    null,
+                                    1);
                         }
                     };
                     AuctionHouse.getInputManager().open(c.getPlayer(), "inventory-titles.anvil-set-bid", handler);

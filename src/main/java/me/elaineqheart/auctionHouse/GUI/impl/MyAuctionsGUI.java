@@ -32,7 +32,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     public enum MySort{
@@ -46,7 +46,7 @@ public class MyAuctionsGUI extends InventoryGUI implements Runnable{
         super();
         c = configuration;
         c.setView(AhConfiguration.View.MY_AUCTIONS);
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     @Override

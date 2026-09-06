@@ -37,7 +37,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     public enum Sort{
@@ -64,7 +64,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
     private void init() {
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -278,8 +278,10 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                             }
                             public void onClose(Player p) {
-                                AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
-                                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer()),1);
+                                AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() ->
+                                        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer()),
+                                        null,
+                                        1);
                             }
                         };
                         if(c.isAdmin()){

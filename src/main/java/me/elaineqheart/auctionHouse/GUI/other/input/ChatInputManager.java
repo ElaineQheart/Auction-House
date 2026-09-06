@@ -37,7 +37,8 @@ public class ChatInputManager implements Listener {
         if (!activePlayers.containsKey(p)) return;
         event.setCancelled(true);
         String input = event.getMessage();
-        AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> unregisterPlayer(p).execute(p, input), () -> {});
+        activePlayers.get(p).execute(p, input);
+        AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> unregisterPlayer(p), null);
     }
 
     @EventHandler

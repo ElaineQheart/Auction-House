@@ -118,7 +118,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                     p.sendMessage(M.getFormatted("chat.placed-bid", price,
                             "%item%", note.getItemName()));
                     if (c.shouldKeepOpen()) AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackToAuctionHouse ? AhConfiguration.View.AUCTION_HOUSE : AhConfiguration.View.MY_AUCTIONS), p);
-                    else AuctionHouse.getScheduler().globalRegionalScheduler().run(p::closeInventory);
+                    else AuctionHouse.getScheduler().entitySpecificScheduler(p).run(p::closeInventory, null);
 
                     Set<UUID> bidders = note.getBidders();
                     bidders.remove(p.getUniqueId());

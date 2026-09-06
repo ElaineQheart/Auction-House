@@ -11,6 +11,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
+import java.util.Objects;
+
 public class ShulkerViewGUI extends InventoryGUI {
 
     private final AhConfiguration c;
@@ -18,7 +20,7 @@ public class ShulkerViewGUI extends InventoryGUI {
     private final AhConfiguration.View goBackTo;
 
     public ShulkerViewGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
-        super(((ShulkerBox) ((BlockStateMeta) note.getItem().getItemMeta()).getBlockState()).getInventory());
+        super(((ShulkerBox) ((BlockStateMeta) Objects.requireNonNull(note.getItem().getItemMeta())).getBlockState()).getInventory());
         c = configuration;
         this.note = note;
         this.goBackTo = goBackTo;
@@ -28,13 +30,15 @@ public class ShulkerViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> {
-            Sounds.closeShulker(event);
-            openSwitch(c, note, p, goBackTo);
-        },0);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() -> {
+                    Sounds.closeShulker(event);
+                    openInventoryGoingBack(c, note, p, goBackTo);
+                },
+                null,
+                0);
     }
 
-    public static void openSwitch(AhConfiguration c, ItemNote note, Player p, AhConfiguration.View goBackTo) {
+    public static void openInventoryGoingBack(AhConfiguration c, ItemNote note, Player p, AhConfiguration.View goBackTo) {
         switch (c.getView()) {
             case MY_AUCTIONS -> AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), p);
             case AUCTION_HOUSE -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);

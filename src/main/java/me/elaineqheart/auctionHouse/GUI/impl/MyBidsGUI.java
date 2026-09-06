@@ -32,7 +32,7 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     public MyBidsGUI(AhConfiguration c, int page) {
@@ -46,7 +46,7 @@ public class MyBidsGUI extends InventoryGUI implements Runnable {
         this.c.setView(AhConfiguration.View.MY_BIDS);
         this.page = page;
         rows = getInventory().getSize()/9;
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(this, null, TaskManager.GUIUpdateTick);
     }
 
     @Override

@@ -16,14 +16,16 @@ public class PlayerJoinCollectListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if(!SettingManager.autoCollect) return;
-        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> {
-            Player p = event.getPlayer();
-            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) sell(note, p);
-        }, 1);
+        Player p = event.getPlayer();
+        AuctionHouse.getScheduler().entitySpecificScheduler(p).runDelayed(() -> {
+            for(ItemNote note : AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId())) collectSoldItem(note, p);
+        },
+                null,
+                1);
 
     }
 
-    public static void sell(ItemNote note, Player p) {
+    public static void collectSoldItem(ItemNote note, Player p) {
         if (!note.isSold() && !(note.isBIDAuction() && note.hasBidHistory() && note.isExpired())) return;
         int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
         String message = M.getFormatted("chat.sold-message.auto-collect", note.getSoldPrice(),
