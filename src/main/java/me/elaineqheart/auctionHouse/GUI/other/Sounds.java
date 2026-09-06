@@ -62,7 +62,6 @@ public class Sounds {
     }
 
     private static void playSound(Player player, String soundName, float volume, float pitch) {
-        System.out.println(soundName);
         Sound sound = getSound(soundName);
         if (sound == null) return;
         player.playSound(player, sound, volume, pitch);
