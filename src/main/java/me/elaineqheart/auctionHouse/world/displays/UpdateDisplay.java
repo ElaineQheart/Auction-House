@@ -22,8 +22,6 @@ import java.util.stream.Collectors;
 
 public class UpdateDisplay implements Runnable {
 
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
-
     private static final HashMap<Integer, DisplayNote> displayItems = new HashMap<>();
     private static final Set<Location> locations = new HashSet<>();
     private static final Set<UUID> interactions = new HashSet<>();
@@ -33,7 +31,7 @@ public class UpdateDisplay implements Runnable {
 
     public static void init() {
         reload(true);
-        instance.getScheduler().globalRegionalScheduler().runAtFixedRate(new UpdateDisplay(), 10, SettingManager.displayUpdateTicks);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runAtFixedRate(new UpdateDisplay(), 10, SettingManager.displayUpdateTicks);
     }
 
     //TODO: split into entity and block modifications
@@ -47,7 +45,7 @@ public class UpdateDisplay implements Runnable {
             DisplayNote data = displayItems.get(displayID);
             if (data == null) continue;
 
-            AuctionHouse.getInstance().getScheduler().regionSpecificScheduler(data.location).run(() -> updateDisplay(displayID, data));
+            AuctionHouse.getScheduler().regionSpecificScheduler(data.location).run(() -> updateDisplay(displayID, data));
         }
     }
 

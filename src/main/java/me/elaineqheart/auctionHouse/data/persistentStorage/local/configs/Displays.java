@@ -82,6 +82,7 @@ public class Displays extends Config {
         }
         if (AuctionHouse.isFolia()) return null;
 
+        // backwardsCompatibility
         Location loc = getYmlData().getLocation(id);
         if (loc != null) {
             DisplayNote note = retrieveDataBackwardsCompatibility(loc, Integer.parseInt(id));

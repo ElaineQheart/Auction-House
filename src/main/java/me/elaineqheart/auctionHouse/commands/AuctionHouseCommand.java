@@ -42,8 +42,6 @@ import java.util.UUID;
 
 public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
 
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
-
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(commandSender instanceof ConsoleCommandSender) {
@@ -180,7 +178,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                             }
                         }
                     } else {
-                        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> { //delay has to be > 0 in Folia
+                        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> { //delay has to be > 0 in Folia
                             for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                                 if (ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
                                     onlinePlayer.sendMessage(announcement);

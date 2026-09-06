@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 public class ChatInputManager implements Listener {
 
-    private final AuctionHouse instance = AuctionHouse.getInstance();
     final private HashMap<Player, InputHandler> activePlayers = new HashMap<>();
     
     public void open(Player player, String inventoryTitle, InputHandler handler) {
@@ -38,7 +37,7 @@ public class ChatInputManager implements Listener {
         if (!activePlayers.containsKey(p)) return;
         event.setCancelled(true);
         String input = event.getMessage();
-        instance.getScheduler().entitySpecificScheduler(p).run(() -> unregisterPlayer(p).execute(p, input), () -> {});
+        AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> unregisterPlayer(p).execute(p, input), () -> {});
     }
 
     @EventHandler

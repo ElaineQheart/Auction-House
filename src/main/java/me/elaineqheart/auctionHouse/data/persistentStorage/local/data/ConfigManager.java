@@ -50,7 +50,7 @@ public class ConfigManager {
         playerPreferences.setup("playerPreferences.yml", false, "/data");
         layout.setup("layout.yml", true, "");
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");
-        instance.getScheduler().globalRegionalScheduler().run(displays::backwardsCompatibility);
+        AuctionHouse.getScheduler().globalRegionalScheduler().run(displays::backwardsCompatibility);
         //old method: Bukkit.getScheduler().runTask(AuctionHouse.getPlugin(), ConfigManager::displaysBackwardsCompatibility);
         permissionsSetup();
     }

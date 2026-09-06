@@ -15,7 +15,6 @@ import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCListener;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.morepaperlib.MorePaperLib;
@@ -32,9 +31,9 @@ public final class AuctionHouse extends JavaPlugin {
     public static InputGUIManager getInputManager() {return inputGUIManager;}
     private MorePaperLib morePaperLib;
     public static AuctionHouse getInstance() {return instance;}
-    public GracefulScheduling getScheduler() {
+    public static GracefulScheduling getScheduler() {
         //morePaperLib.scheduling()... It uses Paper's threaded-regions schedulers if Folia is used, otherwise it falls back to the default Bukkit scheduler.
-        return morePaperLib.scheduling();
+        return instance.morePaperLib.scheduling();
     }
 
     @Override
@@ -49,15 +48,15 @@ public final class AuctionHouse extends JavaPlugin {
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            Bukkit.getLogger().severe("No registered Vault provider found!");
+            getServer().getLogger().severe("No registered Vault provider found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
-        Bukkit.getPluginManager().registerEvents(new DisplayListener(), this);
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
-        Bukkit.getPluginManager().registerEvents(new AhConfigurationListener(), this);
+        getServer().getPluginManager().registerEvents(new NPCListener(), this);
+        getServer().getPluginManager().registerEvents(new DisplayListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinCollectListener(), this);
+        getServer().getPluginManager().registerEvents(new AhConfigurationListener(), this);
         DisplayKillListener.register();
 
         ConfigManager.setupConfigs();
@@ -75,8 +74,7 @@ public final class AuctionHouse extends JavaPlugin {
         UpdateDisplay.init();
         //NoteStorage.purge();
 
-        // Register PlaceholderAPI expansion
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new AuctionHousePAPIExpansion().register();
             getLogger().info("PlaceholderAPI expansion registered.");
         }

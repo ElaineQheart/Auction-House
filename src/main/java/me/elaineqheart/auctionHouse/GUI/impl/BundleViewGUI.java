@@ -25,7 +25,6 @@ public class BundleViewGUI extends InventoryGUI {
     private final AhConfiguration.View goBackTo;
     private int page;
     private final Inventory myInv;
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
 
     public BundleViewGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
@@ -41,7 +40,7 @@ public class BundleViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> {
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> {
             Sounds.closeBundle(event);
             ShulkerViewGUI.openSwitch(c, note, p, goBackTo);
         },0);

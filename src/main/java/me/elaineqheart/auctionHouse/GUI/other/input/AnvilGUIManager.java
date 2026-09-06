@@ -21,8 +21,6 @@ import java.util.Map;
 
 public class AnvilGUIManager implements Listener {
 
-    private final AuctionHouse instance = AuctionHouse.getInstance();
-
     private final Map<Inventory, InputHandler> activeInventories = new HashMap<>();
 
     @SuppressWarnings("UnstableApiUsage")
@@ -84,7 +82,7 @@ public class AnvilGUIManager implements Listener {
         ItemStack result = event.getInventory().getItem(2);
         if (result == null) return;
 
-        instance.getScheduler().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> event.getView().setRepairCost(0),1);
     }
 
     @EventHandler

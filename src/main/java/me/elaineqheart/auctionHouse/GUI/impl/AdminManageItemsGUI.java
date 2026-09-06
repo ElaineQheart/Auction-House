@@ -14,21 +14,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import java.util.UUID;
-
 public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
-
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
 
     private final ItemNote note;
     private final AhConfiguration c;
-    private final UUID invID = UUID.randomUUID();
 
     @Override
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public AdminManageItemsGUI(ItemNote note, AhConfiguration configuration) {
@@ -36,7 +31,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ADMIN_MANAGE_ITEMS);
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -101,7 +96,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, true, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
+                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };
@@ -119,7 +114,7 @@ public class AdminManageItemsGUI extends InventoryGUI implements Runnable{
                                     (new AdminConfirmGUI(typedText, note, false, c), c.getPlayer());
                         }
                         public void onClose(Player p) {
-                            instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
+                            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                     AuctionHouse.getGuiManager().openGUI(new AdminManageItemsGUI(note, c), c.getPlayer()),1);
                         }
                     };

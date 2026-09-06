@@ -29,8 +29,6 @@ import java.util.function.Consumer;
 
 public class AuctionHouseGUI extends InventoryGUI implements Runnable {
 
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
-
     public final AhConfiguration c;
     private int noteSize;
     private int screenSize;
@@ -39,7 +37,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public enum Sort{
@@ -66,7 +64,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
     }
     private void init() {
         c.setView(AhConfiguration.View.AUCTION_HOUSE);
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     @Override
@@ -217,12 +215,6 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 });
     }
 
-//    private InventoryButton loading(){
-//        return new InventoryButton()
-//                .creator(player -> ItemManager.loading)
-//                .consumer(event -> {});
-//    }
-
     private InventoryButton nextPage(){
         final int pages = ((noteSize == 0 ? 1 : noteSize) - 1) / screenSize;
         ItemStack item = ConfigManager.layout.getItem("n");
@@ -286,7 +278,7 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                                 AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p);
                             }
                             public void onClose(Player p) {
-                                instance.getScheduler().globalRegionalScheduler().runDelayed(() ->
+                                AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() ->
                                         AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), c.getPlayer()),1);
                             }
                         };

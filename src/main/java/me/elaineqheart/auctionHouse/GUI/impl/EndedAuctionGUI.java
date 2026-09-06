@@ -23,8 +23,6 @@ import java.util.Objects;
 
 public class EndedAuctionGUI extends InventoryGUI implements Runnable{
 
-    private static final AuctionHouse instance = AuctionHouse.getInstance();
-
     private final ItemNote note;
     private final AhConfiguration c;
     private final boolean topBid;
@@ -34,7 +32,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
     public void run() {
         if (this.getInventory().getViewers().isEmpty()) return;
         decorate(c.getPlayer());
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
     }
 
     public EndedAuctionGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
@@ -42,7 +40,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
         this.note = note;
         c = configuration;
         c.setView(AhConfiguration.View.ENDED_AUCTION);
-        instance.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
+        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(this, TaskManager.GUIUpdateTick);
         topBid = Objects.equals(note.getLastBidder(), c.getPlayer().getUniqueId());
         this.goBackTo = goBackTo;
     }
