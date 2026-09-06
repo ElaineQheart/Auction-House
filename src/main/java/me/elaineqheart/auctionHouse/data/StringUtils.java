@@ -86,25 +86,11 @@ public class StringUtils {
                 "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
     }
 
-    public static String getItemName(ItemStack item) { //to be made scheduler safe with location 0 0 0 if scheduled
+    public static String getItemName(ItemStack item) {
         if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) return item.getItemMeta().getDisplayName();
         World world = Bukkit.getWorlds().getFirst();
+        //to be made scheduler safe with location 0 0 0 *if* scheduled on Folia; Should not be scheduled
         Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
-        itemEntity.setItemStack(item);
-        String name = itemEntity.getName();
-        itemEntity.remove();
-
-        if (ChatColor.stripColor(name).equals("Stone")) {
-            // getting item name failed; using fallback method
-            // if material IS stone, using fallback method works just fine
-            if (item.getItemMeta() != null && !item.getItemMeta().getItemName().isEmpty()) return item.getItemMeta().getItemName();
-            return formatMaterialName(item.getType());
-        }
-        return name;
-    }
-
-    private static String getNameOnRegionDependent(World world, ItemStack item) {
-        Item itemEntity= (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();
         itemEntity.remove();
