@@ -10,6 +10,7 @@ sounds:
   npc-click: "ui.stonecutter.select_recipe"
   open-bundle: "item.bundle.drop_contents"
   close-bundle: "item.bundle.remove_one"
+  create-auction: ""
 
 # you can add as many displays as you want
 # in order to destroy a spawned display, just shift+Lclick on the base block during creative mode (requires permission)

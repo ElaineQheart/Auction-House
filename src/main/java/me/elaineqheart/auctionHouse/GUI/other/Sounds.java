@@ -41,39 +41,39 @@ public class Sounds {
     public static void closeBundle(InventoryCloseEvent event) {
         playSound(event, SettingManager.soundCloseBundle, 0.5f, 1);
     }
-
     public static void click(Player p) {
         playSound(p, SettingManager.soundClick, 0.2f,1);
     }
     public static void breakWood(Player p) {
         playSound(p, SettingManager.soundBreakWood, 0.5f, 1);
     }
-
+    public static void createAuction(Player p) {
+        playSound(p, SettingManager.soundCreateAuction, 0.2f,1);
+    }
     public static void npcClick(Player p) {
-        p.playSound(p.getLocation(), getSound(SettingManager.soundNPCClick), 0.5f,1);
+        playSound(p, SettingManager.soundNPCClick, 0.5f, 1);
     }
 
-    private static void playSound(Player p, String soundName, float volume, float pitch) {
-        p.playSound(p.getLocation(), getSound(soundName), volume, pitch);
-    }
     private static void playSound(InventoryClickEvent event, String soundName, float volume, float pitch) {
-        try {
-            ((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), getSound(soundName), volume, pitch);
-        } catch (IllegalArgumentException e) {
-            // Invalid sound
-        }
+        playSound((Player) event.getWhoClicked(), soundName, volume, pitch);
     }
     private static void playSound(InventoryCloseEvent event, String soundName, float volume, float pitch) {
-        try {
-            ((Player) event.getPlayer()).playSound(event.getPlayer().getLocation(), getSound(soundName), volume, pitch);
-        } catch (IllegalArgumentException e) {
-            // Invalid sound
-        }
+        playSound((Player) event.getPlayer(), soundName, volume, pitch);
+    }
+
+    private static void playSound(Player player, String soundName, float volume, float pitch) {
+        System.out.println(soundName);
+        Sound sound = getSound(soundName);
+        if (sound == null) return;
+        player.playSound(player, sound, volume, pitch);
     }
 
     private static Sound getSound(String name) {
+        if (name.isEmpty()) return null;
         //return Registry.SOUNDS.get(NamespacedKey.minecraft(name));
         if(!ConfigManager.oldVersion21()) return Registry.SOUNDS.get(NamespacedKey.minecraft(name));
+
+        //older minecraft versions:
         Sound sound;
         switch (name) {
             case "block.ender_chest.open" -> sound = Sound.BLOCK_ENDER_CHEST_OPEN;

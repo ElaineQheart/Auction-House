@@ -54,6 +54,7 @@ public class SettingManager {
     public static String soundNPCClick;
     public static String soundCloseBundle;
     public static String soundOpenBundle;
+    public static String soundCreateAuction;
 
     // displays
     public static final Set<Material> displayMaterials = new HashSet<>();
@@ -104,19 +105,22 @@ public class SettingManager {
         minBIDPrice = c.getDouble("min-bid", 1);
         maxBINPrice = c.getDouble("max-bin", -1);
         maxBIDPrice = c.getDouble("max-bid", -1);
-        FileConfiguration layout = ConfigManager.layout.getCustomFile();
-        soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");
-        soundOpenEnderchest = layout.getString("sounds.open-enderchest", "block.ender_chest.open");
-        soundCloseEnderchest = layout.getString("sounds.close-enderchest", "block.ender_chest.close");
-        soundBreakWood = layout.getString("sounds.break-wood", "block.wood.break");
-        soundExperience = layout.getString("sounds.experience", "entity.experience_orb.pickup");
-        soundVillagerDeny = layout.getString("sounds.villager-deny", "entity.villager.no");
-        soundOpenShulker = layout.getString("sounds.open-shulker", "block.shulker_box.open");
-        soundCloseShulker = layout.getString("sounds.close-shulker", "block.shulker_box.close");
-        soundNPCClick = layout.getString("sounds.npc-click", "ui.stonecutter.select_recipe");
-        soundOpenBundle = layout.getString("sounds.open-bundle", "item.bundle.drop_contents");
-        soundCloseBundle = layout.getString("sounds.close-bundle", "item.bundle.remove_one");
-        loadDisplays(layout);
+        AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> {
+            FileConfiguration layout = ConfigManager.layout.getCustomFile();
+            soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");
+            soundOpenEnderchest = layout.getString("sounds.open-enderchest", "block.ender_chest.open");
+            soundCloseEnderchest = layout.getString("sounds.close-enderchest", "block.ender_chest.close");
+            soundBreakWood = layout.getString("sounds.break-wood", "block.wood.break");
+            soundExperience = layout.getString("sounds.experience", "entity.experience_orb.pickup");
+            soundVillagerDeny = layout.getString("sounds.villager-deny", "entity.villager.no");
+            soundOpenShulker = layout.getString("sounds.open-shulker", "block.shulker_box.open");
+            soundCloseShulker = layout.getString("sounds.close-shulker", "block.shulker_box.close");
+            soundNPCClick = layout.getString("sounds.npc-click", "ui.stonecutter.select_recipe");
+            soundCloseBundle = layout.getString("sounds.close-bundle", "item.bundle.remove_one");
+            soundOpenBundle = layout.getString("sounds.open-bundle", "item.bundle.drop_contents");
+            soundCreateAuction = layout.getString("sounds.create-auction", "");
+            loadDisplays(layout);
+        });
     }
 
     // multi-server-database:
