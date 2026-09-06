@@ -15,6 +15,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigMana
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
+import me.elaineqheart.auctionHouse.pluginDependencies.DiscordSRVHook;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCManager;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 // https://github.com/VelixDevelopments/Imperat
 
@@ -161,10 +164,11 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 item.setAmount(item.getAmount() - amount);
                 ItemNote note = ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(M.getFormatted("commands.bid")));
                 p.sendMessage(M.getFormatted("command-feedback.auction", price));
+                Sounds.createAuction(p);
                 
                 // Announce the new auction to all players who have announcements enabled
-                if(SettingManager.auctionAnnouncementsEnabled) {
-                    String itemName = note.getItemName();
+                String itemName = note.getItemName();
+                if (SettingManager.auctionAnnouncementsEnabled) {
                     String announcement = M.getFormatted(
                             strings[0].equals(M.getFormatted("commands.sell")) ? "chat.auction-announcement" : "chat.bid-announcement",
                             price,
@@ -187,6 +191,15 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                         }, SettingManager.auctionSetupTime * 20);
                     }
                 }
+
+                //DiscordSRV wip
+                DiscordSRVHook.sendMessage("auctionhouseElaineQheartNewAuctions",
+                        Pattern.compile("§.").splitAsStream(M.getFormatted(
+                                strings[0].equals(M.getFormatted("commands.sell")) ? "discord-srv.new-bin-auction" : "discord-srv.new-bid-auction",
+                                price,
+                                "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
+                                "%item%", inputItem.getItemMeta() != null && inputItem.getItemMeta().hasDisplayName() ? String.format("*%s*", itemName) : itemName,
+                                "%amount%", String.valueOf(amount))).collect(Collectors.joining()));
 
             }
             // /ah announce - toggle announcements

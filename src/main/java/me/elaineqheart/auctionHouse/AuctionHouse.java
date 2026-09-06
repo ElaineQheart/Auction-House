@@ -9,6 +9,7 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigMana
 import me.elaineqheart.auctionHouse.listeners.AhConfigurationListener;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
 import me.elaineqheart.auctionHouse.pluginDependencies.AuctionHousePAPIExpansion;
+import me.elaineqheart.auctionHouse.pluginDependencies.DiscordSRVHook;
 import me.elaineqheart.auctionHouse.pluginDependencies.LocaleAPIExtension;
 import me.elaineqheart.auctionHouse.world.displays.DisplayKillListener;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
@@ -78,6 +79,8 @@ public final class AuctionHouse extends JavaPlugin {
             new AuctionHousePAPIExpansion().register();
             getLogger().info("PlaceholderAPI expansion registered.");
         }
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null)
+            DiscordSRVHook.register();
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
@@ -87,6 +90,9 @@ public final class AuctionHouse extends JavaPlugin {
         ConfigManager.playerPreferences.disable();
         if(guiManager != null) guiManager.forceCloseAll();
         if(inputGUIManager != null) inputGUIManager.forceCloseAll();
+        if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
+            DiscordSRVHook.unregister();
+        }
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 
