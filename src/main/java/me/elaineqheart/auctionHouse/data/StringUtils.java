@@ -134,6 +134,9 @@ public class StringUtils {
                     case "m":
                         price *= 1000000;
                         break;
+                    case "b":
+                        price *= 1000000000;
+                        break;
                     default:
                         return -1;
                 }
@@ -163,11 +166,7 @@ public class StringUtils {
     public static String formatMaterialName(Material material) {
         if (material == Material.TNT)
             return "TNT";
-        return formatName(material.name());
-    }
-
-    public static String formatName(String name) {
-        return Arrays.stream(name.replace('_', ' ').split("\\s+"))
+        return Arrays.stream(material.name().replace('_', ' ').split("\\s+"))
                 .map(x -> x.substring(0, 1).toUpperCase() + x.substring(1).toLowerCase())
                 .collect(Collectors.joining(" "));
     }
