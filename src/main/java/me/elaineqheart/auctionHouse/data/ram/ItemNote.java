@@ -52,7 +52,7 @@ public class ItemNote {
         this.price = price;
         this.isSold = false;
         this.auctionTime = ConfigManager.permissions.getAuctionDuration(player, isBIDAuction);
-        this.itemName = StringUtils.getItemName(item);
+        this.itemName = StringUtils.getItemName(item, player.getLocation());
         this.isBIDAuction = isBIDAuction;
         ItemNoteStorage.addItem(noteID, ItemStackConverter.decode(itemData));
     }
@@ -145,7 +145,7 @@ public class ItemNote {
     public String getAdminMessage() {return adminMessage;}
     public UUID getNoteID() {return noteID;}
     public String getItemName() {
-        if (itemName == null) itemName = StringUtils.getItemName(getItem()); //backwards compatibility
+        if (itemName == null) itemName = StringUtils.getItemName(getItem(), Bukkit.getWorlds().getFirst().getSpawnLocation()); //backwards compatibility
         return itemName;
     }
     public List<Bid> getBidHistoryList() {

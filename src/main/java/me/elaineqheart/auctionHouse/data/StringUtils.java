@@ -86,11 +86,12 @@ public class StringUtils {
                 "%currency-symbol%", M.getFormatted("placeholders.currency-symbol"));
     }
 
-    public static String getItemName(ItemStack item) {
+    public static String getItemName(ItemStack item, Location loc) {
         if(item.getItemMeta() != null && item.getItemMeta().hasDisplayName()) return item.getItemMeta().getDisplayName();
-        World world = Bukkit.getWorlds().getFirst();
-        //to be made scheduler safe with location 0 0 0 *if* scheduled on Folia; Should not be scheduled
-        Item itemEntity = (Item) world.spawnEntity(new Location(world,0,0,0), EntityType.ITEM);
+        // loc has to be an accessible location for the thread executing it in Folia
+        assert loc.getWorld() != null;
+        //to be made scheduler safe with location 0 0 0 *if* scheduled on Folia; Should not be scheduled.
+        Item itemEntity = (Item) loc.getWorld().spawnEntity(loc, EntityType.ITEM);
         itemEntity.setItemStack(item);
         String name = itemEntity.getName();
         itemEntity.remove();
