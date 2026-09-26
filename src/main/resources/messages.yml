@@ -316,6 +316,7 @@ items:
       buying-item: "§8------------------
         &n§e§nBUYING ITEM!"
       shulker-preview: "§f§oRight-Click to preview!"
+      bundle-preview: "§f§oRight-Click to preview!"
   admin-expire-item:
     lore: "§8------------------
       &n§7Seller: %seller%
