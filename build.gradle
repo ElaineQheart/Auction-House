@@ -21,6 +21,7 @@ repositories {
     maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url = "https://mvn-repo.arim.space/lesser-gpl3/" }
     maven { url = "https://nexus.scarsz.me/content/groups/public/" }
+    maven { url = "https://repo.loohpjames.com/repository"}
 }
 
 //alt + ins
@@ -35,6 +36,8 @@ dependencies {
     compileOnly("com.github.Unp1xelt:Locale-API:1.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.discordsrv:discordsrv:1.29.0")
+    compileOnly("com.loohp:InteractiveChat:2026.1.1.0")
+    compileOnly("com.loohp:InteractiveChatDiscordSrvAddon:2026.1.1.0")
 }
 
 tasks.named("jar") {

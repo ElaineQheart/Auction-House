@@ -81,6 +81,11 @@ chat:
     &n§b-------------------------------------------------"
   input-listener: "§e%request%. Please type your input in chat:"
 
+discord-srv:
+  new-listing-channel-name: "auctionhouseElaineQheartNewAuctions"
+  new-bin-auction-title: "Auction >> %price-trim%"
+  new-bid-auction-title: "BID Auction >> %price-trim%"
+
 inventory-titles:
   admin-confirm-gui: "Confirm Action"
   admin-menu: "Admin Menu"

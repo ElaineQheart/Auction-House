@@ -108,6 +108,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
             if((strings.length==2 || strings.length==3) &&
                     (strings[0].equals(M.getFormatted("commands.sell")) && SettingManager.BINAuctions
                             || strings[0].equals(M.getFormatted("commands.bid")) && SettingManager.BIDAuctions)) {
+                boolean isBIDAuction = strings[0].equals(M.getFormatted("commands.bid"));
                 if(ConfigManager.bannedPlayers.checkIsBannedSendMessage(p)) {
                     return true;
                 }
@@ -130,17 +131,17 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                     p.sendMessage(M.getFormatted("command-feedback.invalid-number2"));
                     return true;
                 }
-                if (strings[0].equals(M.getFormatted("commands.sell")) && price < SettingManager.minBINPrice) {
+                if (!isBIDAuction && price < SettingManager.minBINPrice) {
                     p.sendMessage(M.getFormatted("command-feedback.min-bin", SettingManager.minBINPrice));
                     return true;
-                } else if (strings[0].equals(M.getFormatted("commands.bid")) && price < SettingManager.minBIDPrice) {
+                } else if (isBIDAuction && price < SettingManager.minBIDPrice) {
                     p.sendMessage(M.getFormatted("command-feedback.min-bid", SettingManager.minBIDPrice));
                     return true;
                 }
-                if (SettingManager.maxBINPrice > -1 && strings[0].equals(M.getFormatted("commands.sell")) && price > SettingManager.maxBINPrice) {
+                if (SettingManager.maxBINPrice > -1 && !isBIDAuction && price > SettingManager.maxBINPrice) {
                     p.sendMessage(M.getFormatted("command-feedback.max-bin", SettingManager.maxBINPrice));
                     return true;
-                } else if (SettingManager.maxBIDPrice > -1 && strings[0].equals(M.getFormatted("commands.bid")) && price > SettingManager.maxBIDPrice) {
+                } else if (SettingManager.maxBIDPrice > -1 && isBIDAuction && price > SettingManager.maxBIDPrice) {
                     p.sendMessage(M.getFormatted("command-feedback.max-bid", SettingManager.maxBIDPrice));
                     return true;
                 }
@@ -162,7 +163,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 ItemStack inputItem = item.clone();
                 inputItem.setAmount(amount);
                 item.setAmount(item.getAmount() - amount);
-                ItemNote note = ItemNoteStorage.createNote(p, inputItem, price, strings[0].equals(M.getFormatted("commands.bid")));
+                ItemNote note = ItemNoteStorage.createNote(p, inputItem, price, isBIDAuction);
                 p.sendMessage(M.getFormatted("command-feedback.auction", price));
                 Sounds.createAuction(p);
                 
@@ -170,7 +171,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 String itemName = note.getItemName();
                 if (SettingManager.auctionAnnouncementsEnabled) {
                     String announcement = M.getFormatted(
-                            strings[0].equals(M.getFormatted("commands.sell")) ? "chat.auction-announcement" : "chat.bid-announcement",
+                            isBIDAuction ? "chat.bid-announcement" : "chat.auction-announcement",
                             price,
                             "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
                             "%item%", itemName,
@@ -192,14 +193,14 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                     }
                 }
 
-                //DiscordSRV wip
-                DiscordSRVHook.sendMessage("auctionhouseElaineQheartNewAuctions",
-                        Pattern.compile("§.").splitAsStream(M.getFormatted(
-                                strings[0].equals(M.getFormatted("commands.sell")) ? "discord-srv.new-bin-auction" : "discord-srv.new-bid-auction",
-                                price,
-                                "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
-                                "%item%", inputItem.getItemMeta() != null && inputItem.getItemMeta().hasDisplayName() ? String.format("*%s*", itemName) : itemName,
-                                "%amount%", String.valueOf(amount))).collect(Collectors.joining()));
+                //Discord SRV
+                String key = isBIDAuction ? "discord-srv.new-bid-auction-title" : "discord-srv.new-bin-auction-title";
+                String title = Pattern.compile("§.").splitAsStream(M.getFormatted(key,
+                        price,
+                        "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
+                        "%item%", itemName,
+                        "%amount%", String.valueOf(amount))).collect(Collectors.joining());
+                DiscordSRVHook.sendAuctionListingToDiscord(p, inputItem, title);
 
             }
             // /ah announce - toggle announcements
