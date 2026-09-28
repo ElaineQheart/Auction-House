@@ -91,10 +91,10 @@ public class CollectSoldItemGUI extends InventoryGUI {
     }
     private InventoryButton collectItem() {
         return new InventoryButton()
-                .creator(player -> ItemManager.collectSoldItem(getProfit(price)))
+                .creator(player -> ItemManager.collectSoldItem(getProfit(price, note.getTaxRate())))
                 .consumer(event -> {
                     Player p = (Player) event.getWhoClicked();
-                    String message = M.getFormatted("chat.collect-sold-auction", getProfit(price),
+                    String message = M.getFormatted("chat.collect-sold-auction", getProfit(price, note.getTaxRate()),
                             "%amount%", String.valueOf(item.getAmount()),
                             "%item%", note.getItemName());
 
@@ -110,18 +110,19 @@ public class CollectSoldItemGUI extends InventoryGUI {
 
     public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
         ItemNote note = AuctionHouseStorage.getNote(noteID);
+        double taxRate = note != null ? note.getTaxRate() : SettingManager.taxRate;
         boolean success = ItemNoteStorage.collectSoldAuctionItem(note, itemAmount, price);
         if (!success) {
             if (p instanceof Player onlinePlayer) onlinePlayer.sendMessage(M.getFormatted("chat.non-existent"));
             return false;
         }
         Economy eco = VaultHook.getEconomy();
-        eco.depositPlayer(p, getProfit(price));
+        eco.depositPlayer(p, getProfit(price, taxRate));
         return true;
     }
 
-    private static double getProfit(double price) {
-        return Math.floor((price * 100 * (1 - SettingManager.taxRate))) / 100;
+    private static double getProfit(double price, double taxRate) {
+        return Math.floor((price * 100 * (1 - taxRate))) / 100;
     }
 
 }

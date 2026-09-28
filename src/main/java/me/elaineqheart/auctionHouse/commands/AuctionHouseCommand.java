@@ -5,6 +5,8 @@ import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionViewGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CancelAuctionGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.CollectSoldItemGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.HubGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.SellGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.StringUtils;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
@@ -15,7 +17,6 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigMana
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.DiscordSRVHook;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCManager;
@@ -36,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 // https://github.com/VelixDevelopments/Imperat
 
@@ -60,7 +59,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 if(ConfigManager.bannedPlayers.checkIsBannedSendMessage(p)) {
                     return true;
                 }
-                AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
+                AuctionHouse.getGuiManager().openGUI(SettingManager.hubMenu ? new HubGUI(p) : new AuctionHouseGUI(p), p);
             }
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.about"))) {
                 p.sendMessage("§6> §7§l---------------[ §dAuction House§7§l ]---------------");
@@ -86,7 +85,10 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 }
             }
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.sell")) && SettingManager.BINAuctions) {
-                p.sendMessage(M.getFormatted("command-feedback.usage"));
+                if(ConfigManager.bannedPlayers.checkIsBannedSendMessage(p)) {
+                    return true;
+                }
+                AuctionHouse.getGuiManager().openGUI(new SellGUI(p), p); // "/ah sell <price>" still works as before
             }
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.bid")) && SettingManager.BIDAuctions) {
                 p.sendMessage(M.getFormatted("command-feedback.bid-usage"));
@@ -164,43 +166,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 inputItem.setAmount(amount);
                 item.setAmount(item.getAmount() - amount);
                 ItemNote note = ItemNoteStorage.createNote(p, inputItem, price, isBIDAuction);
-                p.sendMessage(M.getFormatted("command-feedback.auction", price));
-                Sounds.createAuction(p);
-                
-                // Announce the new auction to all players who have announcements enabled
-                String itemName = note.getItemName();
-                if (SettingManager.auctionAnnouncementsEnabled) {
-                    String announcement = M.getFormatted(
-                            isBIDAuction ? "chat.bid-announcement" : "chat.auction-announcement",
-                            price,
-                            "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
-                            "%item%", itemName,
-                            "%amount%", String.valueOf(amount));
-                    if (SettingManager.auctionSetupTime == 0) {
-                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                            if (ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
-                                onlinePlayer.sendMessage(announcement);
-                            }
-                        }
-                    } else {
-                        AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> { //delay has to be > 0 in Folia
-                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                                if (ConfigManager.playerPreferences.hasAnnouncementsEnabled(onlinePlayer.getUniqueId()) && !onlinePlayer.equals(p)) {
-                                    onlinePlayer.sendMessage(announcement);
-                                }
-                            }
-                        }, SettingManager.auctionSetupTime * 20);
-                    }
-                }
-
-                //Discord SRV
-                String key = isBIDAuction ? "discord-srv.new-bid-auction-title" : "discord-srv.new-bin-auction-title";
-                String title = Pattern.compile("§.").splitAsStream(M.getFormatted(key,
-                        price,
-                        "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
-                        "%item%", itemName,
-                        "%amount%", String.valueOf(amount))).collect(Collectors.joining());
-                DiscordSRVHook.sendAuctionListingToDiscord(p, inputItem, title);
+                ListingAnnouncer.afterListing(p, note, inputItem, price, isBIDAuction, amount);
 
             }
             // /ah announce - toggle announcements

@@ -40,6 +40,19 @@ public class ItemNoteStorage {
         return itemNote;
     }
 
+    // used by the sell menu: the duration and the tax are chosen by the player
+    public static ItemNote createNote(Player p, ItemStack item, double price, boolean isBIDAuction, long duration, double taxRate) {
+        ItemNote itemNote = new ItemNote(p, item, price, isBIDAuction, duration, taxRate);
+        ConfigManager.transactionLogger.logSetUpAuction(
+                p.getDisplayName(),
+                itemNote.getItemName(),
+                price,
+                item.getAmount(),
+                isBIDAuction);
+        JsonNoteStorage.createNote(itemNote);
+        return itemNote;
+    }
+
     public static void saveNotes() throws IOException {
         //if(!r())
         JsonNoteStorage.saveNotes();
@@ -178,6 +191,8 @@ public class ItemNoteStorage {
                 price,
                 amount,
                 note.isBIDAuction());
+        TradeHistory.record(p.getUniqueId(), p.getDisplayName(), note.getPlayerUUID(), note.getPlayerName(),
+                note.getItem(), note.getItemName(), amount, price, note.getTaxRate(), note.isBIDAuction());
         return true;
     }
 

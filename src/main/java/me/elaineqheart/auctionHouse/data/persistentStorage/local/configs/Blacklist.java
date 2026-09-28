@@ -28,6 +28,10 @@ public class Blacklist extends Config {
             switch (entry.get("type").toString()) {
                 case "exact" -> blacklisted = isExact(item, (ItemStack) keyObj);
                 case "material" -> blacklisted = isMaterial(item, keyObj.toString());
+                // the 3 types below are mainly used by the categories (categories.yml), but work in blacklist.yml too
+                case "material_contains" -> blacklisted = item.getType().name().contains(keyObj.toString().toUpperCase());
+                case "edible" -> blacklisted = item.getType().isEdible();
+                case "block" -> blacklisted = item.getType().isBlock();
                 case "lore" -> blacklisted = loreContains(item, keyObj.toString());
                 case "name" -> blacklisted = nameContains(item, keyObj.toString());
                 case "item_model" -> blacklisted = itemModelContains(item, keyObj.toString());

@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.data.persistentStorage.local.data;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.LayoutGenerator;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -47,6 +48,7 @@ public class ConfigManager {
         permissions.setup("permissions.yml", true, "");
         blacklist.setup("blacklist.yml", false, "/data");
         categories.setup("categories.yml", false, "/data");
+        if (LayoutGenerator.generateCategories(categories.getCustomFile())) categories.save();
         playerPreferences.setup("playerPreferences.yml", false, "/data");
         layout.setup("layout.yml", true, "");
         transactionLogger.setup(transactionLogger.getNewName(), false, "/logs");

@@ -32,6 +32,9 @@ public class SettingManager {
     public static int displayUpdateTicks;
     public static boolean autoCollect;
     public static boolean auctionAnnouncementsEnabled;
+    public static boolean hubMenu;
+    public static int historyMaxEntries;
+    public static int historyExpireDays;
     public static boolean BINAuctions;
     public static long BINAuctionDuration; // in seconds, default is 48 hours
     public static boolean BIDAuctions;
@@ -95,6 +98,9 @@ public class SettingManager {
         displayUpdateTicks = c.getInt("display-update", 80);
         autoCollect = c.getBoolean("auto-collect", false);
         auctionAnnouncementsEnabled = c.getBoolean("auction-announcements", true);
+        hubMenu = c.getBoolean("hub-menu", true);
+        historyMaxEntries = Math.max(1, c.getInt("history-max-entries", 100));
+        historyExpireDays = Math.max(0, c.getInt("history-expire-days", 90));
         BINAuctions = c.getBoolean("bin-auctions", true);
         BINAuctionDuration = c.getLong("bin-auction-duration", 172800);
         BIDAuctions = c.getBoolean("bid-auctions", true);

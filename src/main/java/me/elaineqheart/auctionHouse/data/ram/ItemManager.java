@@ -46,6 +46,10 @@ public class ItemManager {
     public static ItemStack chooseItemBuyAmount;
     public static ItemStack refresh;
     public static ItemStack myBids;
+    public static ItemStack backToHub;
+    public static ItemStack hubShop;
+    public static ItemStack hubHistory;
+    public static ItemStack hubSell;
 
     static {
         reload();
@@ -78,6 +82,10 @@ public class ItemManager {
         chooseItemBuyAmount = createChooseItemBuyAmount();
         refresh = createRefresh();
         myBids = createMyBids();
+        backToHub = createBackToHub();
+        hubShop = createHubShop();
+        hubHistory = createHubHistory();
+        hubSell = createHubSell();
     }
 
     private static ItemStack createFillerItem(){
@@ -120,6 +128,42 @@ public class ItemManager {
         assert meta != null;
         meta.setItemName(M.getFormatted("items.back-main-menu.name"));
         meta.setLore(M.getLoreList("items.back-main-menu.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createBackToHub(){
+        ItemStack item = ConfigManager.layout.getItem("h");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(M.getFormatted("items.back-to-hub.name"));
+        meta.setLore(M.getLoreList("items.back-to-hub.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createHubShop(){
+        ItemStack item = ConfigManager.layout.getItem("S");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(M.getFormatted("items.hub-shop.name"));
+        meta.setLore(M.getLoreList("items.hub-shop.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createHubHistory(){
+        ItemStack item = ConfigManager.layout.getItem("H");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(M.getFormatted("items.hub-history.name"));
+        meta.setLore(M.getLoreList("items.hub-history.lore"));
+        item.setItemMeta(meta);
+        return item;
+    }
+    private static ItemStack createHubSell(){
+        ItemStack item = ConfigManager.layout.getItem("V");
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setItemName(M.getFormatted("items.hub-sell.name"));
+        meta.setLore(M.getLoreList("items.hub-sell.lore"));
         item.setItemMeta(meta);
         return item;
     }

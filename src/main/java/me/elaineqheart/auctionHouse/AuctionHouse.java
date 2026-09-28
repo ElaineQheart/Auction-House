@@ -5,6 +5,7 @@ import me.elaineqheart.auctionHouse.GUI.GUIManager;
 import me.elaineqheart.auctionHouse.GUI.other.input.InputGUIManager;
 import me.elaineqheart.auctionHouse.commands.DynamicCommandRegisterer;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.TradeHistory;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.listeners.AhConfigurationListener;
 import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
@@ -61,6 +62,7 @@ public final class AuctionHouse extends JavaPlugin {
         DisplayKillListener.register();
 
         ConfigManager.setupConfigs();
+        TradeHistory.enable();
 
         //if(SettingManager.useRedis) RedisManager.connect();
 
@@ -88,6 +90,7 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         ConfigManager.playerPreferences.disable();
+        TradeHistory.disable();
         if(guiManager != null) guiManager.forceCloseAll();
         if(inputGUIManager != null) inputGUIManager.forceCloseAll();
         if (getServer().getPluginManager().getPlugin("DiscordSRV") != null) {

@@ -41,6 +41,7 @@ public class AhConfiguration {
         ADMIN_CONFIRM,
         ADMIN_MANAGE_ITEMS,
         AUCTION_HOUSE,
+        HUB,
         AUCTION_VIEW,
         CANCEL_AUCTION,
         COLLECT_EXPIRED_ITEM,
@@ -83,6 +84,7 @@ public class AhConfiguration {
             configuration.currentSort = currentSort;
             configuration.currentSearch = currentSearch;
             configuration.whitelistLetter = whitelistLetter;
+            configuration.whitelist = whitelist;
             if(binFilter != BINFilter.ALL )configuration.binFilter = binFilter;
             return configuration;
         }
@@ -98,6 +100,7 @@ public class AhConfiguration {
         save(this);
     }
     public List<Map<?, ?>> getWhitelist() {return whitelist;}
+    public String getWhitelistLetter() {return whitelistLetter;}
     public void setWhitelist(List<Map<?, ?>> whitelist, String letter) {
         this.whitelist = whitelist;
         this.whitelistLetter = letter;

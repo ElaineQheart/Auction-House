@@ -1,6 +1,7 @@
 package me.elaineqheart.auctionHouse.GUI;
 
 import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.HubGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyAuctionsGUI;
 import me.elaineqheart.auctionHouse.GUI.impl.MyBidsGUI;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
@@ -31,6 +32,7 @@ public class GUIManager {
         if (goBackTo == AhConfiguration.View.AUCTION_HOUSE) openGUI(new AuctionHouseGUI(c), p);
         else if (goBackTo == AhConfiguration.View.MY_AUCTIONS) openGUI(new MyAuctionsGUI(c), p);
         else if (goBackTo == AhConfiguration.View.MY_BIDS) openGUI(new MyBidsGUI(c,0), p);
+        else if (goBackTo == AhConfiguration.View.HUB) openGUI(new HubGUI(c), p);
     }
 
     public void registerHandledInventory(Inventory inventory, InventoryHandler handler) {

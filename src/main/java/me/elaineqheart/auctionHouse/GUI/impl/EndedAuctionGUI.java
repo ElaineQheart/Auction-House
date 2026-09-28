@@ -6,6 +6,7 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.TaskManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
+import me.elaineqheart.auctionHouse.data.persistentStorage.TradeHistory;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
@@ -157,6 +158,9 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                             note.getPrice(),
                             item.getAmount(),
                             note.isBIDAuction());
+                    // the winner of a bid auction gets the item: this is the completed sale
+                    TradeHistory.record(p.getUniqueId(), p.getDisplayName(), note.getPlayerUUID(), note.getPlayerName(),
+                            item, note.getItemName(), item.getAmount(), note.getBid(p), note.getTaxRate(), true);
                 });
     }
     private InventoryButton collectCoins() {

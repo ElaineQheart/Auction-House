@@ -18,3 +18,29 @@ max-bid: -1                                 # limit the bid price; set to -1 to 
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
 use-adventure-text-minimessages: true       # support for miniMessages like <yellow> in messages.yml
+hub-menu: true                              # /ah opens the main menu (shop, sell, history); set to false to open the shop directly
+# Durations offered in the sell menu (/ah -> "Sell an Item"), each with its own tax (0.02 = 2%).
+# The tax is taken from the price when the seller collects the coins. 'time' is in seconds.
+# A duration longer than the player's maximum (bin-auction-duration / bid-auction-duration + permissions.yml) is not offered.
+# If a list is empty, the normal duration and the global 'tax' are used.
+sell-durations:
+  bin:
+    - time: 21600    # 6h
+      tax: 0.01
+    - time: 43200    # 12h
+      tax: 0.015
+    - time: 86400    # 24h
+      tax: 0.02
+    - time: 172800   # 48h
+      tax: 0.03
+  bid:
+    - time: 3600     # 1h
+      tax: 0.01
+    - time: 7200     # 2h
+      tax: 0.015
+    - time: 21600    # 6h
+      tax: 0.02
+    - time: 43200    # 12h
+      tax: 0.03
+history-max-entries: 100                    # trades kept per player in the history menu; older ones are removed
+history-expire-days: 90                     # trades older than this are removed from the history; 0 = never

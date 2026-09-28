@@ -14,6 +14,9 @@ public class Layout extends Config {
 
     public List<String> ahLayout;
     public List<String> myAhLayout;
+    public List<String> hubLayout;
+    public List<String> sellLayout;
+    public List<String> historyLayout;
     private HashMap<String, ItemStack> items = new HashMap<>();
 
     @Override
@@ -27,8 +30,18 @@ public class Layout extends Config {
             LayoutGenerator.backWardsCompatibility(c);
             save();
         }
+        // one-time migration to the default layout with the category sidebar (see LayoutGenerator.LAYOUT_VERSION)
+        if (c.getInt("layout-version", 0) < LayoutGenerator.LAYOUT_VERSION) {
+            LayoutGenerator.migrateLayout(c);
+            c.set("layout-version", LayoutGenerator.LAYOUT_VERSION);
+            save();
+        }
+        if (LayoutGenerator.addMissing(c)) save();
         ahLayout = c.getStringList("ah-layout");
         myAhLayout = c.getStringList("my-ah-layout");
+        hubLayout = c.getStringList("hub-layout");
+        sellLayout = c.getStringList("sell-layout");
+        historyLayout = c.getStringList("history-layout");
     }
 
     public ItemStack getItem(String path) {

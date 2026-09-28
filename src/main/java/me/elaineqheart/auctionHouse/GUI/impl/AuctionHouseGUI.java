@@ -177,23 +177,71 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                     case 'm' -> {
                         if (!c.isAdmin()) this.addButton(slot, myAuctions()); else this.addButton(slot, commandBlockInfo());
                     }
-                    case '.', ' ' -> {}
-                    default -> {
-                        String symbol = String.valueOf(places.get(i).charAt(j));
-                        this.addButton(slot, customButton(ConfigManager.layout.getItem(symbol),
-                            event -> {
-                            List<Map<?, ?>> whitelist = ConfigManager.categories.getCustomFile().getMapList(symbol);
-                                if (!whitelist.isEmpty()) {
-                                    c.setWhitelist(whitelist, symbol);
-                                    Sounds.click(event);
-                                    update();
-                                }
-                            }
-                        ));
+                    // 'h' = back to the hub, unless categories.yml defines 'h' (layouts made before the hub existed)
+                    case 'h' -> {
+                        if (isCategory("h")) this.addButton(slot, categoryButton("h"));
+                        else this.addButton(slot, SettingManager.hubMenu ? backToHub() : fillerItem());
                     }
+                    case '.', ' ' -> {}
+                    // every other symbol is a category button, defined in categories.yml
+                    // 'A' shows everything again (removes the active category filter), unless categories.yml defines 'A'
+                    default -> this.addButton(slot, categoryButton(String.valueOf(places.get(i).charAt(j))));
                 }
             }
         }
+    }
+
+    private static boolean isCategory(String symbol) {
+        return ConfigManager.categories.getCustomFile().contains(symbol);
+    }
+    private static boolean isAllButton(String symbol) {
+        return symbol.equals("A") && !isCategory("A");
+    }
+
+    private boolean isCategorySelected(String symbol) {
+        if (isAllButton(symbol)) return c.getWhitelist() == null;
+        return symbol.equals(c.getWhitelistLetter()) && c.getWhitelist() != null;
+    }
+
+    // name / lore come from messages.yml (category-buttons.<symbol>) when present, otherwise from the item in layout.yml
+    private ItemStack categoryIcon(String symbol, boolean selected) {
+        ItemStack item = ConfigManager.layout.getItem(symbol);
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return item;
+        String base = "category-buttons." + symbol;
+        List<String> lore = new ArrayList<>();
+        if (M.get().contains(base + ".name")) {
+            meta.setItemName(M.getFormatted(base + ".name"));
+            if (M.get().contains(base + ".lore")) lore.addAll(M.getLoreList(base + ".lore"));
+        } else if (meta.getLore() != null) {
+            lore.addAll(meta.getLore());
+        }
+        lore.add("");
+        lore.add(M.getFormatted(selected ? "items.category-selected" : "items.category-click"));
+        meta.setLore(lore);
+        if (selected) meta.setEnchantmentGlintOverride(true);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    private InventoryButton categoryButton(String symbol) {
+        // a symbol without rules in categories.yml is only decoration: plain icon from layout.yml
+        if (!isAllButton(symbol) && !isCategory(symbol)) return customButton(ConfigManager.layout.getItem(symbol), event -> {});
+        boolean selected = isCategorySelected(symbol);
+        ItemStack icon = categoryIcon(symbol, selected);
+        return customButton(icon, event -> {
+            if (isAllButton(symbol) || selected) {
+                // "All", or clicking the active category again: remove the filter
+                c.setWhitelist(null, null);
+            } else {
+                List<Map<?, ?>> whitelist = ConfigManager.categories.getCustomFile().getMapList(symbol);
+                if (whitelist.isEmpty()) return;
+                c.setWhitelist(whitelist, symbol);
+            }
+            c.setCurrentPage(0);
+            Sounds.click(event);
+            update();
+        });
     }
     private InventoryButton fillerItem(){
         return new InventoryButton()
@@ -309,6 +357,14 @@ public class AuctionHouseGUI extends InventoryGUI implements Runnable {
                 .consumer(event -> {
                     Sounds.openEnderChest(event);
                     AuctionHouse.getGuiManager().openGUI(new MyAuctionsGUI(c), (Player) event.getWhoClicked());
+                });
+    }
+    private InventoryButton backToHub(){
+        return new InventoryButton()
+                .creator(player -> ItemManager.backToHub)
+                .consumer(event -> {
+                    Sounds.closeEnderChest(event);
+                    AuctionHouse.getGuiManager().openGUI(new HubGUI(c), c.getPlayer());
                 });
     }
     private InventoryButton BINFilter(){

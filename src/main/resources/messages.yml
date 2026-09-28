@@ -26,6 +26,7 @@
 
 # chat messages from the auction house
 chat:
+  sell-item-changed: "§cThe selected item is no longer in your inventory!"
   already-sold: "§cERROR! This item has already been sold!"
   already-sold2: "§cThis item has already been sold!"
   already-sold3: "§cAnother player already placed a bid!"
@@ -103,6 +104,43 @@ inventory-titles:
   confirm-bid: "Confirm Bid"
   my-bids: "Your Bids"
   auction-view: "Auction View"
+  hub: "Auction House"
+  sell-menu: "Sell an Item"
+  history: "Purchase & Sale History"
+  anvil-sell-price: "Set Price"
+# small texts used in the history menu (date-format: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html)
+history-text:
+  date-format: "dd/MM/yyyy HH:mm"
+  filter-all: "§eAll"
+  filter-bought: "§aBought"
+  filter-sold: "§6Sold"
+# small texts used in the sell menu
+sell-text:
+  not-set: "§cNot set"
+  bin: "§6BIN §7(Buy It Now)"
+  auction: "§bAuction"
+  no-item: "§7Select an item in your inventory first."
+  no-price: "§7Set a price first."
+# names and lores of the category buttons on the side of the auction house.
+# the letter is the symbol used in ah-layout (layout.yml), the rules of each category are in data/categories.yml.
+# 'A' is reserved: it shows all the items again. For your own categories, add a new letter here (optional:
+# without an entry here, the name/lore of the item in layout.yml is used).
+category-buttons:
+  A:
+    name: "§eAll Items"
+    lore: "§7Show every item on sale."
+  W:
+    name: "§cWeapons & Tools"
+    lore: "§7Swords, axes, bows, pickaxes..."
+  R:
+    name: "§9Armor"
+    lore: "§7Helmets, chestplates, shields..."
+  C:
+    name: "§aConsumables"
+    lore: "§7Food and potions."
+  B:
+    name: "§6Blocks"
+    lore: "§7Every placeable block."
 items:
   next-page:
     name: "§aNext Page"
@@ -135,6 +173,96 @@ items:
   back-my-auctions:
     name: "§aMy Auctions"
     lore: "§7Click to go back!"
+  back-to-hub:
+    name: "§aMain Menu"
+    lore: "§7Click to go back!"
+  category-selected: "§a▶ Currently selected! §7(click to deselect)"
+  category-click: "§eClick to filter!"
+  hub-shop:
+    name: "§6§lBrowse the Shop"
+    lore: "§7Browse and buy items
+      &n§7that are put up for auction."
+  hub-history:
+    name: "§b§lPurchase & Sale History"
+    lore: "§7View a history of everything
+      &n§7you've bought and sold.
+      &n
+      &n§eClick to open!"
+  # ---- history menu ----
+  # placeholders: %player% (the other player), %amount% %type% %date% %tax%; %price% = the price, %price2% = what the seller received after tax
+  history-filter:
+    name: "§aFilter"
+    lore: "§7Showing: %filter%
+      &n
+      &n§eClick to change!"
+  history-bought:
+    lore: "&n§8§m                    &n§7Bought from: §f%player%
+      &n§7Amount: §e%amount%
+      &n§7Price: %price%
+      &n§7Type: %type%
+      &n§7Date: §f%date%"
+  history-sold:
+    lore: "&n§8§m                    &n§7Sold to: §f%player%
+      &n§7Amount: §e%amount%
+      &n§7Price: %price%
+      &n§7Tax: §6%tax%
+      &n§7You received: %price2%
+      &n§7Type: %type%
+      &n§7Date: §f%date%"
+  hub-sell:
+    name: "§a§lSell an Item"
+    lore: "§7List one of your items
+      &n§7for sale on the Auction House.
+      &n
+      &n§eClick to open!"
+  # ---- sell menu ----
+  # placeholders: %item% %amount% %type% %time% %tax% %value%; %price% = the price, %price2% = what the seller receives after tax
+  sell-deposit-empty:
+    name: "§eNo item selected"
+    lore: "§7Click an item in your own
+      &n§7inventory to sell it."
+  sell-deposit:
+    lore: "&n§8§m                    &n§7Amount: §e%amount%
+      &n
+      &n§eClick to remove!
+      &n§eRight-click to change the amount!"
+  sell-price:
+    name: "§6Set the Price"
+    lore: "§7Price: %value%
+      &n
+      &n§eClick to change!"
+  sell-type:
+    name: "§aSale Type"
+    lore: "§7Type: %type%
+      &n
+      &n§eClick to switch!"
+  sell-type-locked:
+    name: "§aSale Type"
+    lore: "§7Type: %type%"
+  sell-duration:
+    name: "§aDuration"
+    lore: "§7Duration: §e%time%
+      &n§7Tax: §6%tax%
+      &n
+      &n§eClick for a longer duration!
+      &n§eRight-click for a shorter one!"
+  sell-duration-locked:
+    name: "§aDuration"
+    lore: "§7Duration: §e%time%
+      &n§7Tax: §6%tax%"
+  sell-confirm:
+    name: "§a§lList the Item"
+    lore: "§7Item: §f%item% §7x%amount%
+      &n§7Type: %type%
+      &n§7Price: %price%
+      &n§7Duration: §e%time%
+      &n§7Tax: §6%tax%
+      &n§7You receive: %price2%
+      &n
+      &n§eClick to list!"
+  sell-confirm-disabled:
+    name: "§c§lCan't list yet"
+    lore: "%reason%"
   info:
     name: "§aInfo"
     lore: "§7To set up a new auction use

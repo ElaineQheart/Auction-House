@@ -40,8 +40,13 @@ public class ItemNote {
     private final boolean isBIDAuction;
     private List<Bid> bidHistory = new ArrayList<>();
     private Set<UUID> claimedPlayers = new HashSet<>();
+    private Double taxRate; // tax chosen when the auction was created (null = older auctions, they use the global tax)
 
     public ItemNote(Player player, ItemStack item, double price, boolean isBIDAuction) {
+        this(player, item, price, isBIDAuction, ConfigManager.permissions.getAuctionDuration(player, isBIDAuction), null);
+    }
+
+    public ItemNote(Player player, ItemStack item, double price, boolean isBIDAuction, long auctionTime, Double taxRate) {
         this.noteID = UUID.randomUUID();
         this.playerName = player.getDisplayName();
         this.buyerName = null;
@@ -51,7 +56,8 @@ public class ItemNote {
         this.itemData = ItemStackConverter.encode(item);
         this.price = price;
         this.isSold = false;
-        this.auctionTime = ConfigManager.permissions.getAuctionDuration(player, isBIDAuction);
+        this.auctionTime = auctionTime;
+        this.taxRate = taxRate;
         this.itemName = StringUtils.getItemName(item, player.getLocation());
         this.isBIDAuction = isBIDAuction;
         ItemNoteStorage.addItem(noteID, ItemStackConverter.decode(itemData));
@@ -134,6 +140,7 @@ public class ItemNote {
 
     //Getters and Setters
     public String getPlayerName() {return playerName;}
+    public double getTaxRate() {return taxRate != null ? taxRate : SettingManager.taxRate;}
     public String getBuyerName() {return isBIDAuction ? getLastBidderName() : buyerName;}
     public UUID getBuyerUUID() {return isBIDAuction ? getLastBidder() :
             (buyerUUID != null ? buyerUUID : Bukkit.getOfflinePlayer(buyerName).getUniqueId());} //offline player backwards compatibility
