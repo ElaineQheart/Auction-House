@@ -15,9 +15,11 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.restaction.MessageAction;
 import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 
 import java.util.Collections;
 
@@ -34,6 +36,9 @@ public class DiscordSRVHook {
     }
 
     public static void sendAuctionListingToDiscord(Player seller, ItemStack inputItem, String title) {
+        // the embed needs DiscordSRV and the InteractiveChat DiscordSRV addon; without them its classes don't exist
+        PluginManager plugins = Bukkit.getPluginManager();
+        if (!plugins.isPluginEnabled("DiscordSRV") || !plugins.isPluginEnabled("InteractiveChatDiscordSrvAddon")) return;
         AuctionHouse.getScheduler().asyncScheduler().run(() -> {
             try {
                 DiscordMessageContent embed = getItemEmbed(seller, inputItem, title);
