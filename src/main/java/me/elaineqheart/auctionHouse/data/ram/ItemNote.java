@@ -147,6 +147,11 @@ public class ItemNote {
     public UUID getPlayerUUID() {return playerUUID;}
     public double getPrice() {return price;}
     public boolean isSold() {return isSold;}
+    // the seller can collect the coins: a sold BIN auction, or an ended BID auction with bids not collected yet
+    public boolean isCollectable() {
+        if (!isBIDAuction) return isSold;
+        return !isSold && isExpired() && hasBidHistory() && adminMessage == null;
+    }
     public boolean isTheoreticallyOnAuction() {return !isSold || partiallySoldAmountLeft != 0;} //NOT INCLUDING EXPIRED
     public int getPartiallySoldAmountLeft() {return partiallySoldAmountLeft;}
     public String getAdminMessage() {return adminMessage;}

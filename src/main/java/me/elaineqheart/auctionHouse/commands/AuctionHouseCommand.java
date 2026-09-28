@@ -56,10 +56,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
 
         if(commandSender instanceof Player p){
             if(strings.length==0) {
-                if(ConfigManager.bannedPlayers.checkIsBannedSendMessage(p)) {
-                    return true;
-                }
-                AuctionHouse.getGuiManager().openGUI(SettingManager.hubMenu ? new HubGUI(p) : new AuctionHouseGUI(p), p);
+                HubGUI.openMainMenu(p);
             }
             if(strings.length==1 && strings[0].equals(M.getFormatted("commands.about"))) {
                 p.sendMessage("§6> §7§l---------------[ §dAuction House§7§l ]---------------");
@@ -192,7 +189,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 } else if(!note.isSold()) {
                     AuctionHouse.getGuiManager().openGUI(new CancelAuctionGUI(note, configuration, AhConfiguration.View.MY_AUCTIONS), p);
                 } else {
-                    AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, configuration, AhConfiguration.View.MY_AUCTIONS), p);
+                    CollectSoldItemGUI.open(p, note, configuration, AhConfiguration.View.MY_AUCTIONS);
                 }
             }
             // /ah admin

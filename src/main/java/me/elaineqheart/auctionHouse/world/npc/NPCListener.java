@@ -1,7 +1,7 @@
 package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.GUI.impl.AuctionHouseGUI;
+import me.elaineqheart.auctionHouse.GUI.impl.HubGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import org.bukkit.NamespacedKey;
@@ -23,7 +23,7 @@ public class NPCListener implements Listener {
         event.setCancelled(true);
         Player p = event.getPlayer();
         Sounds.npcClick(p);
-        AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(p), p);
+        HubGUI.openMainMenu(p);
     }
 
     //connect the stand with the villager, so if one dies, both die

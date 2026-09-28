@@ -114,6 +114,7 @@ history-text:
   filter-all: "§eAll"
   filter-bought: "§aBought"
   filter-sold: "§6Sold"
+  filter-to-collect: "§aTo collect"
 # small texts used in the sell menu
 sell-text:
   not-set: "§cNot set"
@@ -201,6 +202,15 @@ items:
       &n§7Price: %price%
       &n§7Type: %type%
       &n§7Date: §f%date%"
+  # a sold auction whose coins can be collected (config.yml: collect-from-history); %price2% = what the seller receives
+  history-collect:
+    lore: "&n§8§m                    &n§7Sold to: §f%player%
+      &n§7Amount: §e%amount%
+      &n§7Price: %price%
+      &n§7Tax: §6%tax%
+      &n§7Type: %type%
+      &n
+      &n§eClick to collect %price2%§e!"
   history-sold:
     lore: "&n§8§m                    &n§7Sold to: §f%player%
       &n§7Amount: §e%amount%

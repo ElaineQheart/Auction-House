@@ -108,6 +108,19 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
 
+    // opens the collect screen, or the history menu when coins are collected there (config.yml: collect-from-history)
+    public static void open(Player p, ItemNote note, AhConfiguration c, AhConfiguration.View goBackTo) {
+        if (SettingManager.collectFromHistory) HistoryGUI.open(p, HistoryGUI.Filter.TO_COLLECT);
+        else AuctionHouse.getGuiManager().openGUI(new CollectSoldItemGUI(note, c, goBackTo), p);
+    }
+
+    // collects everything sold of this auction, returns what the seller received (-1 if nothing was collected)
+    public static double collect(Player p, ItemNote note) {
+        int amount = note.getItem().getAmount() - note.getPartiallySoldAmountLeft();
+        double price = note.getSoldPrice();
+        return collect(p, note.getNoteID(), amount, price) ? getProfit(price, note.getTaxRate()) : -1;
+    }
+
     public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
         ItemNote note = AuctionHouseStorage.getNote(noteID);
         double taxRate = note != null ? note.getTaxRate() : SettingManager.taxRate;

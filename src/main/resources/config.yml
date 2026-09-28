@@ -44,3 +44,4 @@ sell-durations:
       tax: 0.03
 history-max-entries: 100                    # trades kept per player in the history menu; older ones are removed
 history-expire-days: 90                     # trades older than this are removed from the history; 0 = never
+collect-from-history: false                 # sellers collect their coins by clicking the sold item in the history menu (ignored with auto-collect)

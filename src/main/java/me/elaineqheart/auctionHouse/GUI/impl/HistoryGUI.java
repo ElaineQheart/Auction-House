@@ -6,9 +6,12 @@ import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemStackConverter;
 import me.elaineqheart.auctionHouse.data.persistentStorage.TradeHistory;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
+import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
+import me.elaineqheart.auctionHouse.data.ram.ItemNote;
 import me.elaineqheart.auctionHouse.data.ram.SellOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -26,13 +29,15 @@ import java.util.List;
 // Layout: layout.yml (history-layout, '.' = a trade), texts: messages.yml (items.history-*, history-text.*).
 public class HistoryGUI extends InventoryGUI {
 
-    public enum Filter { ALL, BOUGHT, SOLD }
+    // TO_COLLECT: sold auctions whose coins the seller still has to collect (config.yml: collect-from-history)
+    public enum Filter { ALL, BOUGHT, SOLD, TO_COLLECT }
 
     private final Player p;
     private Filter filter = Filter.ALL;
     private int page;
     private int pages = 1;
     private List<TradeHistory.Trade> trades = List.of(); // the trades of the current page
+    private List<ItemNote> toCollect = List.of(); // the auctions to collect of the current page (TO_COLLECT)
     private int request; // ignores the result of a previous page load when the player clicked again meanwhile
 
     private HistoryGUI(Player p) {
@@ -40,11 +45,23 @@ public class HistoryGUI extends InventoryGUI {
         this.p = p;
     }
 
-    // opens the menu right away, the trades are loaded from the database in the background
+    // opens the auctions to collect first when there are some, otherwise every trade
     public static void open(Player p) {
+        open(p, !collectable(p).isEmpty() ? Filter.TO_COLLECT : Filter.ALL);
+    }
+
+    // opens the menu right away, the trades are loaded from the database in the background
+    public static void open(Player p, Filter filter) {
         HistoryGUI gui = new HistoryGUI(p);
+        gui.filter = filter == Filter.TO_COLLECT && !SettingManager.collectFromHistory ? Filter.ALL : filter;
         AuctionHouse.getGuiManager().openGUI(gui, p);
         gui.load();
+    }
+
+    // the player's auctions whose coins can be collected from this menu, oldest first (already in memory)
+    private static List<ItemNote> collectable(Player p) {
+        if (!SettingManager.collectFromHistory) return List.of();
+        return AuctionHouseStorage.getMySortedDateCreated(p.getUniqueId()).stream().filter(ItemNote::isCollectable).toList();
     }
 
     @Override
@@ -75,6 +92,16 @@ public class HistoryGUI extends InventoryGUI {
     private void load() {
         int id = ++request;
         int perPage = Math.max(1, tradeSlots(ConfigManager.layout.historyLayout).size());
+        if (filter == Filter.TO_COLLECT) {
+            List<ItemNote> all = collectable(p);
+            pages = Math.max(1, (all.size() + perPage - 1) / perPage);
+            page = Math.min(page, pages - 1);
+            toCollect = all.subList(page * perPage, Math.min(all.size(), (page + 1) * perPage));
+            trades = List.of();
+            update();
+            return;
+        }
+        toCollect = List.of();
         Boolean bought = filter == Filter.ALL ? null : filter == Filter.BOUGHT;
         TradeHistory.page(p.getUniqueId(), bought, page * perPage, perPage).thenAccept(result ->
                 AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> {
@@ -106,7 +133,9 @@ public class HistoryGUI extends InventoryGUI {
         }
         List<Integer> tradeSlots = tradeSlots(places);
         for (int k = 0; k < tradeSlots.size(); k++) {
-            if (k < trades.size()) {
+            if (k < toCollect.size()) {
+                this.addButton(tradeSlots.get(k), collectButton(toCollect.get(k)));
+            } else if (k < trades.size()) {
                 this.addButton(tradeSlots.get(k), tradeButton(trades.get(k)));
             } else {
                 this.addButton(tradeSlots.get(k), new InventoryButton()
@@ -132,7 +161,7 @@ public class HistoryGUI extends InventoryGUI {
     }
 
     private String filterText(Filter f) {
-        return M.getFormatted("history-text.filter-" + f.name().toLowerCase());
+        return M.getFormatted("history-text.filter-" + f.name().toLowerCase().replace('_', '-'));
     }
 
     private InventoryButton filterButton() {
@@ -146,11 +175,10 @@ public class HistoryGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator(player -> item)
                 .consumer(event -> {
-                    Filter[] values = Filter.values();
-                    int next = filter.ordinal() + (event.isRightClick() ? -1 : 1);
-                    if (next < 0) next = values.length - 1;
-                    if (next >= values.length) next = 0;
-                    filter = values[next];
+                    // TO_COLLECT is only offered when coins are collected from this menu
+                    int count = SettingManager.collectFromHistory ? Filter.values().length : Filter.TO_COLLECT.ordinal();
+                    int next = Math.floorMod(filter.ordinal() + (event.isRightClick() ? -1 : 1), count);
+                    filter = Filter.values()[next];
                     page = 0;
                     Sounds.click(event);
                     load();
@@ -203,6 +231,43 @@ public class HistoryGUI extends InventoryGUI {
         } catch (Exception e) {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(time));
         }
+    }
+
+    private InventoryButton collectButton(ItemNote note) {
+        ItemStack item = note.getItem();
+        item.setAmount(Math.max(1, item.getAmount() - note.getPartiallySoldAmountLeft()));
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            List<String> lore = meta.getLore() == null ? new ArrayList<>() : new ArrayList<>(meta.getLore());
+            List<String> extra = M.getLoreList("items.history-collect.lore",
+                    "%player%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID()),
+                    "%amount%", String.valueOf(item.getAmount()),
+                    "%type%", M.getFormatted(note.isBIDAuction() ? "sell-text.auction" : "sell-text.bin"),
+                    "%tax%", SellOptions.formatTax(note.getTaxRate()));
+            double profit = SellOptions.profit(note.getSoldPrice(), note.getTaxRate());
+            extra.replaceAll(line -> M.replace(line, note.getSoldPrice(), profit));
+            lore.addAll(extra);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        }
+        return new InventoryButton()
+                .creator(player -> item)
+                .consumer(event -> {
+                    // the note may have changed since the page was loaded
+                    ItemNote current = AuctionHouseStorage.getNote(note.getNoteID());
+                    int amount = item.getAmount();
+                    double received = current != null && current.isCollectable() ? CollectSoldItemGUI.collect(p, current) : -1;
+                    if (received < 0) {
+                        p.sendMessage(M.getFormatted("chat.non-existent"));
+                        Sounds.villagerDeny(event);
+                    } else {
+                        p.sendMessage(M.getFormatted("chat.collect-sold-auction", received,
+                                "%amount%", String.valueOf(amount),
+                                "%item%", note.getItemName()));
+                        Sounds.experience(event);
+                    }
+                    load();
+                });
     }
 
     private InventoryButton tradeButton(TradeHistory.Trade t) {

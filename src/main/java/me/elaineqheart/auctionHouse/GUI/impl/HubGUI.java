@@ -4,6 +4,7 @@ import me.elaineqheart.auctionHouse.AuctionHouse;
 import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
@@ -30,6 +31,12 @@ public class HubGUI extends InventoryGUI {
         super();
         this.c = configuration;
         init();
+    }
+
+    // what /ah and the NPC open: the main menu, or the shop directly (config.yml: hub-menu)
+    public static void openMainMenu(Player p) {
+        if (ConfigManager.bannedPlayers.checkIsBannedSendMessage(p)) return;
+        AuctionHouse.getGuiManager().openGUI(SettingManager.hubMenu ? new HubGUI(p) : new AuctionHouseGUI(p), p);
     }
 
     private void init() {
