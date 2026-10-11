@@ -194,13 +194,15 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 }
 
                 //Discord SRV
-                String key = isBIDAuction ? "discord-srv.new-bid-auction-title" : "discord-srv.new-bin-auction-title";
-                String title = Pattern.compile("§.").splitAsStream(M.getFormatted(key,
-                        price,
-                        "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
-                        "%item%", itemName,
-                        "%amount%", String.valueOf(amount))).collect(Collectors.joining());
-                DiscordSRVHook.sendAuctionListingToDiscord(p, inputItem, title);
+                if (DiscordSRVHook.enabled){
+                    String key = isBIDAuction ? "discord-srv.new-bid-auction-title" : "discord-srv.new-bin-auction-title";
+                    String title = Pattern.compile("§.").splitAsStream(M.getFormatted(key,
+                            price,
+                            "%player%", M.formatPlayer(p.getDisplayName(), p.getUniqueId()),
+                            "%item%", itemName,
+                            "%amount%", String.valueOf(amount))).collect(Collectors.joining());
+                    DiscordSRVHook.sendAuctionListingToDiscord(p, inputItem, title, 1);
+                }
 
             }
             // /ah announce - toggle announcements
