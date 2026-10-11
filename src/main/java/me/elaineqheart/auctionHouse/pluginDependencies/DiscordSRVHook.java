@@ -3,6 +3,7 @@ package me.elaineqheart.auctionHouse.pluginDependencies;
 import com.loohp.interactivechat.objectholders.ICPlayerFactory;
 import com.loohp.interactivechat.objectholders.OfflineICPlayer;
 import com.loohp.interactivechat.utils.ItemStackUtils;
+import com.loohp.interactivechatdiscordsrvaddon.InteractiveChatDiscordSrvAddon;
 import com.loohp.interactivechatdiscordsrvaddon.objectholders.DiscordMessageContent;
 import com.loohp.interactivechatdiscordsrvaddon.objectholders.ImageDisplayData;
 import com.loohp.interactivechatdiscordsrvaddon.objectholders.ImageDisplayType;
@@ -19,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
+import java.util.*;
 
 public class DiscordSRVHook {
 
@@ -33,25 +34,31 @@ public class DiscordSRVHook {
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
     }
 
-    public static void sendAuctionListingToDiscord(Player seller, ItemStack inputItem, String title) {
+    public static void sendAuctionListingToDiscord(Player seller, ItemStack inputItem, String title, int n) {
+        if (n <= 3 && !InteractiveChatDiscordSrvAddon.plugin.isResourceManagerReady()) {
+            AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> sendAuctionListingToDiscord(seller, inputItem, title, n+1), 10*20);
+            return;
+        }
         AuctionHouse.getScheduler().asyncScheduler().run(() -> {
             try {
-                DiscordMessageContent embed = getItemEmbed(seller, inputItem, title);
+                OfflineICPlayer offlinePlayer = ICPlayerFactory.getOfflineICPlayer(seller.getUniqueId());
+                ImageDisplayData embed = getItemEmbed(offlinePlayer, inputItem, title);
+
+                DiscordMessageContent discordEmbed = DiscordContentUtils.createContents(Collections.singletonList(embed), offlinePlayer).getFirst().getFirst();
+
                 TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(M.getFormatted("discord-srv.new-listing-channel-name"));
-                MessageAction action = textChannel.sendMessageEmbeds(embed.toJDAMessageEmbeds().getFirst());
-                for (var attachment : embed.getAttachments().entrySet()) {
+                MessageAction action = textChannel.sendMessageEmbeds(discordEmbed.toJDAMessageEmbeds().getFirst());
+                for (var attachment : discordEmbed.getAttachments().entrySet()) {
                     action = action.addFile(attachment.getValue(), attachment.getKey());
                 }
                 action.queue();
-
             } catch (Exception e) {
                 AuctionHouse.getInstance().getLogger().warning("Could not send item data to discord");
             }
         });
     }
 
-    private static DiscordMessageContent getItemEmbed(Player seller, ItemStack inputItem, String title) {
-        OfflineICPlayer offlinePlayer = ICPlayerFactory.getOfflineICPlayer(seller.getUniqueId());
+    private static ImageDisplayData getItemEmbed(OfflineICPlayer offlinePlayer, ItemStack inputItem, String title) {
         ImageDisplayData displayData;
 
         Inventory containerInventory = DiscordContentUtils.getBlockInventory(inputItem);
@@ -76,7 +83,7 @@ public class DiscordSRVHook {
                     )
             );
         }
-        return DiscordContentUtils.createContents(Collections.singletonList(displayData), offlinePlayer).getFirst().getFirst();
+        return displayData;
     }
 
     public static void register() {
