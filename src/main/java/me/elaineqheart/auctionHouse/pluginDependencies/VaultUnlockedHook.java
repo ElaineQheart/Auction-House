@@ -21,11 +21,13 @@ public final class VaultUnlockedHook {
         if (AuctionHouse.getInstance().getServer().getPluginManager().getPlugin("Vault") == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = AuctionHouse.getInstance().getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
+        try {
+            RegisteredServiceProvider<Economy> rsp = AuctionHouse.getInstance().getServer().getServicesManager().getRegistration(Economy.class);
+            if (rsp == null) return setupLegacyEconomy();
+            econ = rsp.getProvider();
+        } catch (NoClassDefFoundError e) {
             return setupLegacyEconomy();
         }
-        econ = rsp.getProvider();
         AuctionHouse.getInstance().getLogger().info("Economy plugin found: " + econ.getName());
         return econ != null;
     }
