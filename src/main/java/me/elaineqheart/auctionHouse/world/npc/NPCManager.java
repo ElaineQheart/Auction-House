@@ -1,9 +1,11 @@
 package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -39,11 +41,11 @@ public class NPCManager {
 
         Villager npc = (Villager) world.spawnEntity(loc, EntityType.VILLAGER); //creating a villager
         stand.addPassenger(npc);
-        npc.setProfession(Villager.Profession.SHEPHERD);
+        npc.setProfession(Registry.VILLAGER_PROFESSION.getOrThrow(NamespacedKey.minecraft(SettingManager.npcProfession)));
         npc.setBreed(false);
         npc.setHealth(1);
         npc.setVillagerLevel(5);
-        npc.setVillagerType(Villager.Type.JUNGLE);
+        npc.setVillagerType(Registry.VILLAGER_TYPE.getOrThrow(NamespacedKey.minecraft(SettingManager.npcType)));
         npc.setAdult();
         npc.setCanPickupItems(false);
         npc.setCustomName(M.getFormatted("world.npc"));
