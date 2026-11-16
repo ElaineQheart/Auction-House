@@ -11,10 +11,8 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
-import net.milkbowl.vault.economy.Economy;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -98,7 +96,7 @@ public class CollectSoldItemGUI extends InventoryGUI {
                             "%amount%", String.valueOf(item.getAmount()),
                             "%item%", note.getItemName());
 
-                    boolean success = collect(p, note.getNoteID(), item.getAmount(), price);
+                    boolean success = collectSoldAuction(p, note.getNoteID(), item.getAmount(), price);
                     AuctionHouse.getGuiManager().openGUI(p, c, goBackTo);
 
                     if (!success) return;
@@ -108,15 +106,21 @@ public class CollectSoldItemGUI extends InventoryGUI {
                 });
     }
 
-    public static boolean collect(OfflinePlayer p, UUID noteID, int itemAmount, double price) {
+    public static boolean collectSoldAuction(Player p, UUID noteID, int itemAmount, double price) {
         ItemNote note = AuctionHouseStorage.getNote(noteID);
         boolean success = ItemNoteStorage.collectSoldAuctionItem(note, itemAmount, price);
         if (!success) {
-            if (p instanceof Player onlinePlayer) onlinePlayer.sendMessage(M.getFormatted("chat.non-existent"));
+            p.sendMessage(M.getFormatted("chat.non-existent"));
             return false;
         }
-        Economy eco = VaultHook.getEconomy();
-        eco.depositPlayer(p, getProfit(price));
+
+        if (!VaultUnlockedHook.deposit(p, getProfit(price)).transactionSuccess()) {
+            p.sendMessage(M.getFormatted("chat.transaction-failed"));
+            AuctionHouse.getInstance().getLogger().warning("Money deposit on player " + p.getName() + " with UUID " + p.getUniqueId() +
+                    " for " + price + " amount failed.");
+            return false;
+        }
+
         return true;
     }
 

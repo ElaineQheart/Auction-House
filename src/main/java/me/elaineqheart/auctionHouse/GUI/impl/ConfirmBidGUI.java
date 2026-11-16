@@ -7,16 +7,18 @@ import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.persistentStorage.ItemNoteStorage;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import me.elaineqheart.auctionHouse.data.ram.*;
-import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
+
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 public class ConfirmBidGUI extends InventoryGUI {
 
@@ -99,8 +101,7 @@ public class ConfirmBidGUI extends InventoryGUI {
                         return;
                     }
                     double increase = price - note.getBid(p);
-                    Economy eco = VaultHook.getEconomy();
-                    if (eco.getBalance(p) < increase) { //extra check to make sure that they have enough coins
+                    if (is(VaultUnlockedHook.getBalance(p)).lessThan(BigDecimal.valueOf(increase))) { //extra check to make sure that they have enough coins
                         p.sendMessage(M.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
                         return;
@@ -113,7 +114,11 @@ public class ConfirmBidGUI extends InventoryGUI {
                         return;
                     }
 
-                    eco.withdrawPlayer(p, increase);
+                    if(!VaultUnlockedHook.withdraw(p, increase).transactionSuccess()) {
+                        p.sendMessage(M.getFormatted("chat.transaction-failed"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Sounds.experience(event);
                     p.sendMessage(M.getFormatted("chat.placed-bid", price,
                             "%item%", note.getItemName()));

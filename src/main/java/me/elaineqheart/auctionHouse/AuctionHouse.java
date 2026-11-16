@@ -11,12 +11,11 @@ import me.elaineqheart.auctionHouse.listeners.PlayerJoinCollectListener;
 import me.elaineqheart.auctionHouse.pluginDependencies.AuctionHousePAPIExpansion;
 import me.elaineqheart.auctionHouse.pluginDependencies.DiscordSRVHook;
 import me.elaineqheart.auctionHouse.pluginDependencies.LocaleAPIExtension;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import me.elaineqheart.auctionHouse.world.displays.DisplayKillListener;
 import me.elaineqheart.auctionHouse.world.displays.DisplayListener;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCListener;
-import net.milkbowl.vault.economy.Economy;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import space.arim.morepaperlib.MorePaperLib;
 import space.arim.morepaperlib.scheduling.GracefulScheduling;
@@ -47,9 +46,8 @@ public final class AuctionHouse extends JavaPlugin {
         inputGUIManager = new InputGUIManager(this);
         morePaperLib = new MorePaperLib(instance);
 
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            getServer().getLogger().severe("No registered Vault provider found!");
+        if (!VaultUnlockedHook.setupEconomy()) {
+            getLogger().severe("Disabled due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -104,6 +102,10 @@ public final class AuctionHouse extends JavaPlugin {
         } catch (ClassNotFoundException e) {
             return false;
         }
+    }
+
+    public static String getPluginName() {
+        return getInstance().getName();
     }
 
 }

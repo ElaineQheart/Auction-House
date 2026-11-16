@@ -14,16 +14,19 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.Bid;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
@@ -97,9 +100,9 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
             this.addButton(29, submitBid());
             return;
         }
-        if(VaultHook.getEconomy().getBalance(player) < increase) {
+        if (is(VaultUnlockedHook.getBalance(player)).lessThan(BigDecimal.valueOf(increase))) {
             this.addButton(29, cannotAffordBid());
-        }else{
+        } else {
             this.addButton(29, submitBid());
             this.addButton(31, bidExplanation());
         }
@@ -107,9 +110,9 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
 
     private void decorateBIN(Player player) {
         int slot = SettingManager.partialSelling && note.getCurrentAmount() > 1 ? 30 : 31;
-        if(VaultHook.getEconomy().getBalance(player) < note.getPrice()) {
+        if (is(VaultUnlockedHook.getBalance(player)).lessThan(BigDecimal.valueOf(note.getPrice()))) {
             this.addButton(slot,armadilloScute());
-        }else{
+        } else {
             this.addButton(slot,turtleScute());
         }
         if(slot == 30) {
@@ -194,7 +197,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                             try {
                                 int amount = Integer.parseInt(typedText);
                                 if (amount <= 0 || amount > note.getCurrentAmount()) throw new RuntimeException();
-                                if (note.getPrice() / note.getItem().getAmount() * amount > VaultHook.getEconomy().getBalance(p)) {
+                                if (is(BigDecimal.valueOf(note.getPrice() / note.getItem().getAmount() * amount)).greaterThan(VaultUnlockedHook.getBalance(p))) {
                                     AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);
                                     p.sendMessage(M.getFormatted("chat.not-enough-money"));
                                     Sounds.villagerDeny(event);
@@ -239,7 +242,7 @@ public class AuctionViewGUI extends InventoryGUI implements Runnable{
                                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);
                                 return;
                             }
-                            if (amount > VaultHook.getEconomy().getBalance(p)) {
+                            if (is(BigDecimal.valueOf(amount)).greaterThan(VaultUnlockedHook.getBalance(p))) {
                                 p.sendMessage(M.getFormatted("chat.not-enough-money"));
                                 Sounds.villagerDeny(event);
                                 AuctionHouse.getGuiManager().openGUI(new AuctionViewGUI(note, c, 0, goBackTo), p);

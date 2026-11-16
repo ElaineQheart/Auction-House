@@ -12,8 +12,7 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
-import net.milkbowl.vault.economy.Economy;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -159,6 +158,7 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                             note.isBIDAuction());
                 });
     }
+
     private InventoryButton collectCoins() {
         return new InventoryButton()
                 .creator(player -> ItemManager.createCollectCoins(note, c.getPlayer()))
@@ -180,8 +180,12 @@ public class EndedAuctionGUI extends InventoryGUI implements Runnable{
                         return;
                     }
 
-                    Economy eco = VaultHook.getEconomy();
-                    eco.depositPlayer(p, price);
+                    if (!VaultUnlockedHook.deposit(p, price).transactionSuccess()) {
+                        p.sendMessage(M.getFormatted("chat.transaction-failed"));
+                        AuctionHouse.getInstance().getLogger().warning("Money deposit on player " + p.getName() + " with UUID " + p.getUniqueId() +
+                                " for " + price + " amount failed.");
+                        return;
+                    }
                     p.sendMessage(message);
                     Sounds.experience(event);
                     openGUI(p);

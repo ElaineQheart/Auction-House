@@ -32,7 +32,7 @@ public class PlayerJoinCollectListener implements Listener {
                 "%buyer%", M.formatBuyer(note.getBuyerName(), note.getBuyerUUID()),
                 "%item%", note.getItemName(),
                 "%amount%", String.valueOf(amount));
-        boolean success = CollectSoldItemGUI.collect(p, note.getNoteID(), amount, note.getSoldPrice());
+        boolean success = CollectSoldItemGUI.collectSoldAuction(p, note.getNoteID(), amount, note.getSoldPrice());
         if (!success || !p.isOnline()) return;
         if (SettingManager.soldMessageEnabled) p.sendMessage(message);
     }

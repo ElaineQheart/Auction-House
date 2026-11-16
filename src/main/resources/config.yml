@@ -18,3 +18,4 @@ max-bid: -1                                 # limit the bid price; set to -1 to 
 last-bid-extra-time: 60                     # if the auction time is less than this when a bid is placed, it's set to this
 bid-increase-percent: 25                    # how much each bid has to increase at least
 use-adventure-text-minimessages: true       # support for miniMessages like <yellow> in messages.yml
+vault-used-currency-name: ""                # leave empty to use default currency provided by Vault

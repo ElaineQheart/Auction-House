@@ -11,15 +11,17 @@ import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemManager;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.VaultHook;
+import me.elaineqheart.auctionHouse.pluginDependencies.VaultUnlockedHook;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.math.BigDecimal;
+
+import static org.apache.commons.lang3.compare.ComparableUtils.is;
 
 public class ConfirmBuyGUI extends InventoryGUI{
 
@@ -102,10 +104,9 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         Sounds.villagerDeny(event);
                         return;
                     }
-                    Economy eco = VaultHook.getEconomy();
                     //go back to main auction, even when balance is lower than item price
                     AuctionHouse.getScheduler().entitySpecificScheduler(p).run(() -> AuctionHouse.getGuiManager().openGUI(new AuctionHouseGUI(c), p), null);
-                    if (eco.getBalance(p) < price) { //extra check to make sure that they have enough coins
+                    if (is(VaultUnlockedHook.getBalance(p)).lessThan(BigDecimal.valueOf(price))) { //extra check to make sure that they have enough coins
                         p.sendMessage(M.getFormatted("chat.not-enough-money"));
                         Sounds.villagerDeny(event);
                         return;
@@ -118,7 +119,11 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         return;
                     }
 
-                    eco.withdrawPlayer(p, price);
+                    if (!VaultUnlockedHook.withdraw(p, price).transactionSuccess()) {
+                        p.sendMessage(M.getFormatted("chat.transaction-failed"));
+                        Sounds.villagerDeny(event);
+                        return;
+                    }
                     Sounds.experience(event);
                     p.getInventory().addItem(item);
 
@@ -147,7 +152,7 @@ public class ConfirmBuyGUI extends InventoryGUI{
                         }
                     }
                     if (SettingManager.autoCollect && Bukkit.getPlayer(note.getPlayerUUID()) != null) {
-                        AuctionHouse.getScheduler().entitySpecificScheduler(seller).run(() -> CollectSoldItemGUI.collect
+                        AuctionHouse.getScheduler().entitySpecificScheduler(seller).run(() -> CollectSoldItemGUI.collectSoldAuction
                                 (seller, note.getNoteID(), item.getAmount(), note.getSoldPrice()),
                                 null
                         );

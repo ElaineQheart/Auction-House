@@ -18,6 +18,7 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven { url = "https://jitpack.io" }
+    maven { url = "https://repo.codemc.io/repository/creatorfromhell/" }
     maven { url = "https://mvn-repo.arim.space/lesser-gpl3/" }
     maven { url = "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url = "https://nexus.scarsz.me/content/groups/public/" }
@@ -30,9 +31,7 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:4.25.0")
     implementation("space.arim.morepaperlib:morepaperlib:0.5.2")
     compileOnly("org.spigotmc:spigot-api:1.21.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
-        exclude group: "org.bukkit", module: "bukkit"
-    }
+    compileOnly("net.milkbowl.vault:VaultUnlockedAPI:2.3")
     compileOnly("com.github.Unp1xelt:Locale-API:1.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.discordsrv:discordsrv:1.29.0")
@@ -50,10 +49,10 @@ tasks.named("shadowJar") {
     archiveVersion.set(version)
     relocate("net.kyori.adventure", "me.elaineqheart.auctionHouse.libs.adventure")
     relocate("space.arim.morepaperlib", "me.elaineqheart.auctionHouse.libs.morepaperlib")
-    destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.5_paper/plugins"))
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.2_spigot/plugins"))
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/1.21.11_purpur/plugins"))
-    //destinationDirectory.set(file("/media/elaine/Boot/Elaine/programmieren/java/minecraft/MC_test_servers/26.1.2_folia/plugins"))
+    destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.5_paper/plugins"))
+    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/26.2_spigot/plugins"))
+    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.11_purpur/plugins"))
+    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/26.1.2_folia/plugins"))
     mergeServiceFiles()
 }
 

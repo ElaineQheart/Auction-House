@@ -55,6 +55,7 @@ public class SettingManager {
     public static String soundCloseBundle;
     public static String soundOpenBundle;
     public static String soundCreateAuction;
+    public static String vaultCurrency;
 
     // displays
     public static final Set<Material> displayMaterials = new HashSet<>();
@@ -105,6 +106,7 @@ public class SettingManager {
         minBIDPrice = c.getDouble("min-bid", 1);
         maxBINPrice = c.getDouble("max-bin", -1);
         maxBIDPrice = c.getDouble("max-bid", -1);
+        vaultCurrency = c.getString("vault-used-currency-name", "");
         AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> {
             FileConfiguration layout = ConfigManager.layout.getCustomFile();
             soundClick = layout.getString("sounds.click", "ui.stonecutter.select_recipe");

@@ -80,6 +80,7 @@ chat:
     &n§eYou collected %price%§e back from an auction
     &n§b-------------------------------------------------"
   input-listener: "§e%request%. Please type your input in chat:"
+  transaction-failed: "§cERROR! Currency transaction failed!"
 
 discord-srv:
   new-listing-channel-name: "auctionhouseElaineQheartNewAuctions"
