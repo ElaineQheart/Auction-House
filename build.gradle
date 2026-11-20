@@ -49,10 +49,11 @@ tasks.named("shadowJar") {
     archiveVersion.set(version)
     relocate("net.kyori.adventure", "me.elaineqheart.auctionHouse.libs.adventure")
     relocate("space.arim.morepaperlib", "me.elaineqheart.auctionHouse.libs.morepaperlib")
-    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.5_paper/plugins"))
+    destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.5_paper/plugins"))
     //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/26.2_spigot/plugins"))
     //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.11_purpur/plugins"))
-    destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/26.1.2_folia/plugins"))
+    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/26.1.2_folia/plugins"))
+    //destinationDirectory.set(file("/home/elaine/Elaine/minecraft/programming/MC_test_servers/1.21.1_spigot/plugins"))
     mergeServiceFiles()
 }
 

@@ -76,15 +76,15 @@ public final class AuctionHouse extends JavaPlugin {
         UpdateDisplay.init();
         //NoteStorage.purge();
 
-        papiExpansion = new AuctionHousePAPIExpansion();
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            papiExpansion = new AuctionHousePAPIExpansion();
             papiExpansion.register();
             getLogger().info("PlaceholderAPI expansion registered.");
         }
-        discordSRVHook = new DiscordSRVHook();
         if (getServer().getPluginManager().getPlugin("InteractiveChatDiscordSrvAddon") != null &&
                 getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             getLogger().info("Discord SRV enabled.");
+            discordSRVHook = new DiscordSRVHook();
             discordSRVHook.register();
         }
 
@@ -96,8 +96,8 @@ public final class AuctionHouse extends JavaPlugin {
         ConfigManager.playerPreferences.disable();
         if (guiManager != null) guiManager.forceCloseAll();
         if (inputGUIManager != null) inputGUIManager.forceCloseAll();
-        if (papiExpansion.isRegistered()) papiExpansion.unregister();
-        if (discordSRVHook.isEnabled()) discordSRVHook.unregister();
+        if (papiExpansion != null && papiExpansion.isRegistered()) papiExpansion.unregister();
+        if (discordSRVHook != null && discordSRVHook.isEnabled()) discordSRVHook.unregister();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 
