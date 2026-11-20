@@ -35,6 +35,9 @@ public final class AuctionHouse extends JavaPlugin {
         //morePaperLib.scheduling()... It uses Paper's threaded-regions schedulers if Folia is used, otherwise it falls back to the default Bukkit scheduler.
         return instance.morePaperLib.scheduling();
     }
+    private static AuctionHousePAPIExpansion papiExpansion;
+    private static DiscordSRVHook discordSRVHook;
+    public static DiscordSRVHook getDiscordSRVHook() {return discordSRVHook;}
 
     @Override
     public void onEnable() {
@@ -73,15 +76,17 @@ public final class AuctionHouse extends JavaPlugin {
         UpdateDisplay.init();
         //NoteStorage.purge();
 
+        papiExpansion = new AuctionHousePAPIExpansion();
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new AuctionHousePAPIExpansion().register();
+            papiExpansion.register();
             getLogger().info("PlaceholderAPI expansion registered.");
         }
+        discordSRVHook = new DiscordSRVHook();
         if (getServer().getPluginManager().getPlugin("InteractiveChatDiscordSrvAddon") != null &&
                 getServer().getPluginManager().getPlugin("DiscordSRV") != null) {
             getLogger().info("Discord SRV enabled.");
-            DiscordSRVHook.register();
-            }
+            discordSRVHook.register();
+        }
 
         getLogger().info("AuctionHouse enabled in " + (System.currentTimeMillis() - start) + "ms");
     }
@@ -89,9 +94,10 @@ public final class AuctionHouse extends JavaPlugin {
     @Override
     public void onDisable() {
         ConfigManager.playerPreferences.disable();
-        if(guiManager != null) guiManager.forceCloseAll();
-        if(inputGUIManager != null) inputGUIManager.forceCloseAll();
-        if (DiscordSRVHook.enabled) DiscordSRVHook.unregister();
+        if (guiManager != null) guiManager.forceCloseAll();
+        if (inputGUIManager != null) inputGUIManager.forceCloseAll();
+        if (papiExpansion.isRegistered()) papiExpansion.unregister();
+        if (discordSRVHook.isEnabled()) discordSRVHook.unregister();
         //if(SettingManager.useRedis) RedisManager.disconnect();
     }
 

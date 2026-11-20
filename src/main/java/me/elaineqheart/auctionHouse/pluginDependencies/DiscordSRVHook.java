@@ -24,17 +24,15 @@ import java.util.Collections;
 
 public class DiscordSRVHook {
 
-    private static final DiscordSRVHook instance = new DiscordSRVHook();
-    public static boolean enabled;
+    private boolean enabled;
 
-    private DiscordSRVHook() {
-    }
+    public boolean isEnabled() {return enabled;}
 
     @Subscribe
     public void onMessageReceived(DiscordGuildMessageReceivedEvent event) {
     }
 
-    public static void sendAuctionListingToDiscord(Player seller, ItemStack inputItem, String title, int n) {
+    public void sendAuctionListingToDiscord(Player seller, ItemStack inputItem, String title, int n) {
         if (n <= 3 && !InteractiveChatDiscordSrvAddon.plugin.isResourceManagerReady()) {
             AuctionHouse.getScheduler().globalRegionalScheduler().runDelayed(() -> sendAuctionListingToDiscord(seller, inputItem, title, n+1), 10*20);
             return;
@@ -58,7 +56,7 @@ public class DiscordSRVHook {
         });
     }
 
-    private static ImageDisplayData getItemEmbed(OfflineICPlayer offlinePlayer, ItemStack inputItem, String title) {
+    private ImageDisplayData getItemEmbed(OfflineICPlayer offlinePlayer, ItemStack inputItem, String title) {
         ImageDisplayData displayData;
 
         Inventory containerInventory = DiscordContentUtils.getBlockInventory(inputItem);
@@ -86,13 +84,13 @@ public class DiscordSRVHook {
         return displayData;
     }
 
-    public static void register() {
-        DiscordSRV.api.subscribe(instance);
+    public void register() {
+        DiscordSRV.api.subscribe(this);
         enabled = true;
     }
 
-    public static void unregister() {
-        DiscordSRV.api.unsubscribe(instance);
+    public void unregister() {
+        DiscordSRV.api.unsubscribe(this);
         enabled = false;
     }
 
