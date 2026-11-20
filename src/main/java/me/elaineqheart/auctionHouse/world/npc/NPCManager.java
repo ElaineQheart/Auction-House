@@ -41,11 +41,11 @@ public class NPCManager {
 
         Villager npc = (Villager) world.spawnEntity(loc, EntityType.VILLAGER); //creating a villager
         stand.addPassenger(npc);
-        npc.setProfession(Registry.VILLAGER_PROFESSION.getOrThrow(NamespacedKey.minecraft(SettingManager.npcProfession)));
+        npc.setProfession(Villager.Profession.SHEPHERD);
         npc.setBreed(false);
         npc.setHealth(1);
         npc.setVillagerLevel(5);
-        npc.setVillagerType(Registry.VILLAGER_TYPE.getOrThrow(NamespacedKey.minecraft(SettingManager.npcType)));
+        npc.setVillagerType(Villager.Type.JUNGLE);
         npc.setAdult();
         npc.setCanPickupItems(false);
         npc.setCustomName(M.getFormatted("world.npc"));

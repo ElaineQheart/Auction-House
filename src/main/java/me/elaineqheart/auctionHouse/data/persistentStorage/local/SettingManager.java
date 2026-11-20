@@ -55,8 +55,6 @@ public class SettingManager {
     public static String soundCloseBundle;
     public static String soundOpenBundle;
     public static String soundCreateAuction;
-    public static String npcProfession;
-    public static String npcType;
     public static String vaultCurrency;
 
     // displays
@@ -109,8 +107,6 @@ public class SettingManager {
         maxBINPrice = c.getDouble("max-bin", -1);
         maxBIDPrice = c.getDouble("max-bid", -1);
         List<String> npcAppearance = c.getStringList("npc-appearance");
-        npcProfession = npcAppearance.getFirst();
-        npcType = npcAppearance.get(1);
         vaultCurrency = c.getString("vault-used-currency-name", "");
         AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> {
             FileConfiguration layout = ConfigManager.layout.getCustomFile();
