@@ -1,14 +1,17 @@
 package me.elaineqheart.auctionHouse.GUI.impl;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
+import me.elaineqheart.auctionHouse.GUI.InventoryButton;
 import me.elaineqheart.auctionHouse.GUI.InventoryGUI;
 import me.elaineqheart.auctionHouse.GUI.other.Sounds;
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
+import org.bukkit.Bukkit;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 
 import java.util.Objects;
@@ -20,11 +23,27 @@ public class ShulkerViewGUI extends InventoryGUI {
     private final AhConfiguration.View goBackTo;
 
     public ShulkerViewGUI(ItemNote note, AhConfiguration configuration, AhConfiguration.View goBackTo) {
-        super(((ShulkerBox) ((BlockStateMeta) Objects.requireNonNull(note.getItem().getItemMeta())).getBlockState()).getInventory());
+        super(Bukkit.createInventory(null, 27, note.getItemName()));
         c = configuration;
         this.note = note;
         this.goBackTo = goBackTo;
         Sounds.openShulker(c.getPlayer());
+    }
+
+    @Override
+    public void decorate(Player player) {
+        ItemStack[] contents = (((ShulkerBox) ((BlockStateMeta) Objects.requireNonNull(note.getItem().getItemMeta())).getBlockState()).getInventory()).getContents();
+        for (int i = 0; i < 27; i++) {
+            this.addButton(i, contentItem(contents[i]));
+        }
+        super.decorate(player);
+    }
+
+    private InventoryButton contentItem(ItemStack item) {
+        return new InventoryButton()
+                .creator(player -> item)
+                .consumer(event -> {
+                });
     }
 
     @Override
