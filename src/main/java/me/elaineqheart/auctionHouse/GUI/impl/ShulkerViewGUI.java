@@ -30,12 +30,11 @@ public class ShulkerViewGUI extends InventoryGUI {
     @Override
     public void onClose(InventoryCloseEvent event) {
         Player p = (Player) event.getPlayer();
-        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).runDelayed(() -> {
+        AuctionHouse.getScheduler().entitySpecificScheduler(c.getPlayer()).run(() -> {
                     Sounds.closeShulker(event);
                     openInventoryGoingBack(c, note, p, goBackTo);
                 },
-                null,
-                0);
+                null);
     }
 
     public static void openInventoryGoingBack(AhConfiguration c, ItemNote note, Player p, AhConfiguration.View goBackTo) {
