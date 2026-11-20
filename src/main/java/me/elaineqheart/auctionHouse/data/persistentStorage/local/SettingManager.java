@@ -106,7 +106,6 @@ public class SettingManager {
         minBIDPrice = c.getDouble("min-bid", 1);
         maxBINPrice = c.getDouble("max-bin", -1);
         maxBIDPrice = c.getDouble("max-bid", -1);
-        List<String> npcAppearance = c.getStringList("npc-appearance");
         vaultCurrency = c.getString("vault-used-currency-name", "");
         AuctionHouse.getScheduler().globalRegionalScheduler().run(() -> {
             FileConfiguration layout = ConfigManager.layout.getCustomFile();

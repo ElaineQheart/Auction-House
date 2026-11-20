@@ -69,10 +69,11 @@ public class Sounds {
 
     private static Sound getSound(String name) {
         if (name.isEmpty()) return null;
-        //return Registry.SOUNDS.get(NamespacedKey.minecraft(name));
-        if(!ConfigManager.oldVersion21()) return Registry.SOUNDS.get(NamespacedKey.minecraft(name));
+        try {
+            return Registry.SOUNDS.get(NamespacedKey.minecraft(name));
+        } catch (NoClassDefFoundError ignored) {}
 
-        //older minecraft versions:
+        //Registry.SOUNDS has existed since 1.14
         Sound sound;
         switch (name) {
             case "block.ender_chest.open" -> sound = Sound.BLOCK_ENDER_CHEST_OPEN;
