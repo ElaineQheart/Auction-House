@@ -12,7 +12,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.UUID;
 
 //https://www.spigotmc.org/threads/a-modern-approach-to-inventory-guis.594005/
 
@@ -21,9 +22,25 @@ import java.util.Map;
 
 public class GUIManager {
 
-    private final Map<Inventory, InventoryHandler> activeInventories = new HashMap<>();
+    private final HashMap<Inventory, InventoryHandler> activeInventories = new HashMap<>();
+    private final HashMap<UUID, LinkedList<Long>> throttle = new HashMap<>();
 
     public void openGUI(InventoryGUI gui, Player player) {
+        UUID playerId = player.getUniqueId();
+        if (!throttle.containsKey(playerId)) throttle.put(playerId, new LinkedList<>());
+        LinkedList<Long> timestampsList = throttle.get(playerId);
+        timestampsList.addFirst(System.currentTimeMillis());
+        if (timestampsList.size() > 5) {
+            timestampsList.removeLast();
+            if (timestampsList.getFirst() - timestampsList.getLast() < 400) {
+                return;
+            }
+        }
+        UUID gradualCleanup = (UUID) throttle.keySet().toArray()[throttle.size() - 1];
+        if (System.currentTimeMillis() - throttle.get(gradualCleanup).getFirst() > 400) {
+            throttle.remove(gradualCleanup);
+        }
+
         this.registerHandledInventory(gui.getInventory(), gui);
         player.openInventory(gui.getInventory());
     }
