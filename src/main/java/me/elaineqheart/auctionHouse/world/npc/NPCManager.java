@@ -1,11 +1,9 @@
 package me.elaineqheart.auctionHouse.world.npc;
 
 import me.elaineqheart.auctionHouse.AuctionHouse;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.configs.M;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;

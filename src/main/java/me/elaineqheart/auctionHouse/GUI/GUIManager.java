@@ -26,20 +26,7 @@ public class GUIManager {
     private final HashMap<UUID, LinkedList<Long>> throttle = new HashMap<>();
 
     public void openGUI(InventoryGUI gui, Player player) {
-        UUID playerId = player.getUniqueId();
-        if (!throttle.containsKey(playerId)) throttle.put(playerId, new LinkedList<>());
-        LinkedList<Long> timestampsList = throttle.get(playerId);
-        timestampsList.addFirst(System.currentTimeMillis());
-        if (timestampsList.size() > 5) {
-            timestampsList.removeLast();
-            if (timestampsList.getFirst() - timestampsList.getLast() < 400) {
-                return;
-            }
-        }
-        UUID gradualCleanup = (UUID) throttle.keySet().toArray()[throttle.size() - 1];
-        if (System.currentTimeMillis() - throttle.get(gradualCleanup).getFirst() > 400) {
-            throttle.remove(gradualCleanup);
-        }
+        if (autoclickerDetected(player)) return;
 
         this.registerHandledInventory(gui.getInventory(), gui);
         player.openInventory(gui.getInventory());
@@ -85,6 +72,24 @@ public class GUIManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if(this.activeInventories.containsKey(player.getOpenInventory().getTopInventory())) player.closeInventory();
         }
+    }
+
+    private boolean autoclickerDetected(Player p) {
+        UUID playerId = p.getUniqueId();
+        if (!throttle.containsKey(playerId)) throttle.put(playerId, new LinkedList<>());
+        LinkedList<Long> timestampsList = throttle.get(playerId);
+        timestampsList.addFirst(System.currentTimeMillis());
+        if (timestampsList.size() > 5) {
+            timestampsList.removeLast();
+            if (timestampsList.getFirst() - timestampsList.getLast() < 400) {
+                return true;
+            }
+        }
+        UUID gradualCleanup = (UUID) throttle.keySet().toArray()[throttle.size() - 1];
+        if (System.currentTimeMillis() - throttle.get(gradualCleanup).getFirst() > 400) {
+            throttle.remove(gradualCleanup);
+        }
+        return false;
     }
 
 }

@@ -1,7 +1,6 @@
 package me.elaineqheart.auctionHouse.GUI.other;
 
 import me.elaineqheart.auctionHouse.data.persistentStorage.local.SettingManager;
-import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.Sound;

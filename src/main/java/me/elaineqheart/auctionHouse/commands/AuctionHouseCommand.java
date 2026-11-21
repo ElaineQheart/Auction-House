@@ -15,7 +15,6 @@ import me.elaineqheart.auctionHouse.data.persistentStorage.local.data.ConfigMana
 import me.elaineqheart.auctionHouse.data.ram.AhConfiguration;
 import me.elaineqheart.auctionHouse.data.ram.AuctionHouseStorage;
 import me.elaineqheart.auctionHouse.data.ram.ItemNote;
-import me.elaineqheart.auctionHouse.pluginDependencies.DiscordSRVHook;
 import me.elaineqheart.auctionHouse.world.displays.CreateDisplay;
 import me.elaineqheart.auctionHouse.world.displays.UpdateDisplay;
 import me.elaineqheart.auctionHouse.world.npc.NPCManager;
