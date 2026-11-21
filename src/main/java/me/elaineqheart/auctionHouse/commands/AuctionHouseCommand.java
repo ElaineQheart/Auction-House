@@ -194,7 +194,7 @@ public class AuctionHouseCommand implements CommandExecutor, TabCompleter {
                 }
 
                 //Discord SRV
-                if (AuctionHouse.getDiscordSRVHook().isEnabled()){
+                if (AuctionHouse.getDiscordSRVHook() != null && AuctionHouse.getDiscordSRVHook().isEnabled()){
                     String key = isBIDAuction ? "discord-srv.new-bid-auction-title" : "discord-srv.new-bin-auction-title";
                     String title = Pattern.compile("§.").splitAsStream(M.getFormatted(key,
                             price,
