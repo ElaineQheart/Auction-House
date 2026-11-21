@@ -81,6 +81,8 @@ chat:
     &n§b-------------------------------------------------"
   input-listener: "§e%request%. Please type your input in chat:"
   transaction-failed: "§cERROR! Currency transaction failed!"
+  no-currency-found: "§cERROR! Failed to retrieve balance for currency \"%currency%\": Balance not found for currency
+    &n§eAvailable currencies: %currencies%"
 
 discord-srv:
   new-listing-channel-name: "auctionhouseElaineQheartNewAuctions"
